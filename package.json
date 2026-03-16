@@ -1,22 +1,40 @@
 {
   "name": "react-native-materia",
-  "version": "1.0.0",
-  "main": "index.ts",
+  "version": "0.0.1-alpha.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "workspaces": [
+    "example"
+  ],
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "example": "npm run start --workspace=example",
+    "typecheck": "tsc --noEmit"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": ">=0.74.0",
+    "react-native-svg": ">= 12.0.0",
+    "react-native-gesture-handler": ">=2.16.0",
+    "react-native-reanimated": ">=3.10.0"
   },
   "dependencies": {
-    "expo": "~54.0.32",
-    "expo-status-bar": "~3.0.9",
-    "react": "19.1.0",
-    "react-native": "0.81.5"
+    "@material/material-color-utilities": "^0.4.0",
+    "color": "^4.2.3"
   },
   "devDependencies": {
-    "@types/react": "~19.1.0",
-    "typescript": "~5.9.2"
+    "@types/color": "^4.2.0",
+    "@types/react": "18.3.1",
+    "react": "18.3.1",
+    "react-native": "0.76.1",
+    "react-native-gesture-handler": "2.16.2",
+    "react-native-reanimated": "3.10.1",
+    "react-native-svg": "^14.1.0",
+    "typescript": "~5.3.3"
   },
   "private": true
 }
