@@ -179,29 +179,25 @@ export const stateOpacity = {
 // 5. COMPONENT SIZING (LAYOUT CONSTANTS)
 // ---------------------------------------------------------------------------
 
-/**
- * Standard sizes for common Material Design components.
- * Use these to avoid magic numbers in styles.
- */
-export const componentSize = {
-  /** Standard icon size (24dp). */
-  icon: 24,
-  /** Small avatar size (32dp). */
-  avatarSmall: 32,
-  /** Medium avatar size (40dp). */
-  avatarMedium: 40,
-  /** Standard button height (40dp). */
-  buttonHeight: 40,
-  /** Standard text input container height (56dp). */
-  inputHeight: 56,
-  /** Small Floating Action Button size (40dp). */
-  fabSmall: 40,
-  /** Default Floating Action Button size (56dp). */
-  fabDefault: 56,
-  /** Large Floating Action Button size (96dp). */
-  fabLarge: 96,
-  /** Bottom Navigation Bar height (80dp). */
-  bottomBarHeight: 80,
-  /** Standard Top App Bar height (64dp). */
-  appBarHeight: 64,
+export const buttonScale = {
+  xs: { height: 32 },
+  s: { height: 40 },
+  m: { height: 56 },
+  l: { height: 96 },
+  xl: { height: 136 },
 } as const;
+
+export const iconButtonScale = {
+  xs: { width: 32, height: 32 },
+  s: { width: 40, height: 40 },
+  m: { width: 56, height: 56 },
+  l: { width: 96, height: 96 },
+  xl: { width: 136, height: 136 },
+} as const;
+
+export const iconSize = {
+  "20dp": 20,
+  "24dp": 24,
+  "40dp": 40,
+  "48dp": 48,
+};

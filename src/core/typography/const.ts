@@ -94,19 +94,19 @@ export const baseScale: Record<TypographyVariant, TextStyle> = {
   },
 };
 
-const defaultBrand: Typeface = Platform.select({
+export const defaultBrand: Typeface = Platform.select({
   ios: { fontFamily: "System", fontWeight: "400" },
   android: { fontFamily: "Roboto", fontWeight: "400" },
   default: { fontFamily: "System", fontWeight: "400" },
 });
 
-const defaultPlain: Typeface = Platform.select({
+export const defaultPlain: Typeface = Platform.select({
   ios: { fontFamily: "System", fontWeight: "400" },
   android: { fontFamily: "Roboto", fontWeight: "400" },
   default: { fontFamily: "System", fontWeight: "400" },
 });
 
-const defaultCommonStyles: TextStyle =
+export const defaultCommonStyles: TextStyle =
   Platform.OS === "android"
     ? { includeFontPadding: false, textAlignVertical: "center" }
     : {};

@@ -1,21 +1,15 @@
 import { Platform, TextStyle } from "react-native";
 import {
   MateriaTypography,
-  Typeface,
   TypographyConfig,
   TypographyVariant,
 } from "./types";
-import { baseScale } from "./const";
+import { baseScale, defaultCommonStyles } from "./const";
 
 export const generateMateriaTypography = (
   config: TypographyConfig,
 ): MateriaTypography => {
   const { brand, plain, fixVerticalRhythm } = config;
-
-  const commonStyles: TextStyle =
-    fixVerticalRhythm && Platform.OS === "android"
-      ? { includeFontPadding: false, textAlignVertical: "center" }
-      : {};
 
   const typography = {} as MateriaTypography;
 
@@ -27,7 +21,7 @@ export const generateMateriaTypography = (
     const activeTypeface = isBrand ? brand : plain;
 
     typography[variant] = {
-      ...commonStyles,
+      ...(fixVerticalRhythm ? defaultCommonStyles : {}),
       ...token,
       fontFamily: activeTypeface.fontFamily,
       fontWeight: activeTypeface.fontWeight ?? token.fontWeight,
