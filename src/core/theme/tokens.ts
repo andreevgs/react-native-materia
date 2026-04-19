@@ -25,6 +25,8 @@ export const spacing = {
   xs: 4,
   /** Small spacing (8dp) - Base unit */
   s: 8,
+  /** Small-medium spacing (10dp) - In-between size */
+  sm: 10,
   /** Medium spacing (12dp) - Often used for internal padding */
   m: 12,
   /** Large spacing (16dp) - Standard content padding (screen edges) */
