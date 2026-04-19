@@ -198,6 +198,7 @@ export const iconButtonScale = {
 } as const;
 
 export const iconSize = {
+  "18dp": 18,
   "20dp": 20,
   "24dp": 24,
   "40dp": 40,
