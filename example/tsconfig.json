@@ -1,0 +1,13 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "react-native-materia": ["../src/index.ts"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "metro.config.js"
+  ]
+}
