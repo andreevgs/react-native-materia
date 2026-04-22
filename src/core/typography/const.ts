@@ -1,7 +1,7 @@
 import { Platform, TextStyle } from "react-native";
-import { MateriaTypography, Typeface, TypographyVariant } from "./types";
+import { MateriaTypography, TypographyScale, TypographyVariant } from "./types";
 
-export const baseScale: Record<TypographyVariant, TextStyle> = {
+export const baseScale: TypographyScale = {
   displayLarge: {
     fontSize: 57,
     lineHeight: 64,
@@ -94,16 +94,10 @@ export const baseScale: Record<TypographyVariant, TextStyle> = {
   },
 };
 
-export const defaultBrand: Typeface = Platform.select({
-  ios: { fontFamily: "System", fontWeight: "400" },
-  android: { fontFamily: "Roboto", fontWeight: "400" },
-  default: { fontFamily: "System", fontWeight: "400" },
-});
-
-export const defaultPlain: Typeface = Platform.select({
-  ios: { fontFamily: "System", fontWeight: "400" },
-  android: { fontFamily: "Roboto", fontWeight: "400" },
-  default: { fontFamily: "System", fontWeight: "400" },
+export const defaultFontFamily = Platform.select({
+  ios: "System",
+  android: "Roboto",
+  default: "System",
 });
 
 export const defaultCommonStyles: TextStyle =
@@ -114,17 +108,10 @@ export const defaultCommonStyles: TextStyle =
 export const defaultMateriaTypography: MateriaTypography = (
   Object.keys(baseScale) as TypographyVariant[]
 ).reduce((acc, variant) => {
-  const token = baseScale[variant];
-  const isBrand =
-    variant.startsWith("display") || variant.startsWith("headline");
-  const activeTypeface = isBrand ? defaultBrand : defaultPlain;
-
   acc[variant] = {
+    ...baseScale[variant],
     ...defaultCommonStyles,
-    ...token,
-    fontFamily: activeTypeface.fontFamily,
-    fontWeight: activeTypeface.fontWeight ?? token.fontWeight,
+    fontFamily: defaultFontFamily,
   };
-
   return acc;
 }, {} as MateriaTypography);
