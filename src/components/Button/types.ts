@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { ViewStyle, TextStyle, StyleProp } from "react-native";
-import { IconSource } from "../Icon/types";
+import { IconSource } from "../../core/icons";
 
 export type ButtonMode = "filled" | "tonal" | "outlined" | "elevated" | "text";
 

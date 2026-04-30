@@ -42,3 +42,6 @@ yarn-error.*
 
 # bob build output
 lib/
+
+# vscode
+.vscode/

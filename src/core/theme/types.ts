@@ -104,6 +104,9 @@ export interface MateriaTheme {
   palettes: MateriaPalettes;
 }
 
+export type MateriaThemeMode = "system" | "light" | "dark";
+export type MateriaContrastLevel = "standard" | "medium" | "high";
+
 // TO-DO: extended colors for theme
 export interface ExtendedColorsInput {
   name: string;

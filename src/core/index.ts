@@ -5,6 +5,7 @@ export {
   useMateriaColors,
   useMateriaMode,
   useMateriaTypography,
+  useMateriaTokens,
 } from "./MateriaProvider";
 
 export { generateMateriaTheme } from "./theme/generate";
