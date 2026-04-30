@@ -3,11 +3,22 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "react-native-materia": ["../src/index.ts"]
+      "@/*": [
+        "./*"
+      ],
+      "react-native-materia": [
+        "../src/index.ts",
+        "../src/types/index.ts"
+      ],
+      "react-native-materia/types": [
+        "../src/types/index.ts"
+      ]
     }
   },
-  "exclude": [
-    "node_modules",
-    "metro.config.js"
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ]
 }
