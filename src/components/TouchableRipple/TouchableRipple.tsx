@@ -90,7 +90,7 @@ export const TouchableRipple = ({
       .alpha(tokens.stateOpacity.pressed)
       .rgb()
       .string();
-  }, [solidRippleColor]);
+  }, [solidRippleColor, tokens]);
 
   useEffect(() => {
     if (disabled) {
@@ -110,7 +110,15 @@ export const TouchableRipple = ({
     } else {
       stateLayerOpacity.value = withTiming(0, { duration: 200 });
     }
-  }, [isPressed, isFocused, isHovered, disabled, stateLayerOpacity]);
+  }, [
+    isPressed,
+    isFocused,
+    isHovered,
+    disabled,
+    stateLayerOpacity,
+    hasNativeRipple,
+    tokens,
+  ]);
 
   const handleLayout = useCallback((e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;

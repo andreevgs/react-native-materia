@@ -17,6 +17,10 @@ export type TypographyVariant =
   | "bodyMedium"
   | "bodySmall";
 
+export type TypographyScale = Record<
+  TypographyVariant,
+  Omit<TextStyle, "fontFamily">
+>;
 export type MateriaTypography = Record<TypographyVariant, TextStyle>;
 
 export interface Typeface {
