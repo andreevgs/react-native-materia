@@ -1,4 +1,3 @@
-import { Platform, TextStyle } from "react-native";
 import {
   MateriaTypography,
   TypographyConfig,

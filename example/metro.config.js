@@ -1,7 +1,6 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { withMetroConfig } = require("react-native-monorepo-config");
 const path = require("path");
-const { pathToFileURL } = require("url");
 
 const projectRoot = __dirname;
 const workspaceRoot = path.resolve(projectRoot, "..");
