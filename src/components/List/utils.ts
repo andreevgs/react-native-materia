@@ -28,7 +28,7 @@ export const getListStyle = (
     standard: {},
     segmented: {
       gap: tokens.spacing.xxs,
-      borderRadius: tokens.shape.medium,
+      borderRadius: tokens.shape.large,
       overflow: "hidden",
     },
   };

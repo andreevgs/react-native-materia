@@ -1,16 +1,18 @@
 import { createContext, useContext, useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { CORE_ICON_PATHS } from "./icons";
-import { MateriaScheme, MateriaTheme, Tokens } from "./theme/types";
+import { CORE_ICON_PATHS, IconRegistry } from "./icons";
+import {
+  MateriaScheme,
+  MateriaTheme,
+  Tokens,
+  MateriaThemeMode,
+  MateriaContrastLevel,
+} from "./theme/types";
 import { useColorScheme } from "react-native";
 import { MateriaTypography } from "./typography/types";
 import * as materiaTokens from "./theme/tokens";
 import { defaultMateriaTheme } from "./theme/const";
 import { defaultMateriaTypography } from "./typography/const";
-
-export type IconRegistry = Record<string, string>;
-export type MateriaThemeMode = "system" | "light" | "dark";
-export type MateriaContrastLevel = "standard" | "medium" | "high";
 
 interface MateriaContextType {
   theme: MateriaTheme;

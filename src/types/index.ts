@@ -1,5 +1,3 @@
-export type { CoreIconName } from "../core/icons";
-
 export type {
   MateriaScheme,
   MateriaSchemes,

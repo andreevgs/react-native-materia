@@ -27,7 +27,7 @@ export const ListComponent = ({
   const listItemStyle = getListItemStyle(variant, tokens, colors);
 
   return (
-    <View style={[style, listStyle, style]}>
+    <View style={[listStyle, style]}>
       {items.map((child, index) => {
         return cloneElement(child as ReactElement<ListItemProps>, {
           key: child.key || index,
