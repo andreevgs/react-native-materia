@@ -4,3 +4,4 @@ export * from "./TouchableRipple";
 export * from "./IconButton";
 export * from "./List";
 export * from "./Icon";
+export * from "./Chip";

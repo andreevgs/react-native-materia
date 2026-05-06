@@ -18,6 +18,7 @@ const ComponentsScreen = () => {
 
   const components = [
     { name: "Button", path: "button" },
+    { name: "Chip", path: "chip" },
     { name: "Icon", path: "icon" },
     { name: "IconButton", path: "icon-button" },
     { name: "List", path: "list" },

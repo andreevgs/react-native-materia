@@ -197,6 +197,10 @@ export const iconButtonScale = {
   xl: { width: 136, height: 136 },
 } as const;
 
+export const chipScale = {
+  default: { height: 32 },
+} as const;
+
 export const iconSize = {
   "18dp": 18,
   "20dp": 20,
