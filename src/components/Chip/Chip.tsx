@@ -93,11 +93,10 @@ export const Chip = ({
 const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
     container: {
-      height: 32,
+      height: tokens.chipScale.default.height,
       borderRadius: tokens.shape.small,
       overflow: "hidden",
       borderStyle: "solid",
-      alignSelf: "flex-start",
     },
     touchable: {
       flex: 1,
@@ -109,7 +108,6 @@ const createStyles = (tokens: Tokens) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      height: "100%",
     },
     leadingIconContainer: {
       marginRight: tokens.spacing.s,
