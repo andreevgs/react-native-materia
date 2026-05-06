@@ -1,6 +1,11 @@
 import { ReactNode } from "react";
-import { ViewStyle, TextStyle, StyleProp, GestureResponderEvent } from "react-native";
-import { IconSource } from "../Icon/types";
+import {
+  ViewStyle,
+  TextStyle,
+  StyleProp,
+  GestureResponderEvent,
+} from "react-native";
+import type { IconSource } from "../../core/icons";
 
 export type ChipMode = "outlined" | "tonal" | "elevated";
 
