@@ -22,28 +22,27 @@ export const ListItem = ({
   return (
     <TouchableRipple
       style={[styles.container, style]}
+      contentContainerStyle={styles.content}
       contentPointerEvents="none"
       {...props}
     >
-      <View style={styles.content}>
-        {leadingContent && (
-          <View style={styles.leadingContainer}>{leadingContent}</View>
-        )}
-        <View style={styles.headlineContainer}>
-          <MateriaText variant="bodyLarge">{headline}</MateriaText>
-          {supportingText ? (
-            <MateriaText
-              variant="bodyMedium"
-              style={{ color: colors.onSurfaceVariant }}
-            >
-              {supportingText}
-            </MateriaText>
-          ) : null}
-        </View>
-        {trailingContent && (
-          <View style={styles.trailingContainer}>{trailingContent}</View>
-        )}
+      {leadingContent && (
+        <View style={styles.leadingContainer}>{leadingContent}</View>
+      )}
+      <View style={styles.headlineContainer}>
+        <MateriaText variant="bodyLarge">{headline}</MateriaText>
+        {supportingText ? (
+          <MateriaText
+            variant="bodyMedium"
+            style={{ color: colors.onSurfaceVariant }}
+          >
+            {supportingText}
+          </MateriaText>
+        ) : null}
       </View>
+      {trailingContent && (
+        <View style={styles.trailingContainer}>{trailingContent}</View>
+      )}
     </TouchableRipple>
   );
 };

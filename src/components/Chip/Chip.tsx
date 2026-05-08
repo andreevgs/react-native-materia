@@ -63,9 +63,12 @@ export const Chip = ({
         contentPointerEvents="none"
       >
         {leadingIcon && (
-          <View style={styles.leadingIconContainer} pointerEvents="none">
-            <Icon source={leadingIcon} color={textColor} size={18} />
-          </View>
+          <Icon
+            source={leadingIcon}
+            color={textColor}
+            size={18}
+            style={styles.leadingIcon}
+          />
         )}
 
         <MateriaText
@@ -77,13 +80,12 @@ export const Chip = ({
         </MateriaText>
 
         {trailingIcon && (
-          <View style={styles.trailingIconContainer} pointerEvents="none">
-            <Icon
-              source={trailingIcon}
-              color={textColor}
-              size={tokens.iconSize["18dp"]}
-            />
-          </View>
+          <Icon
+            source={trailingIcon}
+            color={textColor}
+            size={tokens.iconSize["18dp"]}
+            style={styles.trailingIcon}
+          />
         )}
       </TouchableRipple>
     </View>
@@ -109,10 +111,10 @@ const createStyles = (tokens: Tokens) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    leadingIconContainer: {
+    leadingIcon: {
       marginRight: tokens.spacing.s,
     },
-    trailingIconContainer: {
+    trailingIcon: {
       marginLeft: tokens.spacing.s,
     },
   });

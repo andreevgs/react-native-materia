@@ -1,7 +1,7 @@
-import { StyleProp, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle, AccessibilityProps } from "react-native";
 import { IconSource } from "../../types";
 
-export interface IconProps {
+export interface IconProps extends AccessibilityProps {
   source: IconSource;
   size?: number;
   color?: string;

@@ -60,17 +60,16 @@ export const Button = ({
           <ActivityIndicator
             size="small"
             color={textColor}
-            style={styles.iconContainer}
+            style={styles.icon}
           />
         ) : (
           icon && (
-            <View style={styles.iconContainer} pointerEvents="none">
-              <Icon
-                source={icon}
-                color={textColor}
-                size={tokens.iconSize["20dp"]}
-              />
-            </View>
+            <Icon
+              style={styles.icon}
+              source={icon}
+              color={textColor}
+              size={tokens.iconSize["20dp"]}
+            />
           )
         )}
 
@@ -107,7 +106,7 @@ const createStyles = (tokens: Tokens) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    iconContainer: {
+    icon: {
       marginRight: tokens.spacing.s,
     },
   });
