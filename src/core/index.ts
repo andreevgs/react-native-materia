@@ -1,7 +1,7 @@
 export {
   MateriaProvider,
   useMateriaTheme,
-  useIconRegistry,
+  useMateriaIconography,
   useMateriaColors,
   useMateriaMode,
   useMateriaTypography,
@@ -14,4 +14,4 @@ export { defaultMateriaTheme } from "./theme/const";
 export { generateMateriaTypography } from "./typography/generate";
 export { defaultMateriaTypography } from "./typography/const";
 
-export { CORE_ICON_PATHS } from "./icons";
+export { defaultMateriaIconography } from "./iconography/const";

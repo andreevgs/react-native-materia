@@ -1,43 +1,30 @@
 import React from "react";
 import { View } from "react-native";
-import Svg, { Path } from "react-native-svg";
 import {
-  useIconRegistry,
+  useMateriaIconography,
   useMateriaColors,
   useMateriaTokens,
 } from "../../core/MateriaProvider";
 import { IconProps } from "./types";
 
-export const Icon = ({ source, size, color, style }: IconProps) => {
+export const Icon = ({ source: Source, size, color, style }: IconProps) => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
-  const icons = useIconRegistry();
+  const icons = useMateriaIconography();
 
   const iconColor = color ?? colors.onSurfaceVariant;
   const iconSize = size ?? tokens.iconSize["24dp"];
   const iconSizeStyle = { width: iconSize, height: iconSize };
 
-  if (typeof source === "function") {
-    const Component = source;
-    return (
-      <View style={[iconSizeStyle, style]}>
-        <Component
-          width={iconSize}
-          height={iconSize}
-          fill={iconColor}
-          color={iconColor}
-        />
-      </View>
-    );
-  }
+  if (typeof Source === "string") {
+    const Component = icons[Source as keyof typeof icons];
 
-  if (typeof source === "string") {
-    const path = icons[source];
-
-    if (!path) {
-      console.warn(
-        `[Materia] Icon "${source}" not found. Check your IconRegistry.`,
-      );
+    if (!Component) {
+      if (__DEV__) {
+        console.warn(
+          `[Materia] Icon "${String(Source)}" not found. Check your MateriaIconography.`,
+        );
+      }
       return (
         <View
           style={[iconSizeStyle, { backgroundColor: "transparent" }, style]}
@@ -46,12 +33,12 @@ export const Icon = ({ source, size, color, style }: IconProps) => {
     }
 
     return (
-      <View style={[iconSizeStyle, style]}>
-        <Svg width={iconSize} height={iconSize} viewBox="0 0 24 24">
-          <Path d={path} fill={iconColor as string} />
-        </Svg>
-      </View>
+      <Component color={iconColor as string} size={iconSize} style={style} />
     );
+  }
+
+  if (Source) {
+    return <Source color={iconColor as string} size={iconSize} style={style} />;
   }
 
   return null;

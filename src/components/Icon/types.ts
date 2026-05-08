@@ -1,9 +1,9 @@
-import { ColorValue, StyleProp, ViewStyle } from "react-native";
-import { IconSource } from "../../core/icons";
+import { StyleProp, ViewStyle } from "react-native";
+import { IconSource } from "../../types";
 
 export interface IconProps {
   source: IconSource;
   size?: number;
-  color?: ColorValue;
+  color?: string;
   style?: StyleProp<ViewStyle>;
 }

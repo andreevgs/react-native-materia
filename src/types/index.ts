@@ -14,3 +14,10 @@ export type {
   Typeface,
   TypographyConfig,
 } from "../core/typography/types";
+
+export type {
+  MateriaIconography,
+  MateriaIcon,
+  MateriaIconProps,
+  IconSource,
+} from "../core/iconography/types";

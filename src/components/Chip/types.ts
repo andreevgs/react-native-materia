@@ -5,7 +5,7 @@ import {
   StyleProp,
   GestureResponderEvent,
 } from "react-native";
-import type { IconSource } from "../../core/icons";
+import type { IconSource } from "../../types";
 
 export type ChipMode = "outlined" | "tonal" | "elevated";
 

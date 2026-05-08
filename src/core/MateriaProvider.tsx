@@ -1,6 +1,7 @@
 import { createContext, useContext, useMemo } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { CORE_ICON_PATHS, IconRegistry } from "./icons";
+import { MateriaIconography } from "./iconography/types";
+import { defaultMateriaIconography } from "./iconography/const";
 import {
   MateriaScheme,
   MateriaTheme,
@@ -18,7 +19,7 @@ interface MateriaContextType {
   theme: MateriaTheme;
   tokens: Tokens;
   colors: MateriaScheme;
-  icons: IconRegistry;
+  icons: MateriaIconography;
   mode: MateriaThemeMode;
   isDark: boolean;
   contrastLevel: MateriaContrastLevel;
@@ -33,7 +34,7 @@ interface MateriaProviderProps {
   typography?: MateriaTypography;
   mode?: MateriaThemeMode;
   contrastLevel?: MateriaContrastLevel;
-  icons?: IconRegistry;
+  icons?: Partial<MateriaIconography>;
 }
 
 export const MateriaProvider = ({
@@ -65,9 +66,9 @@ export const MateriaProvider = ({
     return theme.schemes[key] || theme.schemes[base];
   }, [theme, isDark, contrastLevel]);
 
-  const mergedIcons: IconRegistry = useMemo(
+  const mergedIcons: MateriaIconography = useMemo(
     () => ({
-      ...CORE_ICON_PATHS,
+      ...defaultMateriaIconography,
       ...icons,
     }),
     [icons],
@@ -131,10 +132,12 @@ export const useMateriaMode = () => {
   return { isDark: context.isDark, mode: context.mode };
 };
 
-export const useIconRegistry = (): IconRegistry => {
+export const useMateriaIconography = (): MateriaIconography => {
   const context = useContext(MateriaContext);
   if (!context) {
-    throw new Error("useIconRegistry must be used within a MateriaProvider");
+    throw new Error(
+      "useMateriaIconography must be used within a MateriaProvider",
+    );
   }
   return context.icons;
 };

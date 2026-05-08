@@ -1,5 +1,5 @@
 import { StyleProp, ViewStyle } from "react-native";
-import { IconSource } from "../../core/icons";
+import { IconSource } from "../../types";
 
 export type IconButtonMode = "filled" | "tonal" | "outlined" | "standard";
 
