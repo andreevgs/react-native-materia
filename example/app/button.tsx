@@ -4,13 +4,13 @@ import { ComponentDemo } from "../components/ComponentDemo";
 const ButtonDemo = () => {
   return (
     <ComponentDemo>
-      <Button onPress={() => {}} mode="filled">
+      <Button onPress={() => {}} mode="filled" icon="check">
         Filled Button
       </Button>
       <Button onPress={() => {}} mode="tonal">
         Tonal Button
       </Button>
-      <Button onPress={() => {}} mode="outlined">
+      <Button onPress={() => {}} mode="outlined" icon="check">
         Outlined Button
       </Button>
       <Button onPress={() => {}} mode="elevated">
