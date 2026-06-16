@@ -208,3 +208,88 @@ export const iconSize = {
   "40dp": 40,
   "48dp": 48,
 };
+
+// ---------------------------------------------------------------------------
+// 6. MOTION (ANIMATION & TRANSITIONS)
+// ---------------------------------------------------------------------------
+
+/**
+ * Motion duration tokens based on Material Design 3 (in milliseconds).
+ * * @see https://m3.material.io/styles/motion/speed/duration
+ */
+export const duration = {
+  /** 50ms - Used for micro-animations like checkbox checks */
+  short1: 50,
+  /** 100ms - Used for small, simple transitions */
+  short2: 100,
+  /** 150ms - Used for small component state transitions */
+  short3: 150,
+  /** 200ms - Standard duration for simple component state transitions */
+  short4: 200,
+  /** 250ms - Used for entering transitions of small components */
+  medium1: 250,
+  /** 300ms - Used for standard component state transitions */
+  medium2: 300,
+  /** 350ms - Used for entering transitions of medium components */
+  medium3: 350,
+  /** 400ms - Used for exiting/collapsing transitions */
+  medium4: 400,
+  /** 450ms - Used for entering transitions of large components */
+  long1: 450,
+  /** 500ms - Used for complex animations */
+  long2: 500,
+  /** 550ms - Used for heavy screen transitions */
+  long3: 550,
+  /** 600ms - Max standard duration for transitions */
+  long4: 600,
+} as const;
+
+/**
+ * Easing curve tokens based on Material Design 3.
+ * * MD3 defines specific easing curves to coordinate natural movement:
+ * * - Emphasized: The default, expressive easing for primary transitions (e.g. sheet expansion).
+ * * - Standard: Utilitarian easing for simple transitions.
+ * * @see https://m3.material.io/styles/motion/speed/easing
+ */
+export const easing = {
+  /**
+   * Emphasized Easing.
+   * * Used for transitions that draw attention, with a snappy takeoff and a very soft landing.
+   * * Equivalent to Cubic Bezier (0.2, 0.0, 0.0, 1.0)
+   */
+  emphasized: [0.2, 0.0, 0.0, 1.0] as const,
+  /**
+   * Emphasized Decelerate Easing.
+   * * Used for incoming elements that enter the screen.
+   * * Equivalent to Cubic Bezier (0.05, 0.7, 0.1, 1.0)
+   */
+  emphasizedDecelerate: [0.05, 0.7, 0.1, 1.0] as const,
+  /**
+   * Emphasized Accelerate Easing.
+   * * Used for outgoing elements that leave the screen permanently.
+   * * Equivalent to Cubic Bezier (0.3, 0.0, 0.8, 0.15)
+   */
+  emphasizedAccelerate: [0.3, 0.0, 0.8, 0.15] as const,
+
+  /**
+   * Standard Easing.
+   * * Used for utilitarian transitions where elements begin and end on screen.
+   * * Equivalent to Cubic Bezier (0.2, 0.0, 0.0, 1.0)
+   */
+  standard: [0.2, 0.0, 0.0, 1.0] as const,
+  /**
+   * Standard Decelerate Easing (formerly LinearOutSlowIn).
+   * * Used for utilitarian incoming elements.
+   * * Equivalent to Cubic Bezier (0.0, 0.0, 0.0, 1.0)
+   */
+  standardDecelerate: [0.0, 0.0, 0.0, 1.0] as const,
+  /**
+   * Standard Accelerate Easing (formerly FastOutLinearIn).
+   * * Used for utilitarian outgoing elements.
+   * * Equivalent to Cubic Bezier (0.3, 0.0, 1.0, 1.0)
+   */
+  standardAccelerate: [0.3, 0.0, 1.0, 1.0] as const,
+
+  /** Linear easing (constant velocity) */
+  linear: [0.0, 0.0, 1.0, 1.0] as const,
+} as const;

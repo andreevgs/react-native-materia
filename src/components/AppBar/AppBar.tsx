@@ -1,5 +1,12 @@
 import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useDerivedValue,
+  withTiming,
+  Easing,
+  interpolateColor,
+} from "react-native-reanimated";
 import { AppBarProps } from "./types";
 import { useMateriaColors, useMateriaTokens } from "../../core/MateriaProvider";
 import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,15 +25,33 @@ export const AppBar = ({
   const tokens = useMateriaTokens();
   const insets = useSafeAreaInsets();
 
-  const backgroundColor = isScrolled ? colors.surfaceContainer : colors.surface;
+  const progress = useDerivedValue(() => {
+    return withTiming(isScrolled ? 1 : 0, {
+      duration: tokens.duration.medium1,
+      easing: Easing.bezier(
+        tokens.easing.standard[0],
+        tokens.easing.standard[1],
+        tokens.easing.standard[2],
+        tokens.easing.standard[3],
+      ),
+    });
+  }, [isScrolled, tokens]);
 
-  const styles = useMemo(
-    () => createStyles(tokens, insets, backgroundColor),
-    [tokens, insets, backgroundColor],
-  );
+  const animatedStyle = useAnimatedStyle(() => {
+    const backgroundColor = interpolateColor(
+      progress.value,
+      [0, 1],
+      [colors.surface, colors.surfaceContainer],
+    );
+    return {
+      backgroundColor,
+    };
+  }, [colors]);
+
+  const styles = useMemo(() => createStyles(tokens, insets), [tokens, insets]);
 
   return (
-    <View style={[styles.container, style]}>
+    <Animated.View style={[styles.container, animatedStyle, style]}>
       {leading && <View style={styles.leadingContainer}>{leading}</View>}
 
       <View style={styles.content}>
@@ -43,21 +68,16 @@ export const AppBar = ({
       </View>
 
       {trailing && <View style={styles.trailingContainer}>{trailing}</View>}
-    </View>
+    </Animated.View>
   );
 };
 
-const createStyles = (
-  tokens: Tokens,
-  insets: EdgeInsets,
-  backgroundColor: string,
-) =>
+const createStyles = (tokens: Tokens, insets: EdgeInsets) =>
   StyleSheet.create({
     container: {
       flexDirection: "row",
       alignItems: "center",
       width: "100%",
-      backgroundColor,
       minHeight: 64 + insets.top,
       paddingTop: insets.top,
       paddingHorizontal: tokens.spacing.xs,

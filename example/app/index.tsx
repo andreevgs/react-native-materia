@@ -17,6 +17,7 @@ const ComponentsScreen = () => {
   const colors = useMateriaColors();
 
   const components = [
+    { name: "AppBar", path: "app-bar" },
     { name: "Button", path: "button" },
     { name: "Chip", path: "chip" },
     { name: "Icon", path: "icon" },
