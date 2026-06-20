@@ -5,3 +5,4 @@ export * from "./IconButton";
 export * from "./List";
 export * from "./Icon";
 export * from "./Chip";
+export * from "./AppBar";
