@@ -23,6 +23,8 @@ export const spacing = {
   xxs: 2,
   /** Extra small spacing (4dp) - Used for small elements */
   xs: 4,
+  /** Extra-small-small spacing (6dp) - In-between size */
+  xss: 6,
   /** Small spacing (8dp) - Base unit */
   s: 8,
   /** Small-medium spacing (10dp) - In-between size */
