@@ -18,6 +18,11 @@ export interface MateriaIconography {
   "add": MateriaIcon;
   "chevron-right": MateriaIcon;
   "info-rounded": MateriaIcon;
+  "info-outline-rounded": MateriaIcon;
+  "home-outline-rounded": MateriaIcon;
+  "home-rounded": MateriaIcon;
+  "settings-outline-rounded": MateriaIcon;
+  "settings-rounded": MateriaIcon;
   "error": MateriaIcon;
   "delete": MateriaIcon;
 }

@@ -6,3 +6,4 @@ export * from "./List";
 export * from "./Icon";
 export * from "./Chip";
 export * from "./AppBar";
+export * from "./NavigationBar";

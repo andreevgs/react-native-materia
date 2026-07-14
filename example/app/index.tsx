@@ -23,6 +23,7 @@ const ComponentsScreen = () => {
     { name: "Icon", path: "icon" },
     { name: "IconButton", path: "icon-button" },
     { name: "List", path: "list" },
+    { name: "NavigationBar", path: "navigation-bar" },
     { name: "Text", path: "text" },
     { name: "TouchableRipple", path: "touchable-ripple" },
   ];

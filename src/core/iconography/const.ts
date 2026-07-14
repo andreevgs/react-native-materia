@@ -10,6 +10,11 @@ import {
   InfoRoundedIcon,
   ErrorIcon,
   DeleteIcon,
+  HomeRoundedIcon,
+  HomeOutlineRoundedIcon,
+  SettingsRoundedIcon,
+  SettingsOutlineRoundedIcon,
+  InfoOutlineRoundedIcon,
 } from "../../icons";
 
 export const defaultMateriaIconography: MateriaIconography = {
@@ -21,6 +26,11 @@ export const defaultMateriaIconography: MateriaIconography = {
   "add": AddIcon,
   "chevron-right": ChevronRightIcon,
   "info-rounded": InfoRoundedIcon,
+  "info-outline-rounded": InfoOutlineRoundedIcon,
+  "home-rounded": HomeRoundedIcon,
+  "home-outline-rounded": HomeOutlineRoundedIcon,
+  "settings-rounded": SettingsRoundedIcon,
+  "settings-outline-rounded": SettingsOutlineRoundedIcon,
   "error": ErrorIcon,
   "delete": DeleteIcon,
 };
