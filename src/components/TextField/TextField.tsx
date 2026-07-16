@@ -1,4 +1,11 @@
-import React, { useRef, useState, useMemo, useEffect } from "react";
+import {
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  forwardRef,
+} from "react";
 import {
   View,
   TextInput,
@@ -27,13 +34,12 @@ import { getTextFieldColors } from "./utils";
 import { Icon } from "../Icon";
 import { Tokens } from "../../types";
 
-export const TextField = React.forwardRef<TextInput, TextFieldProps>(
+export const TextField = forwardRef<TextInput, TextFieldProps>(
   (
     {
       mode = "filled",
       label,
       value,
-      defaultValue,
       onChangeText,
       disabled = false,
       error = false,
@@ -58,13 +64,8 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
     const [isFocused, setIsFocused] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
-    const [uncontrolledValue, setUncontrolledValue] = useState(
-      defaultValue || "",
-    );
-    const isControlled = value !== undefined;
-    const currentValue = isControlled ? value : uncontrolledValue;
-
-    const hasValue = currentValue.length > 0;
+    const safeValue = value ?? "";
+    const hasValue = safeValue.length > 0;
     const isPopulated = hasValue || isFocused;
 
     const displayedSupportingTextRef = useRef(supportingText);
@@ -72,7 +73,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
       useState(supportingText);
 
     const internalRef = useRef<TextInput | null>(null);
-    const setRefs = React.useCallback(
+    const setRefs = useCallback(
       (node: TextInput | null) => {
         internalRef.current = node;
         if (typeof ref === "function") {
@@ -109,6 +110,9 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
 
     const styles = useMemo(() => createStyles(tokens), [tokens]);
 
+    // lineHeight in TextInput causes caret jumping and layout shifts on empty inputs in React Native.
+    const inputTypography = { ...typography.bodyLarge, lineHeight: undefined };
+
     const focusAnim = useSharedValue(isPopulated ? 1 : 0);
     const labelWidth = useSharedValue(0);
 
@@ -129,6 +133,11 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
       });
     }, [focusAnim, isPopulated, tokens]);
 
+    const updateDisplayedText = useCallback((text: string) => {
+      displayedSupportingTextRef.current = text;
+      setDisplayedSupportingText(text);
+    }, []);
+
     useEffect(() => {
       const bezier = Easing.bezier(
         tokens.easing.standard[0],
@@ -147,8 +156,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
             { duration: tokens.duration.short2 },
             (finished) => {
               if (finished) {
-                displayedSupportingTextRef.current = supportingText;
-                runOnJS(setDisplayedSupportingText)(supportingText);
+                runOnJS(updateDisplayedText)(supportingText);
                 supportingTextOpacityAnim.value = withTiming(1, {
                   duration: tokens.duration.short2,
                   easing: bezier,
@@ -157,8 +165,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
             },
           );
         } else {
-          displayedSupportingTextRef.current = supportingText;
-          setDisplayedSupportingText(supportingText);
+          updateDisplayedText(supportingText);
           supportingTextAnim.value = withTiming(1, {
             duration: tokens.duration.short3,
             easing: bezier,
@@ -179,7 +186,13 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
         });
         displayedSupportingTextRef.current = supportingText;
       }
-    }, [supportingText, tokens, supportingTextAnim, supportingTextOpacityAnim]);
+    }, [
+      supportingText,
+      tokens,
+      supportingTextAnim,
+      supportingTextOpacityAnim,
+      updateDisplayedText,
+    ]);
 
     const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
       setIsFocused(true);
@@ -192,9 +205,6 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
     };
 
     const handleChangeText = (text: string) => {
-      if (!isControlled) {
-        setUncontrolledValue(text);
-      }
       onChangeText?.(text);
     };
 
@@ -208,7 +218,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
       return {
         transform: [
           { translateX },
-          { translateY: interpolate(focusAnim.value, [0, 1], [16, 8]) },
+          { translateY: interpolate(focusAnim.value, [0, 1], [16, 4]) },
           { scale: interpolate(focusAnim.value, [0, 1], [1, 0.75]) },
         ],
       };
@@ -287,7 +297,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
 
             <TextInput
               ref={setRefs}
-              value={currentValue}
+              value={value}
               onChangeText={handleChangeText}
               onFocus={handleFocus}
               onBlur={handleBlur}
@@ -299,7 +309,7 @@ export const TextField = React.forwardRef<TextInput, TextFieldProps>(
               cursorColor={caretColor}
               selectionColor={colors.primary}
               style={[
-                typography.bodyLarge,
+                inputTypography,
                 styles.input,
                 { color: inputColor },
                 inputStyle,
@@ -356,13 +366,10 @@ const createStyles = (tokens: Tokens) =>
       borderTopRightRadius: tokens.shape.extraSmall,
       paddingHorizontal: tokens.spacing.l,
       overflow: "hidden",
-      position: "relative",
     },
     inputArea: {
       flex: 1,
       height: "100%",
-      justifyContent: "center",
-      position: "relative",
     },
     label: {
       position: "absolute",
