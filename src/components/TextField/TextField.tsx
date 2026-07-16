@@ -14,15 +14,7 @@ import {
   NativeSyntheticEvent,
   TextInputFocusEventData,
 } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  interpolate,
-  interpolateColor,
-  Easing,
-  runOnJS,
-} from "react-native-reanimated";
+import { useSharedValue, withTiming, Easing } from "react-native-reanimated";
 
 import {
   useMateriaColors,
@@ -33,6 +25,9 @@ import { TextFieldProps } from "./types";
 import { getTextFieldColors } from "./utils";
 import { Icon } from "../Icon";
 import { Tokens } from "../../types";
+import { TextFieldSupportingText } from "./TextFieldSupportingText";
+import { TextFieldLabel } from "./TextFieldLabel";
+import { TextFieldIndicator } from "./TextFieldIndicator";
 
 export const TextField = forwardRef<TextInput, TextFieldProps>(
   (
@@ -67,10 +62,6 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
     const safeValue = value ?? "";
     const hasValue = safeValue.length > 0;
     const isPopulated = hasValue || isFocused;
-
-    const displayedSupportingTextRef = useRef(supportingText);
-    const [displayedSupportingText, setDisplayedSupportingText] =
-      useState(supportingText);
 
     const internalRef = useRef<TextInput | null>(null);
     const setRefs = useCallback(
@@ -114,10 +105,6 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
     const inputTypography = { ...typography.bodyLarge, lineHeight: undefined };
 
     const focusAnim = useSharedValue(isPopulated ? 1 : 0);
-    const labelWidth = useSharedValue(0);
-
-    const supportingTextAnim = useSharedValue(supportingText ? 1 : 0);
-    const supportingTextOpacityAnim = useSharedValue(supportingText ? 1 : 0);
 
     useEffect(() => {
       const bezier = Easing.bezier(
@@ -133,67 +120,6 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
       });
     }, [focusAnim, isPopulated, tokens]);
 
-    const updateDisplayedText = useCallback((text: string) => {
-      displayedSupportingTextRef.current = text;
-      setDisplayedSupportingText(text);
-    }, []);
-
-    useEffect(() => {
-      const bezier = Easing.bezier(
-        tokens.easing.standard[0],
-        tokens.easing.standard[1],
-        tokens.easing.standard[2],
-        tokens.easing.standard[3],
-      );
-
-      if (supportingText) {
-        if (
-          supportingText !== displayedSupportingTextRef.current &&
-          displayedSupportingTextRef.current
-        ) {
-          supportingTextOpacityAnim.value = withTiming(
-            0,
-            { duration: tokens.duration.short2 },
-            (finished) => {
-              if (finished) {
-                runOnJS(updateDisplayedText)(supportingText);
-                supportingTextOpacityAnim.value = withTiming(1, {
-                  duration: tokens.duration.short2,
-                  easing: bezier,
-                });
-              }
-            },
-          );
-        } else {
-          updateDisplayedText(supportingText);
-          supportingTextAnim.value = withTiming(1, {
-            duration: tokens.duration.short3,
-            easing: bezier,
-          });
-          supportingTextOpacityAnim.value = withTiming(1, {
-            duration: tokens.duration.short3,
-            easing: bezier,
-          });
-        }
-      } else {
-        supportingTextAnim.value = withTiming(0, {
-          duration: tokens.duration.short3,
-          easing: bezier,
-        });
-        supportingTextOpacityAnim.value = withTiming(0, {
-          duration: tokens.duration.short3,
-          easing: bezier,
-        });
-        displayedSupportingTextRef.current = supportingText;
-      }
-    }, [
-      supportingText,
-      tokens,
-      supportingTextAnim,
-      supportingTextOpacityAnim,
-      updateDisplayedText,
-    ]);
-
     const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
       setIsFocused(true);
       onFocus?.(e);
@@ -207,45 +133,6 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
     const handleChangeText = (text: string) => {
       onChangeText?.(text);
     };
-
-    const labelAnimatedStyle = useAnimatedStyle(() => {
-      const translateX = interpolate(
-        focusAnim.value,
-        [0, 1],
-        [0, -(labelWidth.value * 0.125)],
-      );
-
-      return {
-        transform: [
-          { translateX },
-          { translateY: interpolate(focusAnim.value, [0, 1], [16, 4]) },
-          { scale: interpolate(focusAnim.value, [0, 1], [1, 0.75]) },
-        ],
-      };
-    });
-
-    const indicatorAnimatedStyle = useAnimatedStyle(() => {
-      return {
-        height: interpolate(focusAnim.value, [0, 1], [1, 2]),
-        backgroundColor: interpolateColor(
-          focusAnim.value,
-          [0, 1],
-          [indicatorColorInactive, indicatorColorActive],
-        ),
-      };
-    });
-
-    const supportingTextAnimatedStyle = useAnimatedStyle(() => {
-      return {
-        maxHeight: interpolate(supportingTextAnim.value, [0, 1], [0, 24]),
-        opacity: supportingTextOpacityAnim.value,
-        marginTop: interpolate(
-          supportingTextAnim.value,
-          [0, 1],
-          [0, tokens.spacing.xs],
-        ),
-      };
-    });
 
     return (
       <View style={[styles.wrapper, style]}>
@@ -276,23 +163,12 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
 
           <View style={styles.inputArea}>
             {label && (
-              <Animated.Text
-                onLayout={(e) => {
-                  labelWidth.value = e.nativeEvent.layout.width;
-                }}
-                style={[
-                  typography.bodyLarge,
-                  styles.label,
-                  {
-                    color: labelColor,
-                  },
-                  labelAnimatedStyle,
-                  labelStyle,
-                ]}
-                numberOfLines={1}
-              >
-                {label}
-              </Animated.Text>
+              <TextFieldLabel
+                label={label}
+                focusAnim={focusAnim}
+                labelColor={labelColor}
+                labelStyle={labelStyle}
+              />
             )}
 
             <TextInput
@@ -328,26 +204,18 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
           )}
 
           {mode === "filled" && (
-            <Animated.View
-              style={[styles.activeIndicator, indicatorAnimatedStyle]}
+            <TextFieldIndicator
+              focusAnim={focusAnim}
+              indicatorColorInactive={indicatorColorInactive}
+              indicatorColorActive={indicatorColorActive}
             />
           )}
         </Pressable>
 
-        <Animated.View
-          style={[styles.supportingTextContainer, supportingTextAnimatedStyle]}
-        >
-          <Animated.Text
-            style={[
-              typography.bodySmall,
-              styles.supportingText,
-              { color: supportingTextColor },
-            ]}
-          >
-            {displayedSupportingText}
-          </Animated.Text>
-          <View />
-        </Animated.View>
+        <TextFieldSupportingText
+          supportingText={supportingText}
+          supportingTextColor={supportingTextColor}
+        />
       </View>
     );
   },
@@ -371,11 +239,6 @@ const createStyles = (tokens: Tokens) =>
       flex: 1,
       height: "100%",
     },
-    label: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-    },
     input: {
       flex: 1,
       paddingTop: 24,
@@ -389,20 +252,5 @@ const createStyles = (tokens: Tokens) =>
     },
     trailingIcon: {
       marginLeft: tokens.spacing.m,
-    },
-    activeIndicator: {
-      position: "absolute",
-      bottom: 0,
-      left: 0,
-      right: 0,
-    },
-    supportingTextContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      paddingHorizontal: tokens.spacing.l,
-      overflow: "hidden",
-    },
-    supportingText: {
-      flex: 1,
     },
   });

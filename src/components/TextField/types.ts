@@ -1,5 +1,6 @@
 import { StyleProp, TextInputProps, TextStyle, ViewStyle } from "react-native";
 import { IconSource } from "../../types";
+import { SharedValue } from "react-native-reanimated";
 
 export type TextFieldMode = "filled" | "outlined";
 
@@ -26,4 +27,22 @@ export interface TextFieldStyleConfig {
   supportingTextColor: string;
   iconColor: string;
   caretColor: string;
+}
+
+export interface TextFieldLabelProps {
+  label: string;
+  focusAnim: SharedValue<number>;
+  labelColor: string;
+  labelStyle?: StyleProp<TextStyle>;
+}
+
+export interface TextFieldIndicatorProps {
+  focusAnim: SharedValue<number>;
+  indicatorColorInactive: string;
+  indicatorColorActive: string;
+}
+
+export interface TextFieldSupportingTextProps {
+  supportingText?: string;
+  supportingTextColor: string;
 }
