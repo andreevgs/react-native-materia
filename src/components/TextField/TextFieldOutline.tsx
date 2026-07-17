@@ -10,7 +10,8 @@ import { TextFieldOutlineProps } from "./types";
 import { LABEL_SCALE, NOTCH_PADDING, OUTLINED_NOTCH_LEAD_WIDTH } from "./const";
 
 export const TextFieldOutline = ({
-  focusAnim,
+  populateAnim,
+  activeAnim,
   labelWidth,
   indicatorColorInactive,
   indicatorColorActive,
@@ -19,12 +20,12 @@ export const TextFieldOutline = ({
   const tokens = useMateriaTokens();
 
   const borderWidthAnim = useAnimatedStyle(() => ({
-    borderWidth: interpolate(focusAnim.value, [0, 1], [1, 2]),
+    borderWidth: interpolate(activeAnim.value, [0, 1], [1, 2]),
   }));
 
   const borderColorAnim = useAnimatedStyle(() => ({
     borderColor: interpolateColor(
-      focusAnim.value,
+      activeAnim.value,
       [0, 1],
       [indicatorColorInactive, indicatorColorActive],
     ),
@@ -33,7 +34,7 @@ export const TextFieldOutline = ({
   const notchStyle = useAnimatedStyle(() => {
     const notchWidth = hasLabel
       ? interpolate(
-          focusAnim.value,
+          populateAnim.value,
           [0, 1],
           [0, labelWidth.value * LABEL_SCALE + NOTCH_PADDING],
         )
@@ -41,8 +42,8 @@ export const TextFieldOutline = ({
 
     return {
       width: notchWidth,
-      borderTopWidth: interpolate(focusAnim.value, [0, 0.5, 1], [1, 1, 0]),
-      borderBottomWidth: interpolate(focusAnim.value, [0, 1], [1, 2]),
+      borderTopWidth: interpolate(populateAnim.value, [0, 0.5, 1], [1, 1, 0]),
+      borderBottomWidth: interpolate(activeAnim.value, [0, 1], [1, 2]),
     };
   });
 

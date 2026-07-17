@@ -31,7 +31,7 @@ export interface TextFieldStyleConfig {
 
 export interface TextFieldLabelProps {
   label: string;
-  focusAnim: SharedValue<number>;
+  populateAnim: SharedValue<number>;
   labelColor: string;
   labelStyle?: StyleProp<TextStyle>;
   labelWidth: SharedValue<number>;
@@ -40,7 +40,8 @@ export interface TextFieldLabelProps {
 }
 
 export interface TextFieldOutlineProps {
-  focusAnim: SharedValue<number>;
+  populateAnim: SharedValue<number>;
+  activeAnim: SharedValue<number>;
   labelWidth: SharedValue<number>;
   indicatorColorInactive: string;
   indicatorColorActive: string;
@@ -48,7 +49,7 @@ export interface TextFieldOutlineProps {
 }
 
 export interface TextFieldIndicatorProps {
-  focusAnim: SharedValue<number>;
+  activeAnim: SharedValue<number>;
   indicatorColorInactive: string;
   indicatorColorActive: string;
 }

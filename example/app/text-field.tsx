@@ -18,7 +18,7 @@ const ErrorIcon = () => {
 const TextFieldDemo = () => {
   const tokens = useMateriaTokens();
 
-  const [value1, setValue1] = useState("Asd dsafr");
+  const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
   const [value3, setValue3] = useState("");
   const [value4, setValue4] = useState("");
@@ -42,7 +42,6 @@ const TextFieldDemo = () => {
         Filled
       </MateriaText>
       <TextField
-        mode="outlined"
         label="Filled Text Field"
         value={value1}
         onChangeText={setValue1}

@@ -17,7 +17,7 @@ import {
 
 export const TextFieldLabel = ({
   label,
-  focusAnim,
+  populateAnim,
   labelColor,
   labelStyle,
   labelWidth,
@@ -33,7 +33,7 @@ export const TextFieldLabel = ({
       extraShift - labelWidth.value * LABEL_SCALE_COMPENSATION_X;
 
     const translateX = interpolate(
-      focusAnim.value,
+      populateAnim.value,
       [0, 1],
       [0, targetTranslateX],
     );
@@ -48,12 +48,12 @@ export const TextFieldLabel = ({
         { translateX },
         {
           translateY: interpolate(
-            focusAnim.value,
+            populateAnim.value,
             [0, 1],
             [LABEL_TRANSLATE_Y_UNPOPULATED, translateYValue],
           ),
         },
-        { scale: interpolate(focusAnim.value, [0, 1], [1, LABEL_SCALE]) },
+        { scale: interpolate(populateAnim.value, [0, 1], [1, LABEL_SCALE]) },
       ],
     };
   });

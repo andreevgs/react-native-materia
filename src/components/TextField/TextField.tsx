@@ -106,7 +106,8 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
     // lineHeight in TextInput causes caret jumping and layout shifts on empty inputs in React Native.
     const inputTypography = { ...typography.bodyLarge, lineHeight: undefined };
 
-    const focusAnim = useSharedValue(isPopulated ? 1 : 0);
+    const populateAnim = useSharedValue(isPopulated ? 1 : 0);
+    const activeAnim = useSharedValue(isFocused ? 1 : 0);
     const labelWidth = useSharedValue(0);
 
     useEffect(() => {
@@ -117,11 +118,15 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
         tokens.easing.standard[3],
       );
 
-      focusAnim.value = withTiming(isPopulated ? 1 : 0, {
+      populateAnim.value = withTiming(isPopulated ? 1 : 0, {
         duration: tokens.duration.short3,
         easing: bezier,
       });
-    }, [focusAnim, isPopulated, tokens]);
+      activeAnim.value = withTiming(isFocused ? 1 : 0, {
+        duration: tokens.duration.short3,
+        easing: bezier,
+      });
+    }, [populateAnim, activeAnim, isPopulated, isFocused, tokens]);
 
     const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
       setIsFocused(true);
@@ -154,7 +159,8 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
         >
           {mode === "outlined" && (
             <TextFieldOutline
-              focusAnim={focusAnim}
+              populateAnim={populateAnim}
+              activeAnim={activeAnim}
               labelWidth={labelWidth}
               indicatorColorInactive={indicatorColorInactive}
               indicatorColorActive={indicatorColorActive}
@@ -174,7 +180,7 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
             {label && (
               <TextFieldLabel
                 label={label}
-                focusAnim={focusAnim}
+                populateAnim={populateAnim}
                 labelColor={labelColor}
                 labelStyle={labelStyle}
                 labelWidth={labelWidth}
@@ -218,7 +224,7 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
 
           {mode === "filled" && (
             <TextFieldIndicator
-              focusAnim={focusAnim}
+              activeAnim={activeAnim}
               indicatorColorInactive={indicatorColorInactive}
               indicatorColorActive={indicatorColorActive}
             />

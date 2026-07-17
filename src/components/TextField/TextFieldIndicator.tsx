@@ -8,15 +8,15 @@ import Animated, {
 import { TextFieldIndicatorProps } from "./types";
 
 export const TextFieldIndicator = ({
-  focusAnim,
+  activeAnim,
   indicatorColorInactive,
   indicatorColorActive,
 }: TextFieldIndicatorProps) => {
   const indicatorAnimatedStyle = useAnimatedStyle(() => {
     return {
-      height: interpolate(focusAnim.value, [0, 1], [1, 2]),
+      height: interpolate(activeAnim.value, [0, 1], [1, 2]),
       backgroundColor: interpolateColor(
-        focusAnim.value,
+        activeAnim.value,
         [0, 1],
         [indicatorColorInactive, indicatorColorActive],
       ),
