@@ -25,8 +25,8 @@ export const getTextFieldColors = (
     return {
       containerColor:
         mode === "filled" ? disabledContainerColor : "transparent",
-      indicatorColorInactive: disabledContentColor,
-      indicatorColorActive: disabledContentColor,
+      indicatorColorInactive: mode === "outlined" ? disabledContainerColor : disabledContentColor,
+      indicatorColorActive: mode === "outlined" ? disabledContainerColor : disabledContentColor,
       labelColor: disabledContentColor,
       inputColor: disabledContentColor,
       supportingTextColor: disabledContentColor,
@@ -60,7 +60,11 @@ export const getTextFieldColors = (
 
   return {
     containerColor,
-    indicatorColorInactive: colors.onSurface,
+    indicatorColorInactive: hovered
+      ? colors.onSurface
+      : mode === "outlined"
+        ? colors.outline
+        : colors.onSurfaceVariant,
     indicatorColorActive: colors.primary,
     labelColor: focused ? colors.primary : colors.onSurfaceVariant,
     inputColor: colors.onSurface,

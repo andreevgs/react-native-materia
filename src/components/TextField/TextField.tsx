@@ -5,6 +5,7 @@ import {
   useEffect,
   useCallback,
   forwardRef,
+  memo,
 } from "react";
 import {
   View,
@@ -28,8 +29,9 @@ import { Tokens } from "../../types";
 import { TextFieldSupportingText } from "./TextFieldSupportingText";
 import { TextFieldLabel } from "./TextFieldLabel";
 import { TextFieldIndicator } from "./TextFieldIndicator";
+import { TextFieldOutline } from "./TextFieldOutline";
 
-export const TextField = forwardRef<TextInput, TextFieldProps>(
+const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
   (
     {
       mode = "filled",
@@ -105,6 +107,7 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
     const inputTypography = { ...typography.bodyLarge, lineHeight: undefined };
 
     const focusAnim = useSharedValue(isPopulated ? 1 : 0);
+    const labelWidth = useSharedValue(0);
 
     useEffect(() => {
       const bezier = Easing.bezier(
@@ -141,9 +144,6 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
             styles.container,
             {
               backgroundColor: containerColor,
-              borderWidth: mode === "outlined" ? 1 : 0,
-              borderColor:
-                mode === "outlined" ? indicatorColorActive : "transparent",
             },
             containerStyle,
           ]}
@@ -152,6 +152,15 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
           onHoverOut={() => setIsHovered(false)}
           disabled={disabled}
         >
+          {mode === "outlined" && (
+            <TextFieldOutline
+              focusAnim={focusAnim}
+              labelWidth={labelWidth}
+              indicatorColorInactive={indicatorColorInactive}
+              indicatorColorActive={indicatorColorActive}
+              hasLabel={!!label}
+            />
+          )}
           {leadingIcon && (
             <Icon
               source={leadingIcon}
@@ -168,6 +177,9 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
                 focusAnim={focusAnim}
                 labelColor={labelColor}
                 labelStyle={labelStyle}
+                labelWidth={labelWidth}
+                mode={mode}
+                hasLeadingIcon={!!leadingIcon}
               />
             )}
 
@@ -187,6 +199,7 @@ export const TextField = forwardRef<TextInput, TextFieldProps>(
               style={[
                 inputTypography,
                 styles.input,
+                mode === "outlined" && { paddingTop: 0, paddingBottom: 0 },
                 { color: inputColor },
                 inputStyle,
               ]}
@@ -233,7 +246,6 @@ const createStyles = (tokens: Tokens) =>
       borderTopLeftRadius: tokens.shape.extraSmall,
       borderTopRightRadius: tokens.shape.extraSmall,
       paddingHorizontal: tokens.spacing.l,
-      overflow: "hidden",
     },
     inputArea: {
       flex: 1,
@@ -241,8 +253,8 @@ const createStyles = (tokens: Tokens) =>
     },
     input: {
       flex: 1,
-      paddingTop: 24,
-      paddingBottom: 8,
+      paddingTop: tokens.spacing.xl,
+      paddingBottom: tokens.spacing.s,
       margin: 0,
       paddingHorizontal: 0,
       textAlignVertical: "center",
@@ -254,3 +266,6 @@ const createStyles = (tokens: Tokens) =>
       marginLeft: tokens.spacing.m,
     },
   });
+
+export const TextField = memo(TextFieldComponent);
+TextField.displayName = "TextField";

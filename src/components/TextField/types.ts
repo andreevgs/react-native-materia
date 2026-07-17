@@ -34,6 +34,17 @@ export interface TextFieldLabelProps {
   focusAnim: SharedValue<number>;
   labelColor: string;
   labelStyle?: StyleProp<TextStyle>;
+  labelWidth: SharedValue<number>;
+  mode: TextFieldMode;
+  hasLeadingIcon: boolean;
+}
+
+export interface TextFieldOutlineProps {
+  focusAnim: SharedValue<number>;
+  labelWidth: SharedValue<number>;
+  indicatorColorInactive: string;
+  indicatorColorActive: string;
+  hasLabel: boolean;
 }
 
 export interface TextFieldIndicatorProps {

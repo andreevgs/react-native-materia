@@ -1,34 +1,59 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
   interpolate,
 } from "react-native-reanimated";
 import { useMateriaTypography } from "../../core";
 import { TextFieldLabelProps } from "./types";
+import {
+  LABEL_SCALE,
+  LABEL_SCALE_COMPENSATION_X,
+  LABEL_TRANSLATE_Y_POPULATED_FILLED,
+  LABEL_TRANSLATE_Y_POPULATED_OUTLINED,
+  LABEL_TRANSLATE_Y_UNPOPULATED,
+  OUTLINED_LEADING_ICON_SHIFT,
+} from "./const";
 
 export const TextFieldLabel = ({
   label,
   focusAnim,
   labelColor,
   labelStyle,
+  labelWidth,
+  mode,
+  hasLeadingIcon,
 }: TextFieldLabelProps) => {
   const typography = useMateriaTypography();
-  const labelWidth = useSharedValue(0);
 
   const labelAnimatedStyle = useAnimatedStyle(() => {
+    const extraShift =
+      mode === "outlined" && hasLeadingIcon ? OUTLINED_LEADING_ICON_SHIFT : 0;
+    const targetTranslateX =
+      extraShift - labelWidth.value * LABEL_SCALE_COMPENSATION_X;
+
     const translateX = interpolate(
       focusAnim.value,
       [0, 1],
-      [0, -(labelWidth.value * 0.125)],
+      [0, targetTranslateX],
     );
+
+    const translateYValue =
+      mode === "outlined"
+        ? LABEL_TRANSLATE_Y_POPULATED_OUTLINED
+        : LABEL_TRANSLATE_Y_POPULATED_FILLED;
 
     return {
       transform: [
         { translateX },
-        { translateY: interpolate(focusAnim.value, [0, 1], [16, 4]) },
-        { scale: interpolate(focusAnim.value, [0, 1], [1, 0.75]) },
+        {
+          translateY: interpolate(
+            focusAnim.value,
+            [0, 1],
+            [LABEL_TRANSLATE_Y_UNPOPULATED, translateYValue],
+          ),
+        },
+        { scale: interpolate(focusAnim.value, [0, 1], [1, LABEL_SCALE]) },
       ],
     };
   });
