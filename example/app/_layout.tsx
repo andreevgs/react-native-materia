@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { StatusBar } from "react-native";
 import { MateriaProvider, useMateriaColors } from "react-native-materia";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
 
 const RootLayout = () => {
@@ -18,10 +19,12 @@ const RootLayout = () => {
 const App = () => {
   return (
     <SafeAreaProvider>
-      <MateriaProvider mode="light">
-        <RootLayout />
-        <StatusBar barStyle="light-content" />
-      </MateriaProvider>
+      <KeyboardProvider>
+        <MateriaProvider mode="light">
+          <RootLayout />
+          <StatusBar barStyle="light-content" />
+        </MateriaProvider>
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 };
