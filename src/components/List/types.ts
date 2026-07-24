@@ -9,6 +9,7 @@ export interface ListItemProps extends Omit<TouchableRippleProps, "children"> {
   supportingText?: string;
   leadingContent?: ReactNode;
   trailingContent?: ReactNode;
+  pressDelay?: number;
 }
 
 export interface ListProps {

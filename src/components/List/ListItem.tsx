@@ -13,6 +13,7 @@ export const ListItem = ({
   leadingContent,
   trailingContent,
   style,
+  pressDelay,
   ...props
 }: ListItemProps) => {
   const colors = useMateriaColors();
@@ -24,6 +25,7 @@ export const ListItem = ({
       style={[styles.container, style]}
       contentContainerStyle={styles.content}
       contentPointerEvents="none"
+      unstable_pressDelay={pressDelay}
       {...props}
     >
       {leadingContent && (
