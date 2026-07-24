@@ -59,25 +59,28 @@ export const TextFieldLabel = ({
   });
 
   return (
-    <Animated.Text
-      onLayout={(e) => {
-        labelWidth.value = e.nativeEvent.layout.width;
-      }}
-      style={[
-        typography.bodyLarge,
-        styles.label,
-        {
-          color: labelColor,
-        },
-        labelAnimatedStyle,
-        labelStyle,
-      ]}
-      numberOfLines={1}
+    <Animated.View
+      pointerEvents="none"
       importantForAccessibility="no-hide-descendants"
       accessibilityElementsHidden={true}
+      style={[styles.label, labelAnimatedStyle]}
     >
-      {label}
-    </Animated.Text>
+      <Animated.Text
+        onLayout={(e) => {
+          labelWidth.value = e.nativeEvent.layout.width;
+        }}
+        style={[
+          typography.bodyLarge,
+          {
+            color: labelColor,
+          },
+          labelStyle,
+        ]}
+        numberOfLines={1}
+      >
+        {label}
+      </Animated.Text>
+    </Animated.View>
   );
 };
 
