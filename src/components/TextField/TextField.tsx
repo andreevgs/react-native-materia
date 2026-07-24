@@ -145,6 +145,8 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
     return (
       <View style={[styles.wrapper, style]}>
         <Pressable
+          accessible={false}
+          importantForAccessibility="no"
           style={[
             styles.container,
             {
@@ -173,6 +175,8 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
               size={tokens.iconSize["24dp"]}
               color={iconColor}
               style={styles.leadingIcon}
+              importantForAccessibility="no-hide-descendants"
+              accessibilityElementsHidden={true}
             />
           )}
 
@@ -209,6 +213,13 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
                 { color: inputColor },
                 inputStyle,
               ]}
+              accessibilityLabel={props.accessibilityLabel || label}
+              accessibilityHint={props.accessibilityHint || supportingText}
+              accessibilityState={{
+                disabled: disabled,
+                ...props.accessibilityState,
+              }}
+              aria-invalid={error}
               {...props}
             />
           </View>
@@ -219,6 +230,8 @@ const TextFieldComponent = forwardRef<TextInput, TextFieldProps>(
               size={tokens.iconSize["24dp"]}
               color={iconColor}
               style={styles.trailingIcon}
+              importantForAccessibility="no-hide-descendants"
+              accessibilityElementsHidden={true}
             />
           )}
 

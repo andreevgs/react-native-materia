@@ -73,6 +73,8 @@ export const TextFieldLabel = ({
         labelStyle,
       ]}
       numberOfLines={1}
+      importantForAccessibility="no-hide-descendants"
+      accessibilityElementsHidden={true}
     >
       {label}
     </Animated.Text>

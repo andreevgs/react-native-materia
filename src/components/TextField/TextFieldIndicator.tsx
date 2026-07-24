@@ -24,7 +24,10 @@ export const TextFieldIndicator = ({
   });
 
   return (
-    <Animated.View style={[styles.activeIndicator, indicatorAnimatedStyle]} />
+    <Animated.View
+      importantForAccessibility="no-hide-descendants"
+      accessibilityElementsHidden={true}
+      style={[styles.activeIndicator, indicatorAnimatedStyle]} />
   );
 };
 

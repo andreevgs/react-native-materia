@@ -115,6 +115,8 @@ export const TextFieldSupportingText = ({
           styles.supportingText,
           { color: supportingTextColor },
         ]}
+        importantForAccessibility="no-hide-descendants"
+        accessibilityElementsHidden={true}
       >
         {displayedSupportingText}
       </Animated.Text>

@@ -48,7 +48,12 @@ export const TextFieldOutline = ({
   });
 
   return (
-    <View style={styles.container} pointerEvents="none">
+    <View
+      style={styles.container}
+      pointerEvents="none"
+      importantForAccessibility="no-hide-descendants"
+      accessibilityElementsHidden={true}
+    >
       <Animated.View
         style={[
           styles.left,
