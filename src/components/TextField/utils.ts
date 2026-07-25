@@ -9,10 +9,15 @@ export const getTextFieldColors = (
   disabled: boolean,
   focused: boolean,
   error: boolean,
-  hovered: boolean = false
+  hovered: boolean = false,
 ): TextFieldStyleConfig => {
   if (disabled) {
-    const disabledContainerColor = Color(colors.onSurface)
+    const disabledFilledContainerColor = Color(colors.onSurface)
+      .alpha(tokens.stateOpacity.disabledFilledContainer)
+      .rgb()
+      .string();
+
+    const disabledOutlineColor = Color(colors.onSurface)
       .alpha(tokens.stateOpacity.disabledContainer)
       .rgb()
       .string();
@@ -24,9 +29,11 @@ export const getTextFieldColors = (
 
     return {
       containerColor:
-        mode === "filled" ? disabledContainerColor : "transparent",
-      indicatorColorInactive: mode === "outlined" ? disabledContainerColor : disabledContentColor,
-      indicatorColorActive: mode === "outlined" ? disabledContainerColor : disabledContentColor,
+        mode === "filled" ? disabledFilledContainerColor : "transparent",
+      indicatorColorInactive:
+        mode === "outlined" ? disabledOutlineColor : disabledContentColor,
+      indicatorColorActive:
+        mode === "outlined" ? disabledOutlineColor : disabledContentColor,
       labelColor: disabledContentColor,
       inputColor: disabledContentColor,
       supportingTextColor: disabledContentColor,

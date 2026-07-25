@@ -120,6 +120,7 @@ export const TextFieldSupportingText = ({
       >
         {displayedSupportingText}
       </Animated.Text>
+      {/* Placeholder for future character counter (e.g. 0/10) */}
       <View />
     </Animated.View>
   );

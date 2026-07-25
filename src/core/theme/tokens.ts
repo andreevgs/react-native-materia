@@ -177,6 +177,12 @@ export const stateOpacity = {
    * Example: A disabled button's text or icon opacity relative to OnSurface.
    */
   disabledContent: 0.38,
+
+  /**
+   * Opacity for the CONTAINER of a disabled filled element (e.g., Filled TextField).
+   * M3 spec defines this as significantly lighter (0.04) than standard disabled containers (0.12).
+   */
+  disabledFilledContainer: 0.04,
 } as const;
 
 // ---------------------------------------------------------------------------
