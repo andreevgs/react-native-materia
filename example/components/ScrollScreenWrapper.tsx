@@ -1,14 +1,20 @@
 import React from "react";
-import { ScrollView, ScrollViewProps } from "react-native";
+import { ScrollViewProps } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMateriaColors } from "react-native-materia";
 
-export const ScrollScreenWrapper = ({ style, contentContainerStyle, ...props }: ScrollViewProps) => {
+export const ScrollScreenWrapper = ({
+  style,
+  contentContainerStyle,
+  ...props
+}: ScrollViewProps) => {
   const insets = useSafeAreaInsets();
   const colors = useMateriaColors();
 
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
+      bottomOffset={30}
       style={[
         {
           flex: 1,
@@ -19,6 +25,7 @@ export const ScrollScreenWrapper = ({ style, contentContainerStyle, ...props }: 
       contentContainerStyle={[
         {
           paddingTop: insets.top,
+          paddingBottom: insets.bottom,
         },
         contentContainerStyle,
       ]}

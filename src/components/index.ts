@@ -8,3 +8,4 @@ export * from "./Chip";
 export * from "./AppBar";
 export * from "./NavigationBar";
 export * from "./Switch";
+export * from "./TextField";

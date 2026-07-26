@@ -26,6 +26,7 @@ const ComponentsScreen = () => {
     { name: "NavigationBar", path: "navigation-bar" },
     { name: "Switch", path: "switch" },
     { name: "Text", path: "text" },
+    { name: "TextField", path: "text-field" },
     { name: "TouchableRipple", path: "touchable-ripple" },
   ];
 
