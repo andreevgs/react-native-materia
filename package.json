@@ -21,10 +21,13 @@
   "react-native": "src/index.ts",
   "source": "src/index.ts",
   "workspaces": [
-    "example"
+    "example",
+    "docs"
   ],
   "scripts": {
     "example": "npm run start --workspace=example",
+    "docs": "npm run web --workspace=docs",
+    "build:docs": "npm run export --workspace=docs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
