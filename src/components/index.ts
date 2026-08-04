@@ -9,3 +9,4 @@ export * from "./AppBar";
 export * from "./NavigationBar";
 export * from "./Switch";
 export * from "./TextField";
+export * from "./BottomSheet";
