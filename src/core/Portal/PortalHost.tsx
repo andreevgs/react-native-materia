@@ -43,8 +43,17 @@ export const PortalHost = ({ name = "root" }: PortalHostProps) => {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      {portals.map((portal) => (
-        <React.Fragment key={portal.name}>{portal.node}</React.Fragment>
+      {portals.map((portal, index) => (
+        <View
+          key={portal.name}
+          pointerEvents="box-none"
+          style={[
+            StyleSheet.absoluteFill,
+            { zIndex: index * (context.zIndexStep ?? 100) },
+          ]}
+        >
+          {portal.node}
+        </View>
       ))}
     </View>
   );

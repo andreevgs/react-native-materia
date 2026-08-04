@@ -2,7 +2,13 @@ import React, { useCallback, useMemo, useRef } from "react";
 import { PortalContext } from "./PortalContext";
 import { PORTAL_ACTIONS, type PortalEvent } from "./types";
 
-export const PortalProvider = ({ children }: { children: React.ReactNode }) => {
+export const PortalProvider = ({
+  children,
+  zIndexStep = 100,
+}: {
+  children: React.ReactNode;
+  zIndexStep?: number;
+}) => {
   const hosts = useRef<Set<string>>(new Set());
   const listeners = useRef<Record<string, Array<(event: PortalEvent) => void>>>(
     {},
@@ -80,8 +86,9 @@ export const PortalProvider = ({ children }: { children: React.ReactNode }) => {
       updatePortal,
       removePortal,
       on,
+      zIndexStep,
     }),
-    [registerHost, deregisterHost, addPortal, updatePortal, removePortal, on],
+    [registerHost, deregisterHost, addPortal, updatePortal, removePortal, on, zIndexStep],
   );
 
   return (

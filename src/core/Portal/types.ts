@@ -25,4 +25,5 @@ export interface PortalContextType {
   updatePortal: (hostName: string, name: string, node: ReactNode) => void;
   removePortal: (hostName: string, name: string) => void;
   on: (hostName: string, callback: (event: PortalEvent) => void) => () => void;
+  zIndexStep?: number;
 }
