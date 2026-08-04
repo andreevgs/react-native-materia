@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, Pressable, BackHandler } from "react-native";
+import { StyleSheet, Pressable, BackHandler, ViewProps } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,7 +8,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 
-import { Portal, useMateriaColors } from "../../core";
+import { Portal, useMateriaColors, useMateriaTokens } from "../../core";
 import { BottomSheetCore, BottomSheetCoreRef } from "./BottomSheetCore";
 import { ModalBottomSheetProps } from "./types";
 import { getScrimStyle } from "./utils";
@@ -23,11 +23,23 @@ export const ModalBottomSheet = ({
   const bottomSheetRef = useRef<BottomSheetCoreRef>(null);
   const isMountedRef = useRef(false);
   const colors = useMateriaColors();
+  const tokens = useMateriaTokens();
 
   const scrimOpacity = useSharedValue(0);
   const scrimPointerEvents = useSharedValue<"auto" | "none">("none");
 
   const isDismissingFromGestureRef = useRef(false);
+
+  const scrimStyle = useMemo(() => getScrimStyle(colors), [colors]);
+
+  const scrimAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: scrimOpacity.value,
+    zIndex: 1,
+  }));
+
+  const scrimAnimatedProps = useAnimatedProps<ViewProps>(() => ({
+    pointerEvents: scrimPointerEvents.value,
+  }));
 
   useEffect(() => {
     isMountedRef.current = mounted;
@@ -38,18 +50,18 @@ export const ModalBottomSheet = ({
       setMounted(true);
       isDismissingFromGestureRef.current = false;
       scrimPointerEvents.value = "auto";
-      scrimOpacity.value = withTiming(1, { duration: 250 });
+      scrimOpacity.value = withTiming(1, { duration: tokens.duration.medium1 });
       if (mounted) {
         bottomSheetRef.current?.open();
       }
     } else if (mounted) {
       scrimPointerEvents.value = "none";
-      scrimOpacity.value = withTiming(0, { duration: 250 });
+      scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
       if (!isDismissingFromGestureRef.current) {
         bottomSheetRef.current?.dismiss();
       }
     }
-  }, [visible, mounted, scrimOpacity, scrimPointerEvents]);
+  }, [visible, mounted, scrimOpacity, scrimPointerEvents, tokens]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -61,7 +73,9 @@ export const ModalBottomSheet = ({
           onDismiss();
         } else {
           scrimPointerEvents.value = "none";
-          scrimOpacity.value = withTiming(0, { duration: 250 });
+          scrimOpacity.value = withTiming(0, {
+            duration: tokens.duration.medium1,
+          });
           bottomSheetRef.current?.dismiss();
         }
         return true;
@@ -69,7 +83,7 @@ export const ModalBottomSheet = ({
     );
 
     return () => backHandler.remove();
-  }, [mounted, scrimOpacity, scrimPointerEvents, onDismiss]);
+  }, [mounted, scrimOpacity, scrimPointerEvents, onDismiss, tokens]);
 
   const finishDismiss = () => {
     if (isMountedRef.current) {
@@ -83,7 +97,7 @@ export const ModalBottomSheet = ({
   const handleDismissStart = () => {
     isDismissingFromGestureRef.current = true;
     scrimPointerEvents.value = "none";
-    scrimOpacity.value = withTiming(0, { duration: 250 });
+    scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
     if (onDismiss) onDismiss();
   };
 
@@ -96,24 +110,10 @@ export const ModalBottomSheet = ({
       onDismiss();
     } else {
       scrimPointerEvents.value = "none";
-      scrimOpacity.value = withTiming(0, { duration: 250 });
+      scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
       bottomSheetRef.current?.dismiss();
     }
   };
-
-  const scrimStyle = useMemo(() => getScrimStyle(colors), [colors]);
-
-  const scrimAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: scrimOpacity.value,
-    zIndex: 1,
-  }));
-
-  const scrimAnimatedProps = useAnimatedProps(
-    () =>
-      ({
-        pointerEvents: scrimPointerEvents.value,
-      }) as any,
-  );
 
   if (!mounted) return null;
 
