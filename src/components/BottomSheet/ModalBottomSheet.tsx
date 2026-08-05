@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, Pressable, BackHandler, ViewProps } from "react-native";
+import { StyleSheet, Pressable, BackHandler } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  useAnimatedProps,
   withTiming,
   runOnJS,
 } from "react-native-reanimated";
@@ -17,6 +16,7 @@ export const ModalBottomSheet = ({
   visible,
   hostName = "root",
   onDismiss,
+  scrimAccessibilityLabel = "Close bottom sheet",
   ...props
 }: ModalBottomSheetProps) => {
   const [mounted, setMounted] = useState(false);
@@ -26,7 +26,6 @@ export const ModalBottomSheet = ({
   const tokens = useMateriaTokens();
 
   const scrimOpacity = useSharedValue(0);
-  const scrimPointerEvents = useSharedValue<"auto" | "none">("none");
 
   const isDismissingFromGestureRef = useRef(false);
 
@@ -37,10 +36,6 @@ export const ModalBottomSheet = ({
     zIndex: 1,
   }));
 
-  const scrimAnimatedProps = useAnimatedProps<ViewProps>(() => ({
-    pointerEvents: scrimPointerEvents.value,
-  }));
-
   useEffect(() => {
     isMountedRef.current = mounted;
   }, [mounted]);
@@ -49,19 +44,17 @@ export const ModalBottomSheet = ({
     if (visible) {
       setMounted(true);
       isDismissingFromGestureRef.current = false;
-      scrimPointerEvents.value = "auto";
       scrimOpacity.value = withTiming(1, { duration: tokens.duration.medium1 });
       if (mounted) {
         bottomSheetRef.current?.open();
       }
     } else if (mounted) {
-      scrimPointerEvents.value = "none";
       scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
       if (!isDismissingFromGestureRef.current) {
         bottomSheetRef.current?.dismiss();
       }
     }
-  }, [visible, mounted, scrimOpacity, scrimPointerEvents, tokens]);
+  }, [visible, mounted, scrimOpacity, tokens]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -72,7 +65,6 @@ export const ModalBottomSheet = ({
         if (onDismiss) {
           onDismiss();
         } else {
-          scrimPointerEvents.value = "none";
           scrimOpacity.value = withTiming(0, {
             duration: tokens.duration.medium1,
           });
@@ -83,7 +75,7 @@ export const ModalBottomSheet = ({
     );
 
     return () => backHandler.remove();
-  }, [mounted, scrimOpacity, scrimPointerEvents, onDismiss, tokens]);
+  }, [mounted, scrimOpacity, onDismiss, tokens]);
 
   const finishDismiss = () => {
     if (isMountedRef.current) {
@@ -96,7 +88,6 @@ export const ModalBottomSheet = ({
 
   const handleDismissStart = () => {
     isDismissingFromGestureRef.current = true;
-    scrimPointerEvents.value = "none";
     scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
     if (onDismiss) onDismiss();
   };
@@ -109,7 +100,6 @@ export const ModalBottomSheet = ({
     if (onDismiss) {
       onDismiss();
     } else {
-      scrimPointerEvents.value = "none";
       scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
       bottomSheetRef.current?.dismiss();
     }
@@ -121,13 +111,13 @@ export const ModalBottomSheet = ({
     <Portal hostName={hostName}>
       <Animated.View
         style={[StyleSheet.absoluteFill, scrimStyle, scrimAnimatedStyle]}
-        animatedProps={scrimAnimatedProps}
+        pointerEvents={visible ? "auto" : "none"}
       >
         <Pressable
-          style={StyleSheet.absoluteFill}
+          style={[StyleSheet.absoluteFill, { cursor: "auto" }]}
           onPress={handleScrimPress}
           role="button"
-          accessibilityLabel="Close bottom sheet"
+          accessibilityLabel={scrimAccessibilityLabel}
         />
       </Animated.View>
 
@@ -135,7 +125,7 @@ export const ModalBottomSheet = ({
         ref={bottomSheetRef}
         onDismissStart={handleDismissStart}
         onDismiss={handleDismiss}
-        style={{ zIndex: 2 }}
+        zIndex={2}
         {...props}
       />
     </Portal>

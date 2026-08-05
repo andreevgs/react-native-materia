@@ -38,7 +38,7 @@ export interface BottomSheetCoreRef {
 export const BottomSheetCore = forwardRef<
   BottomSheetCoreRef,
   BottomSheetCoreProps
->(({ children, style, onDismiss, onDismissStart }, ref) => {
+>(({ children, style, onDismiss, onDismissStart, zIndex }, ref) => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
   const insets = useSafeAreaInsets();
@@ -61,8 +61,8 @@ export const BottomSheetCore = forwardRef<
   );
 
   const styles = useMemo(
-    () => createStyles(tokens, insets, isLargeScreen),
-    [tokens, insets, isLargeScreen],
+    () => createStyles(tokens, insets, isLargeScreen, zIndex),
+    [tokens, insets, isLargeScreen, zIndex],
   );
 
   const handleLayout = useCallback(
@@ -162,6 +162,7 @@ const createStyles = (
   tokens: Tokens,
   insets: EdgeInsets,
   isLargeScreen: boolean,
+  zIndex?: number,
 ) =>
   StyleSheet.create({
     wrapper: {
@@ -169,6 +170,7 @@ const createStyles = (
       justifyContent: "flex-end",
       alignItems: "center",
       width: "100%",
+      zIndex,
     },
     container: {
       width: "100%",
