@@ -18,3 +18,10 @@ export const BOTTOM_SHEET_SPRING_CONFIG = {
   restDisplacementThreshold: 0.1,
   restSpeedThreshold: 5,
 };
+
+export const BOTTOM_SHEET_OVERSCROLL_SKIRT_HEIGHT = 1000;
+
+export const BOTTOM_SHEET_DEFAULT_PORTAL_NAME = "root";
+
+export const BOTTOM_SHEET_SCRIM_DEFAULT_ACCESSIBILITY_LABEL =
+  "Close bottom sheet";

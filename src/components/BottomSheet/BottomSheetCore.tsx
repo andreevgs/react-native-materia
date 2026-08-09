@@ -22,12 +22,17 @@ import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useMateriaColors, useMateriaTokens } from "../../core";
 import { BottomSheetCoreProps } from "./types";
-import { getBottomSheetColors, getBottomSheetShadowStyle } from "./utils";
+import {
+  getBottomSheetShadowStyle,
+  getBottomSheetContainerStyle,
+  getBottomSheetDragHandleStyle,
+} from "./utils";
 import { Tokens } from "../../core/theme/types";
 import {
   BOTTOM_SHEET_MAX_WIDTH,
   BOTTOM_SHEET_LARGE_SCREEN_MARGIN,
   BOTTOM_SHEET_SPRING_CONFIG,
+  BOTTOM_SHEET_OVERSCROLL_SKIRT_HEIGHT,
 } from "./const";
 
 export interface BottomSheetCoreRef {
@@ -50,8 +55,12 @@ export const BottomSheetCore = forwardRef<
   const translateY = useSharedValue(windowHeight);
   const dragOffset = useSharedValue(0);
 
-  const { containerColor, dragHandleColor } = useMemo(
-    () => getBottomSheetColors(colors),
+  const bottomSheetContainerStyle = useMemo(
+    () => getBottomSheetContainerStyle(colors),
+    [colors],
+  );
+  const bottomSheetDragHandleStyle = useMemo(
+    () => getBottomSheetDragHandleStyle(colors),
     [colors],
   );
 
@@ -68,8 +77,9 @@ export const BottomSheetCore = forwardRef<
   const handleLayout = useCallback(
     (event: LayoutChangeEvent) => {
       const { height } = event.nativeEvent.layout;
-      if (sheetHeight === 0 && height > 0) {
-        setSheetHeight(height);
+      const actualHeight = height - BOTTOM_SHEET_OVERSCROLL_SKIRT_HEIGHT;
+      if (sheetHeight === 0 && actualHeight > 0) {
+        setSheetHeight(actualHeight);
         translateY.value = withSpring(0, BOTTOM_SHEET_SPRING_CONFIG);
       }
     },
@@ -140,15 +150,13 @@ export const BottomSheetCore = forwardRef<
           style={[
             styles.container,
             shadowStyle,
-            { backgroundColor: containerColor },
+            bottomSheetContainerStyle,
             animatedStyle,
             style,
           ]}
         >
           <View style={styles.dragHandleContainer}>
-            <View
-              style={[styles.dragHandle, { backgroundColor: dragHandleColor }]}
-            />
+            <View style={[styles.dragHandle, bottomSheetDragHandleStyle]} />
           </View>
 
           <View style={styles.content}>{children}</View>
@@ -174,11 +182,13 @@ const createStyles = (
     },
     container: {
       width: "100%",
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
       maxWidth: BOTTOM_SHEET_MAX_WIDTH,
       borderTopLeftRadius: tokens.shape.extraLarge,
       borderTopRightRadius: tokens.shape.extraLarge,
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
+      paddingBottom: BOTTOM_SHEET_OVERSCROLL_SKIRT_HEIGHT,
+      marginBottom: -BOTTOM_SHEET_OVERSCROLL_SKIRT_HEIGHT,
       marginHorizontal: isLargeScreen ? BOTTOM_SHEET_LARGE_SCREEN_MARGIN : 0,
     },
     dragHandleContainer: {

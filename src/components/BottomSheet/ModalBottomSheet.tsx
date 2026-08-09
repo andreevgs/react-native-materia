@@ -10,13 +10,17 @@ import Animated, {
 import { Portal, useMateriaColors, useMateriaTokens } from "../../core";
 import { BottomSheetCore, BottomSheetCoreRef } from "./BottomSheetCore";
 import { ModalBottomSheetProps } from "./types";
-import { getScrimStyle } from "./utils";
+import { getScrimContainerStyle } from "./utils";
+import {
+  BOTTOM_SHEET_DEFAULT_PORTAL_NAME,
+  BOTTOM_SHEET_SCRIM_DEFAULT_ACCESSIBILITY_LABEL,
+} from "./const";
 
 export const ModalBottomSheet = ({
   visible,
-  hostName = "root",
+  hostName = BOTTOM_SHEET_DEFAULT_PORTAL_NAME,
   onDismiss,
-  scrimAccessibilityLabel = "Close bottom sheet",
+  scrimAccessibilityLabel = BOTTOM_SHEET_SCRIM_DEFAULT_ACCESSIBILITY_LABEL,
   ...props
 }: ModalBottomSheetProps) => {
   const [mounted, setMounted] = useState(false);
@@ -29,9 +33,12 @@ export const ModalBottomSheet = ({
 
   const isDismissingFromGestureRef = useRef(false);
 
-  const scrimStyle = useMemo(() => getScrimStyle(colors), [colors]);
+  const scrimContainerStyle = useMemo(
+    () => getScrimContainerStyle(colors),
+    [colors],
+  );
 
-  const scrimAnimatedStyle = useAnimatedStyle(() => ({
+  const scrimAnimatedContainerStyle = useAnimatedStyle(() => ({
     opacity: scrimOpacity.value,
     zIndex: 1,
   }));
@@ -110,11 +117,15 @@ export const ModalBottomSheet = ({
   return (
     <Portal hostName={hostName}>
       <Animated.View
-        style={[StyleSheet.absoluteFill, scrimStyle, scrimAnimatedStyle]}
+        style={[
+          styles.container,
+          scrimContainerStyle,
+          scrimAnimatedContainerStyle,
+        ]}
         pointerEvents={visible ? "auto" : "none"}
       >
         <Pressable
-          style={[StyleSheet.absoluteFill, { cursor: "auto" }]}
+          style={styles.scrim}
           onPress={handleScrimPress}
           role="button"
           accessibilityLabel={scrimAccessibilityLabel}
@@ -131,3 +142,13 @@ export const ModalBottomSheet = ({
     </Portal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  scrim: {
+    ...StyleSheet.absoluteFillObject,
+    cursor: "auto",
+  },
+});

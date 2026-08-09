@@ -34,15 +34,11 @@ export interface BottomSheetCoreProps {
   zIndex?: number;
 }
 
-export interface BottomSheetProps extends Omit<
-  BottomSheetCoreProps,
-  "onDismiss"
-> {
-  /**
-   * Optional callback when sheet finishes its closing animation, if applicable.
-   */
-  onDismiss?: () => void;
-}
+/**
+ * Props for the standalone `BottomSheet` component.
+ * Serves as the public API contract for non-modal bottom sheets, inheriting core sheet properties.
+ */
+export interface BottomSheetProps extends BottomSheetCoreProps {}
 
 export interface ModalBottomSheetProps extends BottomSheetProps {
   /**

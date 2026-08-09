@@ -1,13 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { PortalContext } from "./PortalContext";
-import { PORTAL_ACTIONS, type PortalType } from "./types";
+import { PORTAL_ACTIONS, PortalHostProps, type PortalType } from "./types";
+import { DEFAULT_PORTAL_HOST_NAME, DEFAULT_PORTAL_Z_INDEX_STEP } from "./const";
 
-export interface PortalHostProps {
-  name?: string;
-}
-
-export const PortalHost = ({ name = "root" }: PortalHostProps) => {
+export const PortalHost = ({
+  name = DEFAULT_PORTAL_HOST_NAME,
+}: PortalHostProps) => {
   const context = useContext(PortalContext);
   const [portals, setPortals] = useState<PortalType[]>([]);
 
@@ -49,7 +48,10 @@ export const PortalHost = ({ name = "root" }: PortalHostProps) => {
           pointerEvents="box-none"
           style={[
             StyleSheet.absoluteFill,
-            { zIndex: index * (context.zIndexStep ?? 100) },
+            {
+              zIndex:
+                index * (context.zIndexStep ?? DEFAULT_PORTAL_Z_INDEX_STEP),
+            },
           ]}
         >
           {portal.node}
