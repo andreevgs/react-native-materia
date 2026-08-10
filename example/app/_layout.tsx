@@ -1,7 +1,12 @@
 import { Stack } from "expo-router";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
-import { MateriaProvider, useMateriaColors } from "react-native-materia";
+import {
+  MateriaProvider,
+  useMateriaColors,
+  PortalProvider,
+  PortalHost,
+} from "react-native-materia";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
@@ -21,8 +26,11 @@ const App = () => {
     <SafeAreaProvider>
       <KeyboardProvider>
         <MateriaProvider mode="light">
-          <RootLayout />
-          <StatusBar barStyle="light-content" />
+          <PortalProvider>
+            <RootLayout />
+            <PortalHost />
+            <StatusBar barStyle="light-content" />
+          </PortalProvider>
         </MateriaProvider>
       </KeyboardProvider>
     </SafeAreaProvider>
