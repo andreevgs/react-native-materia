@@ -1,24 +1,14 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { PageContainerContent } from "@/components/PageContainer/PageContainerContent";
+import { MateriaText } from "react-native-materia";
 
-export default function DocsIndex() {
+const Main = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>React Native Materia Docs</Text>
-      <Text>Welcome to the documentation!</Text>
-    </View>
+    <PageContainerContent>
+      <MateriaText variant="headlineSmall">
+        React Native Materia Docs
+      </MateriaText>
+    </PageContainerContent>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-});
+export default Main;
