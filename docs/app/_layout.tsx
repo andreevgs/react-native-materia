@@ -13,6 +13,8 @@ import { useFonts } from "@expo-google-fonts/roboto/useFonts";
 import { Roboto_400Regular } from "@expo-google-fonts/roboto/400Regular";
 import { Roboto_500Medium } from "@expo-google-fonts/roboto/500Medium";
 import { typography } from "@/const/typography";
+import { Header } from "@/components/Header";
+import { icons } from "@/const/icons";
 
 const RootLayout = () => {
   const colors = useMateriaColors();
@@ -20,10 +22,13 @@ const RootLayout = () => {
 
   return (
     <View style={styles.rootLayout}>
-      <NavBar />
-      <PageContainer style={styles.pageContainer}>
-        <Slot />
-      </PageContainer>
+      <Header />
+      <View style={styles.main}>
+        <NavBar />
+        <PageContainer style={styles.pageContainer}>
+          <Slot />
+        </PageContainer>
+      </View>
     </View>
   );
 };
@@ -31,6 +36,9 @@ const RootLayout = () => {
 const createStyle = (colors: MateriaScheme) =>
   StyleSheet.create({
     rootLayout: {
+      flex: 1,
+    },
+    main: {
       backgroundColor: colors.surfaceContainer,
       flexDirection: "row",
       flex: 1,
@@ -46,11 +54,10 @@ const App = () => {
     Roboto_500Medium,
   });
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  if (!fontsLoaded) return null;
+
   return (
-    <MateriaProvider mode="light" typography={typography}>
+    <MateriaProvider mode="light" typography={typography} icons={icons}>
       <PortalProvider>
         <RootLayout />
         <PortalHost />
