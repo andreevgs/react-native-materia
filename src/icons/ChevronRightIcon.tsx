@@ -1,6 +1,6 @@
 import React from "react";
 import Svg, { Path } from "react-native-svg";
-import { MateriaIconProps } from "../core/iconography/types";
+import { MateriaIconProps } from "./types";
 
 export const ChevronRightIcon = ({ color, size, style }: MateriaIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" style={style}>
