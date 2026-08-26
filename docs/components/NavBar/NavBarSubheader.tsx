@@ -1,5 +1,5 @@
-import { forwardRef } from "react";
-import { Text as RNText, StyleSheet } from "react-native";
+import { useMemo } from "react";
+import { StyleSheet } from "react-native";
 import { Tokens } from "react-native-materia/types";
 import {
   MateriaText,
@@ -7,20 +7,17 @@ import {
   useMateriaTokens,
 } from "react-native-materia";
 
-export const NavBarSubheader = forwardRef<RNText, MateriaTextProps>(
-  (props, ref) => {
-    const tokens = useMateriaTokens();
-    const styles = createStyle(tokens);
-    return (
-      <MateriaText
-        ref={ref}
-        variant="headlineSmall"
-        {...props}
-        style={[styles.navbarSubheader, props.style]}
-      />
-    );
-  },
-);
+export const NavBarSubheader = ({ style, ...props }: MateriaTextProps) => {
+  const tokens = useMateriaTokens();
+  const styles = useMemo(() => createStyle(tokens), [tokens]);
+  return (
+    <MateriaText
+      variant="headlineSmall"
+      style={[styles.navbarSubheader, style]}
+      {...props}
+    />
+  );
+};
 
 const createStyle = (tokens: Tokens) =>
   StyleSheet.create({

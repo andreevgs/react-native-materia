@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { useMateriaTokens } from "react-native-materia";
 import { Tokens } from "react-native-materia/types";
@@ -7,7 +8,7 @@ import { NavBarSubheader } from "./NavBarSubheader";
 
 export const NavBar = () => {
   const tokens = useMateriaTokens();
-  const styles = createStyle(tokens);
+  const styles = useMemo(() => createStyle(tokens), [tokens]);
 
   return (
     <View style={styles.navbar}>
