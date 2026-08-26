@@ -18,17 +18,16 @@ export const generateMateriaTypography = (
       variant.startsWith("display") || variant.startsWith("headline");
 
     const activeTypeface = isBrand ? brand : plain;
-    const targetWeight = activeTypeface.fontWeight ?? token.fontWeight;
+    const resolvedFontWeight = activeTypeface.fontWeight ?? token.fontWeight;
 
     let resolvedFontFamily: string;
-    let resolvedFontWeight = targetWeight;
 
     if (
       activeTypeface.fontFamily &&
       typeof activeTypeface.fontFamily === "object"
     ) {
       resolvedFontFamily =
-        targetWeight === "500"
+        token.fontWeight === "500"
           ? activeTypeface.fontFamily.fontFamilyMedium
           : activeTypeface.fontFamily.fontFamilyRegular;
     } else {
