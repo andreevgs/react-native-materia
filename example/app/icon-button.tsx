@@ -21,9 +21,9 @@ const CustomIcon = ({ color, size, style, ...props }: MateriaIconProps) => {
 const IconButtonDemo = () => {
   return (
     <ComponentDemo>
-      <IconButton icon="check" mode="standard" onPress={() => {}} />
-      <IconButton icon="check" mode="filled" onPress={() => {}} />
-      <IconButton icon="check" mode="tonal" onPress={() => {}} />
+      <IconButton icon="check-rounded" mode="standard" onPress={() => {}} />
+      <IconButton icon="check-rounded" mode="filled" onPress={() => {}} />
+      <IconButton icon="check-rounded" mode="tonal" onPress={() => {}} />
       <IconButton icon={CustomIcon} mode="outlined" onPress={() => {}} />
     </ComponentDemo>
   );

@@ -2,11 +2,11 @@ import React from "react";
 import Svg, { Path } from "react-native-svg";
 import { MateriaIconProps } from "../core/iconography/types";
 
-export const ErrorIcon = ({ color, size, style }: MateriaIconProps) => (
+export const CheckRoundedIcon = ({ color, size, style }: MateriaIconProps) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" style={style}>
     <Path
-      d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
       fill={color}
+      d="m9.55 15.15l8.475-8.475q.3-.3.7-.3t.7.3t.3.713t-.3.712l-9.175 9.2q-.3.3-.7.3t-.7-.3L4.55 13q-.3-.3-.288-.712t.313-.713t.713-.3t.712.3z"
     />
   </Svg>
 );

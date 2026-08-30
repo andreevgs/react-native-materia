@@ -10,21 +10,22 @@ export interface MateriaIconProps extends AccessibilityProps {
 export type MateriaIcon = ComponentType<MateriaIconProps>;
 
 export interface MateriaIconography {
-  "arrow-back": MateriaIcon;
-  "arrow-forward": MateriaIcon;
-  "close": MateriaIcon;
-  "menu": MateriaIcon;
-  "check": MateriaIcon;
-  "add": MateriaIcon;
-  "chevron-right": MateriaIcon;
+
+  "arrow-back-rounded": MateriaIcon;
+  "arrow-forward-rounded": MateriaIcon;
+  "close-rounded": MateriaIcon;
+  "menu-rounded": MateriaIcon;
+  "check-rounded": MateriaIcon;
+  "add-rounded": MateriaIcon;
+  "chevron-right-rounded": MateriaIcon;
   "info-rounded": MateriaIcon;
   "info-outline-rounded": MateriaIcon;
   "home-outline-rounded": MateriaIcon;
   "home-rounded": MateriaIcon;
   "settings-outline-rounded": MateriaIcon;
   "settings-rounded": MateriaIcon;
-  "error": MateriaIcon;
-  "delete": MateriaIcon;
+  "error-rounded": MateriaIcon;
+  "delete-rounded": MateriaIcon;
 }
 
 export type MateriaIconName = keyof MateriaIconography;

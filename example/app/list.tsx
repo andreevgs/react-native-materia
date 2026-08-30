@@ -20,7 +20,7 @@ const ListDemo = () => {
             <Icon source="info-rounded" size={tokens.iconSize["20dp"]} />
           }
           trailingContent={
-            <Icon source="chevron-right" size={tokens.iconSize["20dp"]} />
+            <Icon source="chevron-right-rounded" size={tokens.iconSize["20dp"]} />
           }
           supportingText="Supporting text"
         />
@@ -44,7 +44,7 @@ const ListDemo = () => {
               <Icon source="info-rounded" size={tokens.iconSize["20dp"]} />
             }
             trailingContent={
-              <Icon source="chevron-right" size={tokens.iconSize["20dp"]} />
+              <Icon source="chevron-right-rounded" size={tokens.iconSize["20dp"]} />
             }
             supportingText="Supporting text"
           />

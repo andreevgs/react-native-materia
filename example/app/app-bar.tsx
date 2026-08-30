@@ -20,13 +20,13 @@ const AppBarDemo = () => {
   return (
     <View style={styles.container}>
       <AppBar
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
         headline="App Bar"
         subtitle="With Subtitle"
         trailing={
           <>
-            <IconButton icon="check" onPress={() => {}} />
-            <IconButton icon="close" onPress={() => {}} />
+            <IconButton icon="check-rounded" onPress={() => {}} />
+            <IconButton icon="close-rounded" onPress={() => {}} />
           </>
         }
       />
@@ -40,9 +40,9 @@ const AppBarDemo = () => {
 
         <AppBar
           isScrolled
-          leading={<IconButton icon="menu" onPress={() => {}} />}
+          leading={<IconButton icon="menu-rounded" onPress={() => {}} />}
           headline="Scrolled State"
-          trailing={<IconButton icon="check" onPress={() => {}} />}
+          trailing={<IconButton icon="check-rounded" onPress={() => {}} />}
         />
       </View>
     </View>

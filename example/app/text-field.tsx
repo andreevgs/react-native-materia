@@ -12,7 +12,7 @@ import { ScrollScreenWrapper } from "../components/ScrollScreenWrapper";
 
 const ErrorIcon = () => {
   const colors = useMateriaColors();
-  return <Icon source="error" color={colors.error} />;
+  return <Icon source="error-rounded" color={colors.error} />;
 };
 
 const TextFieldDemo = () => {
