@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { generateMateriaTypography } from "react-native-materia";
 
 const FONT_FAMILY_REGULAR = "Roboto_400Regular";
@@ -12,4 +13,10 @@ export const typography = generateMateriaTypography({
   brand: { fontFamily: typefaceStaticFonts },
   plain: { fontFamily: typefaceStaticFonts },
   fixVerticalRhythm: true,
+});
+
+export const monospaceFont = Platform.select({
+  ios: "Menlo",
+  android: "monospace",
+  default: "Consolas, Monaco, 'Courier New', monospace",
 });
