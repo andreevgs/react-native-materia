@@ -284,8 +284,8 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
 );
 
 const styles = StyleSheet.create({
-  clipping: { overflow: "hidden" },
-  borderless: { overflow: "visible" },
+  clipping: { overflow: "hidden", userSelect: "none" },
+  borderless: { overflow: "visible", userSelect: "none" },
   disabled: { opacity: 0.38 },
   rippleContainer: { overflow: "visible" },
 });
