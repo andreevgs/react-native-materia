@@ -10,7 +10,6 @@ export interface MateriaIconProps extends AccessibilityProps {
 export type MateriaIcon = ComponentType<MateriaIconProps>;
 
 export interface MateriaIconography {
-
   "arrow-back-rounded": MateriaIcon;
   "arrow-forward-rounded": MateriaIcon;
   "close-rounded": MateriaIcon;
@@ -26,6 +25,9 @@ export interface MateriaIconography {
   "settings-rounded": MateriaIcon;
   "error-rounded": MateriaIcon;
   "delete-rounded": MateriaIcon;
+  "light-mode-rounded": MateriaIcon;
+  "dark-mode-rounded": MateriaIcon;
+  "content-copy-outline-rounded": MateriaIcon;
 }
 
 export type MateriaIconName = keyof MateriaIconography;

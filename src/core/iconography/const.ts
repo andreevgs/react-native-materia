@@ -15,6 +15,9 @@ import {
   SettingsRoundedIcon,
   SettingsOutlineRoundedIcon,
   InfoOutlineRoundedIcon,
+  LightModeRoundedIcon,
+  DarkModeRoundedIcon,
+  ContentCopyOutlineRoundedIcon,
 } from "../../icons";
 
 export const defaultMateriaIconography: MateriaIconography = {
@@ -33,4 +36,7 @@ export const defaultMateriaIconography: MateriaIconography = {
   "settings-outline-rounded": SettingsOutlineRoundedIcon,
   "error-rounded": ErrorRoundedIcon,
   "delete-rounded": DeleteRoundedIcon,
+  "light-mode-rounded": LightModeRoundedIcon,
+  "dark-mode-rounded": DarkModeRoundedIcon,
+  "content-copy-outline-rounded": ContentCopyOutlineRoundedIcon,
 };
