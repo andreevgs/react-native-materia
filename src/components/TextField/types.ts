@@ -4,6 +4,10 @@ import { SharedValue } from "react-native-reanimated";
 
 export type TextFieldMode = "filled" | "outlined";
 
+export type WebTextStyle = TextStyle & {
+  outlineStyle?: string;
+};
+
 export interface TextFieldProps extends Omit<
   TextInputProps,
   "style" | "defaultValue"

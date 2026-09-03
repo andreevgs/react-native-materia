@@ -23,7 +23,7 @@ import {
   useMateriaTypography,
 } from "../../core";
 import { TextFieldProps } from "./types";
-import { getTextFieldColors } from "./utils";
+import { getTextFieldColors, webInputStyle } from "./utils";
 import { Icon } from "../Icon";
 import { Tokens } from "../../types";
 import { TextFieldSupportingText } from "./TextFieldSupportingText";
@@ -277,6 +277,7 @@ const createStyles = (tokens: Tokens) =>
       margin: 0,
       paddingHorizontal: 0,
       textAlignVertical: "center",
+      ...webInputStyle,
     },
     leadingIcon: {
       marginRight: tokens.spacing.m,

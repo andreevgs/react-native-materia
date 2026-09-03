@@ -57,7 +57,7 @@ const TextFieldDemo = () => {
         label="With Trailing Icon"
         value={value3}
         onChangeText={setValue3}
-        trailingIcon="close"
+        trailingIcon="close-rounded"
       />
       <TextField
         label="With Supporting Text"
@@ -112,7 +112,7 @@ const TextFieldDemo = () => {
         label="With Trailing Icon"
         value={value3Outlined}
         onChangeText={setValue3Outlined}
-        trailingIcon="close"
+        trailingIcon="close-rounded"
       />
       <TextField
         mode="outlined"
