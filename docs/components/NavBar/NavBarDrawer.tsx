@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Pressable } from "react-native";
 import Animated, {
   useSharedValue,
@@ -29,6 +29,8 @@ export const NavBarDrawer = ({ open, onClose }: NavBarDrawerProps) => {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(open);
 
+  const shouldRender = open || mounted;
+
   const translateX = useSharedValue(-NAVBAR_DRAWER_WIDTH);
   const scrimOpacity = useSharedValue(0);
 
@@ -49,16 +51,25 @@ export const NavBarDrawer = ({ open, onClose }: NavBarDrawerProps) => {
   const styles = useMemo(() => createStyle(tokens, colors), [tokens, colors]);
 
   useEffect(() => {
-    const config = { duration: 500, easing: Easing.bezier(0.3, 0, 0, 1) };
+    const openConfig = {
+      duration: tokens.duration.medium4,
+      easing: Easing.bezier(...tokens.easing.emphasized),
+    };
+
+    const closeConfig = {
+      duration: tokens.duration.medium3,
+      easing: Easing.bezier(...tokens.easing.emphasized),
+    };
+
     if (open) {
       setMounted(true);
-      translateX.value = withTiming(0, config);
-      scrimOpacity.value = withTiming(0.4, config);
-    } else {
-      scrimOpacity.value = withTiming(0, config);
+      translateX.value = withTiming(0, openConfig);
+      scrimOpacity.value = withTiming(0.4, openConfig);
+    } else if (mounted) {
+      scrimOpacity.value = withTiming(0, closeConfig);
       translateX.value = withTiming(
         -NAVBAR_DRAWER_WIDTH,
-        config,
+        closeConfig,
         (finished) => {
           if (finished) {
             runOnJS(setMounted)(false);
@@ -66,16 +77,20 @@ export const NavBarDrawer = ({ open, onClose }: NavBarDrawerProps) => {
         },
       );
     }
-  }, [open, scrimOpacity, translateX]);
+  }, [open, mounted, scrimOpacity, tokens, translateX]);
+
+  const prevPathname = useRef(pathname);
 
   useEffect(() => {
-    if (open) {
-      onClose();
+    if (prevPathname.current !== pathname) {
+      prevPathname.current = pathname;
+      if (open) {
+        onClose();
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, open, onClose]);
 
-  if (!mounted) return null;
+  if (!shouldRender) return null;
 
   return (
     <Portal hostName="docs-drawer">

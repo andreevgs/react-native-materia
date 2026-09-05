@@ -1,26 +1,33 @@
 import { useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useMateriaTokens } from "react-native-materia";
 import { Tokens } from "react-native-materia/types";
 import { NavBarItem } from "./NavBarItem";
 import { NavBarDivider } from "./NavBarDivider";
 import { NavBarSubheader } from "./NavBarSubheader";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const NavBar = () => {
   const tokens = useMateriaTokens();
   const styles = useMemo(() => createStyle(tokens), [tokens]);
 
   return (
-    <View style={styles.navbar}>
+    <ScrollView style={styles.navbar}>
       <NavBarSubheader>About</NavBarSubheader>
-      <NavBarItem href="/about/introduction" label="Introduction" />
       <NavBarItem href="/about/getting-started" label="Getting Started" />
-      <NavBarItem href="/about/support" label="Support" />
+      <NavBarItem href="/about/provider" label="Provider" />
+      <NavBarItem href="/about/theming" label="Theming" />
+      <NavBarItem href="/about/tokens" label="Tokens" />
+      <NavBarItem href="/about/typography" label="Typography" />
+      <NavBarItem href="/about/iconography" label="Iconography" />
+      <NavBarItem href="/about/portal" label="Portal" />
+
       <NavBarDivider />
       <NavBarSubheader>Components</NavBarSubheader>
       <NavBarItem href="/components/button" label="Button" />
+      <NavBarItem href="/components/icon-button" label="Icon Button" />
       <NavBarItem href="/components/list" label="List" />
-    </View>
+    </ScrollView>
   );
 };
 
