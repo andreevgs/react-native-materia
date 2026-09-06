@@ -30,7 +30,8 @@ const createStyle = (tokens: Tokens, colors: MateriaScheme) =>
       overflow: "hidden",
     },
     scrollContent: {
-      paddingVertical: tokens.spacing.xl,
+      paddingTop: tokens.spacing.xl,
+      paddingBottom: tokens.spacing.xxxl,
       paddingHorizontal: tokens.spacing.xxl,
     },
     content: {
