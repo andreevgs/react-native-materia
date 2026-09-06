@@ -2,17 +2,17 @@ import React from "react";
 import Head from "expo-router/head";
 import { PageContent } from "@/components/Page/PageContent";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
-import gettingStartedContent from "@/content/getting-started.md";
+import typographyContent from "@/content/typography.md";
 
-const GettingStarted = () => {
+const TypographyPage = () => {
   return (
     <PageContent>
       <Head>
-        <title>React Native Materia - Getting Started</title>
+        <title>React Native Materia - Typography</title>
       </Head>
-      <MarkdownRenderer content={gettingStartedContent} />
+      <MarkdownRenderer content={typographyContent} />
     </PageContent>
   );
 };
 
-export default GettingStarted;
+export default TypographyPage;

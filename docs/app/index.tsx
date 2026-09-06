@@ -1,18 +1,24 @@
-import { PageContainerContent } from "@/components/PageContainer/PageContainerContent";
-import { MateriaText } from "react-native-materia";
+import React from "react";
 import Head from "expo-router/head";
+import { PageContent } from "@/components/Page/PageContent";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import indexContent from "@/content/index.md";
+import { Showcase } from "@/components/Showcase";
 
-const Main = () => {
+const HomePage = () => {
   return (
-    <PageContainerContent>
+    <PageContent>
       <Head>
         <title>React Native Materia</title>
       </Head>
-      <MateriaText variant="headlineSmall">
-        React Native Materia Docs
-      </MateriaText>
-    </PageContainerContent>
+      <MarkdownRenderer
+        content={indexContent}
+        slots={{
+          DEMO_SHOWCASE: <Showcase />,
+        }}
+      />
+    </PageContent>
   );
 };
 
-export default Main;
+export default HomePage;

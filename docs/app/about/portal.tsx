@@ -2,17 +2,17 @@ import React from "react";
 import Head from "expo-router/head";
 import { PageContent } from "@/components/Page/PageContent";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
-import gettingStartedContent from "@/content/getting-started.md";
+import portalContent from "@/content/portal.md";
 
-const GettingStarted = () => {
+const PortalPage = () => {
   return (
     <PageContent>
       <Head>
-        <title>React Native Materia - Getting Started</title>
+        <title>React Native Materia - Portal</title>
       </Head>
-      <MarkdownRenderer content={gettingStartedContent} />
+      <MarkdownRenderer content={portalContent} />
     </PageContent>
   );
 };
 
-export default GettingStarted;
+export default PortalPage;
