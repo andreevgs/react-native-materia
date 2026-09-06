@@ -4,6 +4,7 @@ export type {
   MateriaTonalPalette,
   MateriaPalettes,
   MateriaCoreColors,
+  MateriaThemeMode,
   MateriaTheme,
   Tokens,
 } from "../core/theme/types";

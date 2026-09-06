@@ -3,14 +3,16 @@ import {
   IconButton,
   MateriaText,
   useMateriaColors,
+  useMateriaMode,
   useMateriaTokens,
 } from "react-native-materia";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { View, StyleSheet, Pressable, useWindowDimensions } from "react-native";
 import { MateriaScheme, Tokens } from "react-native-materia/types";
 import { Link } from "expo-router";
 import { MAX_WIDTH_MOBILE } from "@/const/window";
 import { VersionChip } from "./VersionChip";
+import { useCurrentTheme } from "@/providers/CurrentThemeProvider";
 
 interface HeaderProps {
   onMenuPress?: () => void;
@@ -24,11 +26,18 @@ const MenuIcon = () => {
 export const Header = ({ onMenuPress }: HeaderProps) => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
+  const { isDark } = useMateriaMode();
+  const { setCurrentTheme } = useCurrentTheme();
 
   const { width } = useWindowDimensions();
   const isMobile = width < MAX_WIDTH_MOBILE;
 
   const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
+
+  const toggleTheme = useCallback(() => {
+    const newTheme = isDark ? "light" : "dark";
+    setCurrentTheme(newTheme);
+  }, [isDark, setCurrentTheme]);
 
   return (
     <View style={styles.header}>
@@ -60,14 +69,24 @@ export const Header = ({ onMenuPress }: HeaderProps) => {
         </View>
       )}
       <View style={styles.right}>
-        <Link href="https://github.com/andreevgs/react-native-materia" asChild>
+        <View style={styles.rightActions}>
           <IconButton
-            icon="github"
-            /* @ts-ignore RN Web specific prop */
-            hrefAttrs={{ target: "_blank" }}
-            onPress={() => {}}
+            icon={isDark ? "light-mode-rounded" : "dark-mode-rounded"}
+            onPress={toggleTheme}
           />
-        </Link>
+          <Link
+            href="https://github.com/andreevgs/react-native-materia"
+            asChild
+          >
+            <IconButton
+              icon="github"
+              /* @ts-ignore RN Web specific prop */
+              hrefAttrs={{ target: "_blank" }}
+              onPress={() => {}}
+            />
+          </Link>
+        </View>
+
         {!isMobile && <VersionChip />}
       </View>
     </View>
@@ -102,7 +121,11 @@ const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
     right: {
       flexDirection: "row",
       alignItems: "center",
-      gap: tokens.spacing.m,
+      gap: tokens.spacing.l,
+    },
+    rightActions: {
+      flexDirection: "row",
+      gap: tokens.spacing.xxs,
     },
     name: {
       color: colors.primary,

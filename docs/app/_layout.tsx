@@ -19,8 +19,12 @@ import { MAX_WIDTH_MOBILE } from "@/const/window";
 import { typography } from "@/const/typography";
 import { icons } from "@/const/icons";
 import "@/styles/global.css";
+import {
+  CurrentThemeProvider,
+  useCurrentTheme,
+} from "@/providers/CurrentThemeProvider";
 
-const RootLayout = () => {
+const DocsLayout = () => {
   const colors = useMateriaColors();
 
   const { width } = useWindowDimensions();
@@ -64,6 +68,19 @@ const createStyle = (colors: MateriaScheme) =>
     },
   });
 
+const RootLayout = () => {
+  const { currentTheme } = useCurrentTheme();
+
+  return (
+    <MateriaProvider mode={currentTheme} typography={typography} icons={icons}>
+      <PortalProvider>
+        <DocsLayout />
+        <PortalHost />
+      </PortalProvider>
+    </MateriaProvider>
+  );
+};
+
 const App = () => {
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
@@ -73,12 +90,9 @@ const App = () => {
   if (!fontsLoaded) return null;
 
   return (
-    <MateriaProvider typography={typography} icons={icons}>
-      <PortalProvider>
-        <RootLayout />
-        <PortalHost />
-      </PortalProvider>
-    </MateriaProvider>
+    <CurrentThemeProvider>
+      <RootLayout />
+    </CurrentThemeProvider>
   );
 };
 
