@@ -12,6 +12,7 @@ export type {
   TypographyVariant,
   MateriaTypography,
   Typeface,
+  TypefaceStaticFonts,
   TypographyConfig,
 } from "../core/typography/types";
 

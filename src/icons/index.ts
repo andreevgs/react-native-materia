@@ -13,3 +13,6 @@ export * from "./SettingsRoundedIcon";
 export * from "./SettingsOutlineRoundedIcon";
 export * from "./InfoRoundedIcon";
 export * from "./InfoOutlineRoundedIcon";
+export * from "./LightModeRoundedIcon";
+export * from "./DarkModeRoundedIcon";
+export * from "./ContentCopyOutlineRoundedIcon";
