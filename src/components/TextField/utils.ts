@@ -1,6 +1,7 @@
 import Color from "color";
-import { TextFieldMode, TextFieldStyleConfig } from "./types";
+import { TextFieldMode, TextFieldStyleConfig, WebTextStyle } from "./types";
 import { MateriaScheme, Tokens } from "../../core/theme/types";
+import { Platform, TextStyle } from "react-native";
 
 export const getTextFieldColors = (
   mode: TextFieldMode,
@@ -80,3 +81,8 @@ export const getTextFieldColors = (
     caretColor: colors.primary,
   };
 };
+
+export const webInputStyle: TextStyle = Platform.select({
+  web: { outlineStyle: "none" } as WebTextStyle,
+  default: {},
+});

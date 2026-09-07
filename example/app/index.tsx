@@ -52,7 +52,7 @@ const ComponentsScreen = () => {
               pressDelay={65}
               onPress={() => router.push(comp.path as any)}
               trailingContent={
-                <Icon source="chevron-right" size={tokens.iconSize["20dp"]} />
+                <Icon source="chevron-right-rounded" size={tokens.iconSize["20dp"]} />
               }
             />
           ))}

@@ -4,6 +4,7 @@ export type {
   MateriaTonalPalette,
   MateriaPalettes,
   MateriaCoreColors,
+  MateriaThemeMode,
   MateriaTheme,
   Tokens,
 } from "../core/theme/types";
@@ -12,6 +13,7 @@ export type {
   TypographyVariant,
   MateriaTypography,
   Typeface,
+  TypefaceStaticFonts,
   TypographyConfig,
 } from "../core/typography/types";
 

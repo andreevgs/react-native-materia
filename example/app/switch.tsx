@@ -30,7 +30,7 @@ const SwitchDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="Switch"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ScrollContent contentContainerStyle={styles.container}>
         <View style={styles.section}>

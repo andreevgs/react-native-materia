@@ -15,6 +15,7 @@ export const IconButton = ({
   disabled = false,
   loading = false,
   style,
+  ...props
 }: IconButtonProps) => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
@@ -41,6 +42,7 @@ export const IconButton = ({
       ]}
     >
       <TouchableRipple
+        {...props}
         onPress={onPress}
         disabled={disabled || loading}
         rippleColor={iconColor}

@@ -25,10 +25,10 @@ const TouchableRippleDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="Touchable Ripple"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ComponentDemo>
-        <TouchableRipple onPress={() => {}} style={styles.rippleBox}>
+        <TouchableRipple onPress={() => { }} style={styles.rippleBox}>
           <MateriaText variant="bodyLarge" style={{ color: textColor }}>
             Press me!
           </MateriaText>

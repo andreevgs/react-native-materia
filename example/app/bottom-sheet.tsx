@@ -26,7 +26,7 @@ const BottomSheetDemo = () => {
   return (
     <ScreenWrapper>
       <AppBar
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
         headline="Bottom Sheet"
       />
 

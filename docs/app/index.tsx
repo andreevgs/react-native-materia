@@ -1,24 +1,24 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import Head from "expo-router/head";
+import { PageContent } from "@/components/Page/PageContent";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
+import indexContent from "@/content/index.md";
+import { Showcase } from "@/components/Showcase";
 
-export default function DocsIndex() {
+const HomePage = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>React Native Materia Docs</Text>
-      <Text>Welcome to the documentation!</Text>
-    </View>
+    <PageContent>
+      <Head>
+        <title>React Native Materia</title>
+      </Head>
+      <MarkdownRenderer
+        content={indexContent}
+        slots={{
+          DEMO_SHOWCASE: <Showcase />,
+        }}
+      />
+    </PageContent>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-});
+export default HomePage;

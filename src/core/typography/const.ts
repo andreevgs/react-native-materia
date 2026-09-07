@@ -95,15 +95,13 @@ export const baseScale: TypographyScale = {
 };
 
 export const defaultFontFamily = Platform.select({
-  ios: "System",
+  ios: undefined,
   android: "Roboto",
   default: "System",
 });
 
 export const defaultCommonStyles: TextStyle =
-  Platform.OS === "android"
-    ? { includeFontPadding: false, textAlignVertical: "center" }
-    : {};
+  Platform.OS === "android" ? { includeFontPadding: false } : {};
 
 export const defaultMateriaTypography: MateriaTypography = (
   Object.keys(baseScale) as TypographyVariant[]

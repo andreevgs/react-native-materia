@@ -12,10 +12,10 @@ const IconDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="Icon"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ComponentDemo>
-        <Icon source="check" size={48} color={colors.primary} />
+        <Icon source="check-rounded" size={48} color={colors.primary} />
       </ComponentDemo>
     </ScreenWrapper>
   );

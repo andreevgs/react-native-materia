@@ -19,6 +19,7 @@ export const Button = ({
   icon,
   style,
   labelStyle,
+  ...props
 }: ButtonProps) => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
@@ -55,6 +56,7 @@ export const Button = ({
         style={styles.touchable}
         contentContainerStyle={styles.content}
         contentPointerEvents="none"
+        {...props}
       >
         {loading ? (
           <ActivityIndicator

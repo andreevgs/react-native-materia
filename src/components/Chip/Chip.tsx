@@ -19,6 +19,7 @@ export const Chip = ({
   trailingIcon,
   style,
   labelStyle,
+  ...props
 }: ChipProps) => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
@@ -61,6 +62,7 @@ export const Chip = ({
           },
         ]}
         contentPointerEvents="none"
+        {...props}
       >
         {leadingIcon && (
           <Icon
