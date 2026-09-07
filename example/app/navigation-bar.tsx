@@ -9,6 +9,7 @@ import {
   useMateriaTokens,
 } from "react-native-materia";
 import { useRouter } from "expo-router";
+import { ScreenWrapper } from "../components/ScreenWrapper";
 import { MateriaScheme, Tokens } from "react-native-materia/types";
 
 const NavigationBarDemo = () => {
@@ -44,7 +45,7 @@ const NavigationBarDemo = () => {
   const activeRoute = routes[selectedIndex];
 
   return (
-    <View style={styles.container}>
+    <ScreenWrapper>
       <AppBar
         leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
         headline="Navigation Bar"
@@ -64,16 +65,12 @@ const NavigationBarDemo = () => {
         selectedIndex={selectedIndex}
         onTabPress={(index) => setSelectedIndex(index)}
       />
-    </View>
+    </ScreenWrapper>
   );
 };
 
 const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     content: {
       flex: 1,
       justifyContent: "center",

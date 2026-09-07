@@ -8,25 +8,26 @@ import {
   useMateriaTokens,
 } from "react-native-materia";
 import { useRouter } from "expo-router";
-import { MateriaScheme, Tokens } from "react-native-materia/types";
+import { ScreenWrapper } from "../components/ScreenWrapper";
+import { Tokens } from "react-native-materia/types";
 
 const AppBarDemo = () => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
   const router = useRouter();
 
-  const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
+  const styles = useMemo(() => createStyles(tokens), [tokens]);
 
   return (
-    <View style={styles.container}>
+    <ScreenWrapper>
       <AppBar
         leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
         headline="App Bar"
         subtitle="With Subtitle"
         trailing={
           <>
-            <IconButton icon="check-rounded" onPress={() => {}} />
-            <IconButton icon="close-rounded" onPress={() => {}} />
+            <IconButton icon="check-rounded" onPress={() => { }} />
+            <IconButton icon="close-rounded" onPress={() => { }} />
           </>
         }
       />
@@ -40,21 +41,17 @@ const AppBarDemo = () => {
 
         <AppBar
           isScrolled
-          leading={<IconButton icon="menu-rounded" onPress={() => {}} />}
+          leading={<IconButton icon="menu-rounded" onPress={() => { }} />}
           headline="Scrolled State"
-          trailing={<IconButton icon="check-rounded" onPress={() => {}} />}
+          trailing={<IconButton icon="check-rounded" onPress={() => { }} />}
         />
       </View>
-    </View>
+    </ScreenWrapper>
   );
 };
 
-const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
+const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     content: {
       flex: 1,
       padding: tokens.spacing.l,
@@ -63,3 +60,4 @@ const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
   });
 
 export default AppBarDemo;
+

@@ -1,4 +1,7 @@
-import { IconButton } from "react-native-materia";
+import React from "react";
+import { IconButton, AppBar } from "react-native-materia";
+import { useRouter } from "expo-router";
+import { ScreenWrapper } from "../components/ScreenWrapper";
 import { ComponentDemo } from "../components/ComponentDemo";
 import Svg, { Path } from "react-native-svg";
 import { MateriaIconProps } from "react-native-materia/types";
@@ -19,14 +22,23 @@ const CustomIcon = ({ color, size, style, ...props }: MateriaIconProps) => {
 };
 
 const IconButtonDemo = () => {
+  const router = useRouter();
+
   return (
-    <ComponentDemo>
-      <IconButton icon="check-rounded" mode="standard" onPress={() => {}} />
-      <IconButton icon="check-rounded" mode="filled" onPress={() => {}} />
-      <IconButton icon="check-rounded" mode="tonal" onPress={() => {}} />
-      <IconButton icon={CustomIcon} mode="outlined" onPress={() => {}} />
-    </ComponentDemo>
+    <ScreenWrapper>
+      <AppBar
+        headline="Icon Button"
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
+      />
+      <ComponentDemo>
+        <IconButton icon="check-rounded" mode="standard" onPress={() => { }} />
+        <IconButton icon="check-rounded" mode="filled" onPress={() => { }} />
+        <IconButton icon="check-rounded" mode="tonal" onPress={() => { }} />
+        <IconButton icon={CustomIcon} mode="outlined" onPress={() => { }} />
+      </ComponentDemo>
+    </ScreenWrapper>
   );
 };
 
 export default IconButtonDemo;
+

@@ -4,13 +4,18 @@ import {
   Switch,
   MateriaText,
   List,
+  AppBar,
+  IconButton,
   useMateriaTokens,
   useMateriaColors,
 } from "react-native-materia";
-import { ScrollScreenWrapper } from "../components/ScrollScreenWrapper";
+import { useRouter } from "expo-router";
+import { ScreenWrapper } from "../components/ScreenWrapper";
+import { ScrollContent } from "../components/ScrollContent";
 import { Tokens } from "react-native-materia/types";
 
 const SwitchDemo = () => {
+  const router = useRouter();
   const tokens = useMateriaTokens();
   const colors = useMateriaColors();
   const styles = useMemo(() => createStyles(tokens), [tokens]);
@@ -22,53 +27,59 @@ const SwitchDemo = () => {
   const [value4, setValue4] = useState(false);
 
   return (
-    <ScrollScreenWrapper contentContainerStyle={styles.container}>
-      <View style={styles.section}>
-        <View style={styles.row}>
-          <MateriaText variant="bodyLarge">Switch On</MateriaText>
-          <Switch value={value1} onValueChange={setValue1} />
+    <ScreenWrapper>
+      <AppBar
+        headline="Switch"
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
+      />
+      <ScrollContent contentContainerStyle={styles.container}>
+        <View style={styles.section}>
+          <View style={styles.row}>
+            <MateriaText variant="bodyLarge">Switch On</MateriaText>
+            <Switch value={value1} onValueChange={setValue1} />
+          </View>
+          <View style={styles.row}>
+            <MateriaText variant="bodyLarge">Switch Off</MateriaText>
+            <Switch value={value2} onValueChange={setValue2} />
+          </View>
+          <View style={styles.row}>
+            <MateriaText variant="bodyLarge">Disabled On</MateriaText>
+            <Switch value={true} onValueChange={() => { }} disabled />
+          </View>
+          <View style={styles.row}>
+            <MateriaText variant="bodyLarge">Disabled Off</MateriaText>
+            <Switch value={false} onValueChange={() => { }} disabled />
+          </View>
         </View>
-        <View style={styles.row}>
-          <MateriaText variant="bodyLarge">Switch Off</MateriaText>
-          <Switch value={value2} onValueChange={setValue2} />
-        </View>
-        <View style={styles.row}>
-          <MateriaText variant="bodyLarge">Disabled On</MateriaText>
-          <Switch value={true} onValueChange={() => {}} disabled />
-        </View>
-        <View style={styles.row}>
-          <MateriaText variant="bodyLarge">Disabled Off</MateriaText>
-          <Switch value={false} onValueChange={() => {}} disabled />
-        </View>
-      </View>
 
-      <MateriaText
-        variant="labelLarge"
-        style={[styles.label, { color: textColor }]}
-      >
-        With List Item
-      </MateriaText>
-      <List variant="segmented">
-        <List.Item
-          headline="Item with switch"
-          trailingContent={<Switch value={value3} onValueChange={setValue3} />}
-          onPress={() => setValue3(!value3)}
-        />
-        <List.Item
-          headline="Item with switch"
-          supportingText="Supporting text"
-          trailingContent={<Switch value={value4} onValueChange={setValue4} />}
-          onPress={() => setValue4(!value4)}
-        />
-        <List.Item
-          headline="Disabled item with switch"
-          trailingContent={
-            <Switch value={true} onValueChange={() => {}} disabled />
-          }
-          disabled
-        />
-      </List>
-    </ScrollScreenWrapper>
+        <MateriaText
+          variant="labelLarge"
+          style={[styles.label, { color: textColor }]}
+        >
+          With List Item
+        </MateriaText>
+        <List variant="segmented">
+          <List.Item
+            headline="Item with switch"
+            trailingContent={<Switch value={value3} onValueChange={setValue3} />}
+            onPress={() => setValue3(!value3)}
+          />
+          <List.Item
+            headline="Item with switch"
+            supportingText="Supporting text"
+            trailingContent={<Switch value={value4} onValueChange={setValue4} />}
+            onPress={() => setValue4(!value4)}
+          />
+          <List.Item
+            headline="Disabled item with switch"
+            trailingContent={
+              <Switch value={true} onValueChange={() => { }} disabled />
+            }
+            disabled
+          />
+        </List>
+      </ScrollContent>
+    </ScreenWrapper>
   );
 };
 
