@@ -1,7 +1,17 @@
 {
   "name": "react-native-materia",
   "version": "0.1.1",
+  "description": "Lightweight and flexible React Native UI library implementing Material You (Material Design 3) specifications.",
+  "author": "andreevgs (https://github.com/andreevgs)",
   "license": "MIT",
+  "homepage": "https://github.com/andreevgs/react-native-materia#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreevgs/react-native-materia.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andreevgs/react-native-materia/issues"
+  },
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
   "types": "lib/typescript/index.d.ts",
