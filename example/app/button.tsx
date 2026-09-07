@@ -1,26 +1,38 @@
-import { Button } from "react-native-materia";
+import React from "react";
+import { Button, AppBar, IconButton } from "react-native-materia";
+import { useRouter } from "expo-router";
+import { ScreenWrapper } from "../components/ScreenWrapper";
 import { ComponentDemo } from "../components/ComponentDemo";
 
 const ButtonDemo = () => {
+  const router = useRouter();
+
   return (
-    <ComponentDemo>
-      <Button onPress={() => {}} mode="filled" icon="check">
-        Filled Button
-      </Button>
-      <Button onPress={() => {}} mode="tonal">
-        Tonal Button
-      </Button>
-      <Button onPress={() => {}} mode="outlined" icon="check">
-        Outlined Button
-      </Button>
-      <Button onPress={() => {}} mode="elevated">
-        Elevated Button
-      </Button>
-      <Button onPress={() => {}} mode="text">
-        Text Button
-      </Button>
-    </ComponentDemo>
+    <ScreenWrapper>
+      <AppBar
+        headline="Button"
+        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+      />
+      <ComponentDemo>
+        <Button onPress={() => {}} mode="filled" icon="check">
+          Filled Button
+        </Button>
+        <Button onPress={() => {}} mode="tonal">
+          Tonal Button
+        </Button>
+        <Button onPress={() => {}} mode="outlined" icon="check">
+          Outlined Button
+        </Button>
+        <Button onPress={() => {}} mode="elevated">
+          Elevated Button
+        </Button>
+        <Button onPress={() => {}} mode="text">
+          Text Button
+        </Button>
+      </ComponentDemo>
+    </ScreenWrapper>
   );
 };
 
 export default ButtonDemo;
+

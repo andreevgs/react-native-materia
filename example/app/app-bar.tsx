@@ -8,17 +8,18 @@ import {
   useMateriaTokens,
 } from "react-native-materia";
 import { useRouter } from "expo-router";
-import { MateriaScheme, Tokens } from "react-native-materia/types";
+import { ScreenWrapper } from "../components/ScreenWrapper";
+import { Tokens } from "react-native-materia/types";
 
 const AppBarDemo = () => {
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
   const router = useRouter();
 
-  const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
+  const styles = useMemo(() => createStyles(tokens), [tokens]);
 
   return (
-    <View style={styles.container}>
+    <ScreenWrapper>
       <AppBar
         leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
         headline="App Bar"
@@ -45,16 +46,12 @@ const AppBarDemo = () => {
           trailing={<IconButton icon="check" onPress={() => {}} />}
         />
       </View>
-    </View>
+    </ScreenWrapper>
   );
 };
 
-const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
+const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
     content: {
       flex: 1,
       padding: tokens.spacing.l,
@@ -63,3 +60,4 @@ const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
   });
 
 export default AppBarDemo;
+

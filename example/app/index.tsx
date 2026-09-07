@@ -6,7 +6,8 @@ import {
   MateriaText,
   useMateriaTokens,
 } from "react-native-materia";
-import { ScrollScreenWrapper } from "../components/ScrollScreenWrapper";
+import { ScreenWrapper } from "../components/ScreenWrapper";
+import { ScrollContent } from "../components/ScrollContent";
 import { useMateriaColors } from "react-native-materia";
 import { Tokens } from "react-native-materia/types";
 import { useMemo } from "react";
@@ -35,27 +36,29 @@ const ComponentsScreen = () => {
   const textColor = colors.onSurfaceVariant;
 
   return (
-    <ScrollScreenWrapper contentContainerStyle={styles.container}>
-      <MateriaText
-        variant="labelLarge"
-        style={[styles.label, { color: textColor }]}
-      >
-        Components
-      </MateriaText>
-      <List variant="segmented">
-        {components.map((comp) => (
-          <List.Item
-            key={comp.name}
-            headline={comp.name}
-            pressDelay={65}
-            onPress={() => router.push(comp.path as any)}
-            trailingContent={
-              <Icon source="chevron-right" size={tokens.iconSize["20dp"]} />
-            }
-          />
-        ))}
-      </List>
-    </ScrollScreenWrapper>
+    <ScreenWrapper withSafeArea>
+      <ScrollContent contentContainerStyle={styles.container}>
+        <MateriaText
+          variant="labelLarge"
+          style={[styles.label, { color: textColor }]}
+        >
+          Components
+        </MateriaText>
+        <List variant="segmented">
+          {components.map((comp) => (
+            <List.Item
+              key={comp.name}
+              headline={comp.name}
+              pressDelay={65}
+              onPress={() => router.push(comp.path as any)}
+              trailingContent={
+                <Icon source="chevron-right" size={tokens.iconSize["20dp"]} />
+              }
+            />
+          ))}
+        </List>
+      </ScrollContent>
+    </ScreenWrapper>
   );
 };
 
