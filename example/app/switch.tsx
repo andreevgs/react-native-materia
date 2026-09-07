@@ -10,14 +10,15 @@ import {
   useMateriaColors,
 } from "react-native-materia";
 import { useRouter } from "expo-router";
-import { ScrollScreenWrapper } from "../components/ScrollScreenWrapper";
-import { Tokens, MateriaScheme } from "react-native-materia/types";
+import { ScreenWrapper } from "../components/ScreenWrapper";
+import { ScrollContent } from "../components/ScrollContent";
+import { Tokens } from "react-native-materia/types";
 
 const SwitchDemo = () => {
   const router = useRouter();
   const tokens = useMateriaTokens();
   const colors = useMateriaColors();
-  const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
+  const styles = useMemo(() => createStyles(tokens), [tokens]);
   const textColor = colors.onSurfaceVariant;
 
   const [value1, setValue1] = useState(true);
@@ -26,12 +27,12 @@ const SwitchDemo = () => {
   const [value4, setValue4] = useState(false);
 
   return (
-    <View style={styles.screen}>
+    <ScreenWrapper>
       <AppBar
         headline="Switch"
         leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
       />
-      <ScrollScreenWrapper style={styles.content} contentContainerStyle={styles.container}>
+      <ScrollContent contentContainerStyle={styles.container}>
         <View style={styles.section}>
           <View style={styles.row}>
             <MateriaText variant="bodyLarge">Switch On</MateriaText>
@@ -77,20 +78,13 @@ const SwitchDemo = () => {
             disabled
           />
         </List>
-      </ScrollScreenWrapper>
-    </View>
+      </ScrollContent>
+    </ScreenWrapper>
   );
 };
 
-const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
+const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
-    screen: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    content: {
-      paddingTop: 0,
-    },
     container: {
       paddingVertical: tokens.spacing.s,
       paddingHorizontal: tokens.spacing.l,

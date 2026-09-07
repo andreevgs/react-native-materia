@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import {
   Icon,
   MateriaText,
@@ -10,8 +10,9 @@ import {
   useMateriaTokens,
 } from "react-native-materia";
 import { useRouter } from "expo-router";
-import { Tokens, MateriaScheme } from "react-native-materia/types";
-import { ScrollScreenWrapper } from "../components/ScrollScreenWrapper";
+import { Tokens } from "react-native-materia/types";
+import { ScreenWrapper } from "../components/ScreenWrapper";
+import { ScrollContent } from "../components/ScrollContent";
 
 const ErrorIcon = () => {
   const colors = useMateriaColors();
@@ -21,7 +22,6 @@ const ErrorIcon = () => {
 const TextFieldDemo = () => {
   const router = useRouter();
   const tokens = useMateriaTokens();
-  const colors = useMateriaColors();
 
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
@@ -39,15 +39,15 @@ const TextFieldDemo = () => {
   const [value6Outlined, setValue6Outlined] = useState("");
   const [value7Outlined, setValue7Outlined] = useState("");
 
-  const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
+  const styles = useMemo(() => createStyles(tokens), [tokens]);
 
   return (
-    <View style={styles.screen}>
+    <ScreenWrapper>
       <AppBar
         headline="Text Field"
         leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
       />
-      <ScrollScreenWrapper style={styles.content} contentContainerStyle={styles.container}>
+      <ScrollContent contentContainerStyle={styles.container}>
         <MateriaText variant="titleMedium" style={styles.sectionTitle}>
           Filled
         </MateriaText>
@@ -87,7 +87,9 @@ const TextFieldDemo = () => {
           label="Dynamic Supporting Text"
           value={value6}
           onChangeText={setValue6}
-          supportingText={value6.length > 0 ? "You typed something!" : undefined}
+          supportingText={
+            value6.length > 0 ? "You typed something!" : undefined
+          }
         />
         <TextField
           label="Validation"
@@ -95,10 +97,16 @@ const TextFieldDemo = () => {
           onChangeText={setValue7}
           error={value7.length > 10}
           supportingText={
-            value7.length > 10 ? "Too many characters!" : `Maximum 10 characters`
+            value7.length > 10
+              ? "Too many characters!"
+              : `Maximum 10 characters`
           }
         />
-        <TextField label="Disabled Text Field" value="Read only text" disabled />
+        <TextField
+          label="Disabled Text Field"
+          value="Read only text"
+          disabled
+        />
 
         <MateriaText variant="titleMedium" style={styles.sectionTitle}>
           Outlined
@@ -167,20 +175,13 @@ const TextFieldDemo = () => {
           value="Read only text"
           disabled
         />
-      </ScrollScreenWrapper>
-    </View>
+      </ScrollContent>
+    </ScreenWrapper>
   );
 };
 
-const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
+const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
-    screen: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    content: {
-      paddingTop: 0,
-    },
     container: {
       paddingHorizontal: tokens.spacing.l,
       paddingBottom: tokens.spacing.xl,

@@ -1,24 +1,24 @@
 import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
-import { Icon, List, AppBar, IconButton, useMateriaTokens, useMateriaColors } from "react-native-materia";
+import { Icon, List, AppBar, IconButton, useMateriaTokens } from "react-native-materia";
 import { useRouter } from "expo-router";
-import { ScrollScreenWrapper } from "../components/ScrollScreenWrapper";
-import { MateriaScheme, Tokens } from "react-native-materia/types";
+import { ScreenWrapper } from "../components/ScreenWrapper";
+import { ScrollContent } from "../components/ScrollContent";
+import { Tokens } from "react-native-materia/types";
 
 const ListDemo = () => {
   const router = useRouter();
-  const colors = useMateriaColors();
   const tokens = useMateriaTokens();
 
-  const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
+  const styles = useMemo(() => createStyles(tokens), [tokens]);
 
   return (
-    <View style={styles.container}>
+    <ScreenWrapper>
       <AppBar
         headline="List"
         leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
       />
-      <ScrollScreenWrapper style={styles.content}>
+      <ScrollContent>
         <List variant="standard">
           <List.Item
             headline="Standard Item 1"
@@ -57,20 +57,13 @@ const ListDemo = () => {
             />
           </List>
         </View>
-      </ScrollScreenWrapper>
-    </View>
+      </ScrollContent>
+    </ScreenWrapper>
   );
 };
 
-const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
+const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    content: {
-      paddingTop: 0,
-    },
     segmentedContainer: {
       paddingHorizontal: tokens.spacing.l,
       marginTop: tokens.spacing.xl,

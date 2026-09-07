@@ -1,10 +1,10 @@
-import React, { useMemo } from "react";
-import { View, StyleSheet } from "react-native";
-import { IconButton, AppBar, useMateriaColors, useMateriaTokens } from "react-native-materia";
+import React from "react";
+import { IconButton, AppBar } from "react-native-materia";
 import { useRouter } from "expo-router";
+import { ScreenWrapper } from "../components/ScreenWrapper";
 import { ComponentDemo } from "../components/ComponentDemo";
 import Svg, { Path } from "react-native-svg";
-import { MateriaIconProps, MateriaScheme, Tokens } from "react-native-materia/types";
+import { MateriaIconProps } from "react-native-materia/types";
 
 const CustomIcon = ({ color, size, style, ...props }: MateriaIconProps) => {
   return (
@@ -23,36 +23,22 @@ const CustomIcon = ({ color, size, style, ...props }: MateriaIconProps) => {
 
 const IconButtonDemo = () => {
   const router = useRouter();
-  const colors = useMateriaColors();
-  const tokens = useMateriaTokens();
-
-  const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
 
   return (
-    <View style={styles.container}>
+    <ScreenWrapper>
       <AppBar
         headline="Icon Button"
         leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
       />
-      <ComponentDemo style={styles.content}>
-        <IconButton icon="check" mode="standard" onPress={() => { }} />
-        <IconButton icon="check" mode="filled" onPress={() => { }} />
-        <IconButton icon="check" mode="tonal" onPress={() => { }} />
-        <IconButton icon={CustomIcon} mode="outlined" onPress={() => { }} />
+      <ComponentDemo>
+        <IconButton icon="check" mode="standard" onPress={() => {}} />
+        <IconButton icon="check" mode="filled" onPress={() => {}} />
+        <IconButton icon="check" mode="tonal" onPress={() => {}} />
+        <IconButton icon={CustomIcon} mode="outlined" onPress={() => {}} />
       </ComponentDemo>
-    </View>
+    </ScreenWrapper>
   );
 };
 
-const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    content: {
-      paddingTop: 0,
-    },
-  });
-
 export default IconButtonDemo;
+

@@ -1,53 +1,38 @@
-import React, { useMemo } from "react";
-import { View, StyleSheet } from "react-native";
-import { Button, AppBar, IconButton, useMateriaColors, useMateriaTokens } from "react-native-materia";
+import React from "react";
+import { Button, AppBar, IconButton } from "react-native-materia";
 import { useRouter } from "expo-router";
+import { ScreenWrapper } from "../components/ScreenWrapper";
 import { ComponentDemo } from "../components/ComponentDemo";
-import { MateriaScheme, Tokens } from "react-native-materia/types";
 
 const ButtonDemo = () => {
   const router = useRouter();
-  const colors = useMateriaColors();
-  const tokens = useMateriaTokens();
-
-  const styles = useMemo(() => createStyles(tokens, colors), [tokens, colors]);
 
   return (
-    <View style={styles.container}>
+    <ScreenWrapper>
       <AppBar
         headline="Button"
         leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
       />
-      <ComponentDemo style={styles.content}>
-        <Button onPress={() => { }} mode="filled" icon="check">
+      <ComponentDemo>
+        <Button onPress={() => {}} mode="filled" icon="check">
           Filled Button
         </Button>
-        <Button onPress={() => { }} mode="tonal">
+        <Button onPress={() => {}} mode="tonal">
           Tonal Button
         </Button>
-        <Button onPress={() => { }} mode="outlined" icon="check">
+        <Button onPress={() => {}} mode="outlined" icon="check">
           Outlined Button
         </Button>
-        <Button onPress={() => { }} mode="elevated">
+        <Button onPress={() => {}} mode="elevated">
           Elevated Button
         </Button>
-        <Button onPress={() => { }} mode="text">
+        <Button onPress={() => {}} mode="text">
           Text Button
         </Button>
       </ComponentDemo>
-    </View>
+    </ScreenWrapper>
   );
 };
 
-const createStyles = (tokens: Tokens, colors: MateriaScheme) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: colors.background,
-    },
-    content: {
-      paddingTop: 0,
-    },
-  });
-
 export default ButtonDemo;
+
