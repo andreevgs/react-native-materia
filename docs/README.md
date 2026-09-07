@@ -1,50 +1,33 @@
-# Welcome to your Expo app 👋
+# React Native Materia Docs
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This project serves as the official documentation website and interactive component showcase for the `react-native-materia` library. Built with Expo, Expo Router, and React Native for Web, it provides cross-platform documentation with native Material Design 3 (Material You) styling.
 
-## Get started
+## Architecture
 
-1. Install dependencies
+Documentation pages combine static technical descriptions with live, interactive component previews. Content is authored as Markdown files inside the `content` directory and imported directly into Expo Router pages via a dedicated Metro transformer (`md-transformer.js`).
 
-   ```bash
-   npm install
-   ```
+Rather than relying on heavy third-party markdown engines, the app uses an internal parser (`utils/md-parser.ts`) designed for performance and tight integration with the Materia design system. The parser breaks markdown text into structured blocks, tokenizes code snippets with Material Design color schemes, and embeds live component demos through slot directives (`<!-- SLOT: componentName -->`).
 
-2. Start the app
+## Development
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+To start the local development server for the web interface, run the following command from the `docs` directory:
 
 ```bash
-npm run reset-project
+npm run web
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+To build a production-ready static web bundle into the `dist` folder:
 
-## Learn more
+```bash
+npm run export
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Code quality and linting checks can be executed using:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm run lint
+```
 
-## Join the community
+## Structure
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The `app` directory implements file-based routing with Expo Router, organizing guides under `about` and component references under `components`. Reusable UI pieces, including the header, navigation sidebar, and code snippet visualizers, reside in `components`. Application theming and persistent light/dark mode preferences are handled by `providers/CurrentThemeProvider.tsx`, applying Materia design tokens seamlessly across the entire layout.
