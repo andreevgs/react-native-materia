@@ -47,10 +47,9 @@ jobs:
         run: npm run build:docs
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        id: deploy
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./docs/dist --project-name=react-native-materia-docs --branch=${{ github.head_ref || github.ref_name }}
-
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages project create react-native-materia-docs --production-branch main || true
+          npx wrangler pages deploy ./docs/dist --project-name=react-native-materia-docs --branch=${{ github.head_ref || github.ref_name }} --commit-dirty=true
