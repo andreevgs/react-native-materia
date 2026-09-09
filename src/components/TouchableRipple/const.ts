@@ -21,6 +21,8 @@ export const RIPPLE_CONFIG = {
   FEATHER_CONTAINER_RATIO: 0.35,
   /** MD3 Standard easing curve: cubic-bezier(0.2, 0.0, 0.0, 1.0) */
   STANDARD_EASING: Easing.bezier(0.2, 0.0, 0.0, 1.0),
+  /** Linear easing curve for opacity transitions according to MD3 specification */
+  OPACITY_EASING: Easing.linear,
   /** State layer hover transition duration in milliseconds */
   HOVER_TRANSITION_MS: 15,
   /** State layer focus transition duration in milliseconds */

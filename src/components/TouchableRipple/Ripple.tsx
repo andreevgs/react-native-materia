@@ -1,10 +1,11 @@
-import { memo, useEffect, useMemo, useRef } from "react";
+import { memo, useEffect, useMemo, useRef, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   withDelay,
+  withSequence,
   interpolate,
   runOnJS,
 } from "react-native-reanimated";
@@ -31,11 +32,27 @@ export const Ripple = memo(
 
     const isFinished = useRef(false);
     const createdAt = useRef(Date.now());
+    const isMountedRef = useRef(true);
 
     const geometry = useMemo(
       () => calculateRippleGeometry(x, y, parentWidth, parentHeight),
       [x, y, parentWidth, parentHeight],
     );
+
+    const safeOnFinished = useCallback(
+      (key: string) => {
+        if (isMountedRef.current) {
+          onFinished(key);
+        }
+      },
+      [onFinished],
+    );
+
+    useEffect(() => {
+      return () => {
+        isMountedRef.current = false;
+      };
+    }, []);
 
     const animatedStyle = useAnimatedStyle(() => {
       const translateX = interpolate(
@@ -60,46 +77,85 @@ export const Ripple = memo(
       };
     });
 
+    // 1. Expand scale and drift towards center
     useEffect(() => {
-      // 1. Fade-in opacity (105ms in M3 spec)
-      opacity.value = withTiming(initialOpacity, {
-        duration: RIPPLE_CONFIG.FADE_IN_DURATION_MS,
-      });
-
-      // 2. Expand scale and drift towards center (450ms with standard easing in M3 spec)
       progress.value = withTiming(1, {
         duration: RIPPLE_CONFIG.EXPAND_DURATION_MS,
         easing: RIPPLE_CONFIG.STANDARD_EASING,
       });
-    }, [initialOpacity, opacity, progress]);
+    }, [progress]);
 
+    // 2. Fade in opacity on initial press
+    useEffect(() => {
+      if (isActive && !isFinished.current) {
+        opacity.value = withTiming(initialOpacity, {
+          duration: RIPPLE_CONFIG.FADE_IN_DURATION_MS,
+          easing: RIPPLE_CONFIG.OPACITY_EASING,
+        });
+      }
+    }, [isActive, initialOpacity, opacity]);
+
+    // 3. Handle release (either immediately for quick taps or after touch release)
     useEffect(() => {
       if (!isActive && !isFinished.current) {
         isFinished.current = true;
 
         const timeElapsed = Date.now() - createdAt.current;
-        const delay = Math.max(
-          0,
-          RIPPLE_CONFIG.MIN_TAP_DURATION_MS - timeElapsed,
-        );
 
-        const fadeOutAnim = withTiming(
-          0,
-          { duration: RIPPLE_CONFIG.FADE_OUT_DURATION_MS },
-          (finished) => {
-            if (finished) {
-              runOnJS(onFinished)(uniqueKey);
-            }
-          },
-        );
+        // If released before fade-in completes, sequence the rest of fade-in before fade-out
+        if (timeElapsed < RIPPLE_CONFIG.FADE_IN_DURATION_MS) {
+          const remainingFadeIn = RIPPLE_CONFIG.FADE_IN_DURATION_MS - timeElapsed;
+          const holdDelay =
+            RIPPLE_CONFIG.MIN_TAP_DURATION_MS - RIPPLE_CONFIG.FADE_IN_DURATION_MS;
 
-        if (delay > 0) {
-          opacity.value = withDelay(delay, fadeOutAnim);
+          opacity.value = withSequence(
+            withTiming(initialOpacity, {
+              duration: remainingFadeIn,
+              easing: RIPPLE_CONFIG.OPACITY_EASING,
+            }),
+            withDelay(
+              holdDelay,
+              withTiming(
+                0,
+                {
+                  duration: RIPPLE_CONFIG.FADE_OUT_DURATION_MS,
+                  easing: RIPPLE_CONFIG.OPACITY_EASING,
+                },
+                (finished) => {
+                  if (finished) {
+                    runOnJS(safeOnFinished)(uniqueKey);
+                  }
+                },
+              ),
+            ),
+          );
         } else {
-          opacity.value = fadeOutAnim;
+          const delay = Math.max(
+            0,
+            RIPPLE_CONFIG.MIN_TAP_DURATION_MS - timeElapsed,
+          );
+
+          const fadeOutAnim = withTiming(
+            0,
+            {
+              duration: RIPPLE_CONFIG.FADE_OUT_DURATION_MS,
+              easing: RIPPLE_CONFIG.OPACITY_EASING,
+            },
+            (finished) => {
+              if (finished) {
+                runOnJS(safeOnFinished)(uniqueKey);
+              }
+            },
+          );
+
+          if (delay > 0) {
+            opacity.value = withDelay(delay, fadeOutAnim);
+          } else {
+            opacity.value = fadeOutAnim;
+          }
         }
       }
-    }, [isActive, onFinished, uniqueKey, opacity]);
+    }, [isActive, initialOpacity, safeOnFinished, uniqueKey, opacity]);
 
     return (
       <Animated.View

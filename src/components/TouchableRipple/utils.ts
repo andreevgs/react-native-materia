@@ -56,16 +56,18 @@ export const calculateRippleGeometry = (
     y: (containerHeight - initialDiameter) / 2,
   };
 
-  const originPosition =
+  const hasValidCoordinates =
     typeof touchX === "number" &&
+    !isNaN(touchX) &&
     typeof touchY === "number" &&
-    touchX >= 0 &&
-    touchY >= 0
-      ? {
-          x: touchX - initialDiameter / 2,
-          y: touchY - initialDiameter / 2,
-        }
-      : centerPosition;
+    !isNaN(touchY);
+
+  const originPosition = hasValidCoordinates
+    ? {
+        x: touchX - initialDiameter / 2,
+        y: touchY - initialDiameter / 2,
+      }
+    : centerPosition;
 
   return {
     initialDiameter,

@@ -1,7 +1,6 @@
 import React, {
   useState,
   useCallback,
-  useRef,
   useMemo,
   useEffect,
 } from "react";
@@ -15,6 +14,7 @@ import {
   NativeSyntheticEvent,
   TargetedEvent,
   MouseEvent,
+  ViewStyle,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -26,11 +26,11 @@ import Color from "color";
 import { RippleItem, TouchableRippleProps } from "./types";
 import { Ripple } from "./Ripple";
 import { RIPPLE_CONFIG } from "./const";
-import { useMateriaColors } from "../../core";
-import { useMateriaTokens } from "../../core/MateriaProvider";
+import { useMateriaColors, useMateriaTokens } from "../../core";
 import { isWebFocusVisible } from "./utils";
 
 const supportNativeRipple = Platform.OS === "android" && Platform.Version >= 21;
+let globalRippleCounter = 0;
 
 export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
   (
@@ -57,9 +57,6 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
   ) => {
     const colors = useMateriaColors();
     const tokens = useMateriaTokens();
-    const idCounter = useRef(0);
-    const touchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const pendingTouch = useRef<{ x: number; y: number } | null>(null);
 
     const hasNativeRipple = supportNativeRipple && useNativeEffect;
 
@@ -73,24 +70,37 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
 
     const borderStyles = useMemo(() => {
       const flattened = StyleSheet.flatten(style) || {};
-      return {
-        borderRadius:
-          typeof flattened.borderRadius === "number"
-            ? flattened.borderRadius
-            : 0,
-        ...(typeof flattened.borderTopLeftRadius === "number" && {
-          borderTopLeftRadius: flattened.borderTopLeftRadius,
-        }),
-        ...(typeof flattened.borderTopRightRadius === "number" && {
-          borderTopRightRadius: flattened.borderTopRightRadius,
-        }),
-        ...(typeof flattened.borderBottomLeftRadius === "number" && {
-          borderBottomLeftRadius: flattened.borderBottomLeftRadius,
-        }),
-        ...(typeof flattened.borderBottomRightRadius === "number" && {
-          borderBottomRightRadius: flattened.borderBottomRightRadius,
-        }),
-      };
+      const result: ViewStyle = {};
+
+      if (typeof flattened.borderRadius === "number") {
+        result.borderRadius = flattened.borderRadius;
+      }
+      if (typeof flattened.borderTopLeftRadius === "number") {
+        result.borderTopLeftRadius = flattened.borderTopLeftRadius;
+      }
+      if (typeof flattened.borderTopRightRadius === "number") {
+        result.borderTopRightRadius = flattened.borderTopRightRadius;
+      }
+      if (typeof flattened.borderBottomLeftRadius === "number") {
+        result.borderBottomLeftRadius = flattened.borderBottomLeftRadius;
+      }
+      if (typeof flattened.borderBottomRightRadius === "number") {
+        result.borderBottomRightRadius = flattened.borderBottomRightRadius;
+      }
+      if (typeof flattened.borderStartStartRadius === "number") {
+        result.borderStartStartRadius = flattened.borderStartStartRadius;
+      }
+      if (typeof flattened.borderStartEndRadius === "number") {
+        result.borderStartEndRadius = flattened.borderStartEndRadius;
+      }
+      if (typeof flattened.borderEndStartRadius === "number") {
+        result.borderEndStartRadius = flattened.borderEndStartRadius;
+      }
+      if (typeof flattened.borderEndEndRadius === "number") {
+        result.borderEndEndRadius = flattened.borderEndEndRadius;
+      }
+
+      return result;
     }, [style]);
 
     const solidRippleColor = useMemo(() => {
@@ -125,14 +135,6 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
       }
     }, [isFocused, isHovered, disabled, stateLayerOpacity, tokens]);
 
-    useEffect(() => {
-      return () => {
-        if (touchTimer.current) {
-          clearTimeout(touchTimer.current);
-        }
-      };
-    }, []);
-
     const handleLayout = useCallback((e: LayoutChangeEvent) => {
       const { width, height } = e.nativeEvent.layout;
       setLayout((prev) =>
@@ -147,10 +149,10 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
         if (hasNativeRipple || layout.width === 0 || layout.height === 0)
           return;
 
-        const posX = typeof x === "number" && x >= 0 ? x : layout.width / 2;
-        const posY = typeof y === "number" && y >= 0 ? y : layout.height / 2;
+        const posX = typeof x === "number" && !isNaN(x) ? x : layout.width / 2;
+        const posY = typeof y === "number" && !isNaN(y) ? y : layout.height / 2;
 
-        const id = `ripple_${++idCounter.current}`;
+        const id = `tr_${++globalRippleCounter}`;
         setRipples((prev) => [
           ...prev,
           { uniqueKey: id, x: posX, y: posY, isActive },
@@ -166,7 +168,7 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
     const delay =
       touchDelay !== undefined
         ? touchDelay
-        : Platform.OS === "web"
+        : Platform.OS === "web" || hasNativeRipple
           ? 0
           : RIPPLE_CONFIG.PRESS_DELAY_MS;
 
@@ -175,48 +177,32 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
         if (disabled) return;
         const x = e.nativeEvent.locationX;
         const y = e.nativeEvent.locationY;
-
-        if (delay > 0) {
-          pendingTouch.current = { x, y };
-          touchTimer.current = setTimeout(() => {
-            if (pendingTouch.current) {
-              addRipple(pendingTouch.current.x, pendingTouch.current.y, true);
-              pendingTouch.current = null;
-            }
-          }, delay);
-        } else {
-          addRipple(x, y, true);
-        }
-
+        addRipple(x, y, true);
         onPressIn?.(e);
       },
-      [disabled, delay, addRipple, onPressIn],
+      [disabled, addRipple, onPressIn],
     );
 
     const handlePressOut = useCallback(
       (e: GestureResponderEvent) => {
-        if (touchTimer.current) {
-          clearTimeout(touchTimer.current);
-          touchTimer.current = null;
-        }
-
-        if (pendingTouch.current) {
-          // Quick tap before touch delay expired: trigger ripple in releasing state
-          addRipple(pendingTouch.current.x, pendingTouch.current.y, false);
-          pendingTouch.current = null;
-        } else {
-          setRipples((prev) =>
-            prev.map((r) => (r.isActive ? { ...r, isActive: false } : r)),
-          );
-        }
-
+        setRipples((prev) =>
+          prev.map((r) => (r.isActive ? { ...r, isActive: false } : r)),
+        );
         onPressOut?.(e);
       },
-      [addRipple, onPressOut],
+      [onPressOut],
     );
 
     const handleHoverIn = useCallback(
       (e: MouseEvent) => {
+        if (Platform.OS === "web") {
+          const nativeEvent = (
+            e as unknown as { nativeEvent?: { pointerType?: string } }
+          )?.nativeEvent;
+          if (nativeEvent?.pointerType && nativeEvent.pointerType !== "mouse") {
+            return;
+          }
+        }
         setIsHovered(true);
         onHoverIn?.(e);
       },
@@ -271,14 +257,13 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
             ? {
                 color: nativeRippleColor,
                 borderless,
-                foreground: true,
+                foreground: !borderless,
               }
             : null
         }
         style={[
           style,
           borderless ? styles.borderless : styles.clipping,
-          disabled && styles.disabled,
         ]}
         {...props}
       >
@@ -330,16 +315,13 @@ const styles = StyleSheet.create({
   clipping: {
     overflow: "hidden",
     ...Platform.select({
-      web: { userSelect: "none" as const },
+      web: { userSelect: "none" as const, outlineStyle: "none" as const },
     }),
   },
   borderless: {
     overflow: "visible",
     ...Platform.select({
-      web: { userSelect: "none" as const },
+      web: { userSelect: "none" as const, outlineStyle: "none" as const },
     }),
-  },
-  disabled: {
-    opacity: 0.38,
   },
 });
