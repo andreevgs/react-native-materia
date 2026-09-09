@@ -25,6 +25,7 @@ import Color from "color";
 
 import { RippleItem, TouchableRippleProps } from "./types";
 import { Ripple } from "./Ripple";
+import { RIPPLE_CONFIG } from "./const";
 import { useMateriaColors } from "../../core";
 import { useMateriaTokens } from "../../core/MateriaProvider";
 import { isWebFocusVisible } from "./utils";
@@ -49,6 +50,7 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
       rippleColor,
       useNativeEffect = true,
       contentPointerEvents,
+      touchDelay,
       ...props
     },
     ref,
@@ -56,13 +58,14 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
     const colors = useMateriaColors();
     const tokens = useMateriaTokens();
     const idCounter = useRef(0);
+    const touchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const pendingTouch = useRef<{ x: number; y: number } | null>(null);
 
     const hasNativeRipple = supportNativeRipple && useNativeEffect;
 
     const [layout, setLayout] = useState({ width: 0, height: 0 });
     const [ripples, setRipples] = useState<RippleItem[]>([]);
 
-    const [isPressed, setIsPressed] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
 
@@ -101,33 +104,34 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
         .string();
     }, [solidRippleColor, tokens]);
 
+    // M3 State Layer handles hover and focus over the surface
     useEffect(() => {
       if (disabled) {
-        stateLayerOpacity.value = withTiming(0, { duration: 200 });
-      } else if (isPressed && !hasNativeRipple) {
-        stateLayerOpacity.value = withTiming(tokens.stateOpacity.pressed, {
-          duration: 200,
+        stateLayerOpacity.value = withTiming(0, {
+          duration: RIPPLE_CONFIG.HOVER_TRANSITION_MS,
         });
       } else if (isFocused) {
         stateLayerOpacity.value = withTiming(tokens.stateOpacity.focus, {
-          duration: 200,
+          duration: RIPPLE_CONFIG.FOCUS_TRANSITION_MS,
         });
       } else if (isHovered) {
         stateLayerOpacity.value = withTiming(tokens.stateOpacity.hover, {
-          duration: 200,
+          duration: RIPPLE_CONFIG.HOVER_TRANSITION_MS,
         });
       } else {
-        stateLayerOpacity.value = withTiming(0, { duration: 200 });
+        stateLayerOpacity.value = withTiming(0, {
+          duration: RIPPLE_CONFIG.HOVER_TRANSITION_MS,
+        });
       }
-    }, [
-      isPressed,
-      isFocused,
-      isHovered,
-      disabled,
-      stateLayerOpacity,
-      hasNativeRipple,
-      tokens,
-    ]);
+    }, [isFocused, isHovered, disabled, stateLayerOpacity, tokens]);
+
+    useEffect(() => {
+      return () => {
+        if (touchTimer.current) {
+          clearTimeout(touchTimer.current);
+        }
+      };
+    }, []);
 
     const handleLayout = useCallback((e: LayoutChangeEvent) => {
       const { width, height } = e.nativeEvent.layout;
@@ -139,14 +143,17 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
     }, []);
 
     const addRipple = useCallback(
-      (x: number, y: number) => {
+      (x?: number, y?: number, isActive = true) => {
         if (hasNativeRipple || layout.width === 0 || layout.height === 0)
           return;
+
+        const posX = typeof x === "number" && x >= 0 ? x : layout.width / 2;
+        const posY = typeof y === "number" && y >= 0 ? y : layout.height / 2;
 
         const id = `ripple_${++idCounter.current}`;
         setRipples((prev) => [
           ...prev,
-          { uniqueKey: id, x, y, isActive: true },
+          { uniqueKey: id, x: posX, y: posY, isActive },
         ]);
       },
       [hasNativeRipple, layout.width, layout.height],
@@ -156,25 +163,56 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
       setRipples((prev) => prev.filter((r) => r.uniqueKey !== key));
     }, []);
 
+    const delay =
+      touchDelay !== undefined
+        ? touchDelay
+        : Platform.OS === "web"
+          ? 0
+          : RIPPLE_CONFIG.PRESS_DELAY_MS;
+
     const handlePressIn = useCallback(
       (e: GestureResponderEvent) => {
         if (disabled) return;
-        setIsPressed(true);
-        addRipple(e.nativeEvent.locationX, e.nativeEvent.locationY);
+        const x = e.nativeEvent.locationX;
+        const y = e.nativeEvent.locationY;
+
+        if (delay > 0) {
+          pendingTouch.current = { x, y };
+          touchTimer.current = setTimeout(() => {
+            if (pendingTouch.current) {
+              addRipple(pendingTouch.current.x, pendingTouch.current.y, true);
+              pendingTouch.current = null;
+            }
+          }, delay);
+        } else {
+          addRipple(x, y, true);
+        }
+
         onPressIn?.(e);
       },
-      [disabled, addRipple, onPressIn],
+      [disabled, delay, addRipple, onPressIn],
     );
 
     const handlePressOut = useCallback(
       (e: GestureResponderEvent) => {
-        setIsPressed(false);
-        setRipples((prev) =>
-          prev.map((r) => (r.isActive ? { ...r, isActive: false } : r)),
-        );
+        if (touchTimer.current) {
+          clearTimeout(touchTimer.current);
+          touchTimer.current = null;
+        }
+
+        if (pendingTouch.current) {
+          // Quick tap before touch delay expired: trigger ripple in releasing state
+          addRipple(pendingTouch.current.x, pendingTouch.current.y, false);
+          pendingTouch.current = null;
+        } else {
+          setRipples((prev) =>
+            prev.map((r) => (r.isActive ? { ...r, isActive: false } : r)),
+          );
+        }
+
         onPressOut?.(e);
       },
-      [onPressOut],
+      [addRipple, onPressOut],
     );
 
     const handleHoverIn = useCallback(
@@ -218,6 +256,7 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
       <Pressable
         ref={ref}
         disabled={disabled}
+        unstable_pressDelay={delay > 0 ? delay : undefined}
         onLongPress={onLongPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -249,15 +288,19 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
         >
           {children}
         </View>
+
+        {/* M3 State Layer for Hover / Focus */}
         <Animated.View
           style={[StyleSheet.absoluteFill, stateLayerStyle, borderStyles]}
           pointerEvents="none"
         />
+
+        {/* M3 Press Ripple Waves */}
         {!hasNativeRipple && (
           <View
             style={[
               StyleSheet.absoluteFill,
-              styles.rippleContainer,
+              borderless ? styles.borderless : styles.clipping,
               borderStyles,
             ]}
             pointerEvents="none"
@@ -284,8 +327,19 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
 );
 
 const styles = StyleSheet.create({
-  clipping: { overflow: "hidden", userSelect: "none" },
-  borderless: { overflow: "visible", userSelect: "none" },
-  disabled: { opacity: 0.38 },
-  rippleContainer: { overflow: "visible" },
+  clipping: {
+    overflow: "hidden",
+    ...Platform.select({
+      web: { userSelect: "none" as const },
+    }),
+  },
+  borderless: {
+    overflow: "visible",
+    ...Platform.select({
+      web: { userSelect: "none" as const },
+    }),
+  },
+  disabled: {
+    opacity: 0.38,
+  },
 });

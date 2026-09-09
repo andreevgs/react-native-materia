@@ -1,18 +1,18 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   withDelay,
+  interpolate,
   runOnJS,
-  Easing,
 } from "react-native-reanimated";
-import { RippleProps } from "./types";
 
-const RIPPLE_DURATION = 400;
-const MIN_RIPPLE_LIFESPAN = 225;
-const FADE_OUT_DURATION = 200;
+import { RippleProps } from "./types";
+import { calculateRippleGeometry } from "./utils";
+import { RIPPLE_CONFIG } from "./const";
+import { SoftEdgeRipple } from "./SoftEdgeRipple";
 
 export const Ripple = memo(
   ({
@@ -26,46 +26,66 @@ export const Ripple = memo(
     uniqueKey,
     isActive,
   }: RippleProps) => {
-    const scale = useSharedValue(0);
-    const opacity = useSharedValue(initialOpacity);
+    const progress = useSharedValue(0);
+    const opacity = useSharedValue(0);
 
     const isFinished = useRef(false);
-    const [createdAt] = useState(() => Date.now());
+    const createdAt = useRef(Date.now());
 
-    const radius = useMemo(() => {
-      const distX = Math.max(x, parentWidth - x);
-      const distY = Math.max(y, parentHeight - y);
-      return Math.sqrt(distX * distX + distY * distY);
-    }, [x, y, parentWidth, parentHeight]);
+    const geometry = useMemo(
+      () => calculateRippleGeometry(x, y, parentWidth, parentHeight),
+      [x, y, parentWidth, parentHeight],
+    );
 
     const animatedStyle = useAnimatedStyle(() => {
+      const translateX = interpolate(
+        progress.value,
+        [0, 1],
+        [geometry.originPosition.x, geometry.centerPosition.x],
+      );
+      const translateY = interpolate(
+        progress.value,
+        [0, 1],
+        [geometry.originPosition.y, geometry.centerPosition.y],
+      );
+      const scale = interpolate(
+        progress.value,
+        [0, 1],
+        [1, geometry.expansionScale],
+      );
+
       return {
         opacity: opacity.value,
-        transform: [
-          { translateX: x - radius },
-          { translateY: y - radius },
-          { scale: scale.value },
-        ],
+        transform: [{ translateX }, { translateY }, { scale }],
       };
     });
 
     useEffect(() => {
-      scale.value = withTiming(1, {
-        duration: RIPPLE_DURATION,
-        easing: Easing.bezier(0.2, 0.0, 0.0, 1.0),
+      // 1. Fade-in opacity (105ms in M3 spec)
+      opacity.value = withTiming(initialOpacity, {
+        duration: RIPPLE_CONFIG.FADE_IN_DURATION_MS,
       });
-    }, [scale]);
+
+      // 2. Expand scale and drift towards center (450ms with standard easing in M3 spec)
+      progress.value = withTiming(1, {
+        duration: RIPPLE_CONFIG.EXPAND_DURATION_MS,
+        easing: RIPPLE_CONFIG.STANDARD_EASING,
+      });
+    }, [initialOpacity, opacity, progress]);
 
     useEffect(() => {
       if (!isActive && !isFinished.current) {
         isFinished.current = true;
 
-        const timeElapsed = Date.now() - createdAt;
-        const delay = Math.max(0, MIN_RIPPLE_LIFESPAN - timeElapsed);
+        const timeElapsed = Date.now() - createdAt.current;
+        const delay = Math.max(
+          0,
+          RIPPLE_CONFIG.MIN_TAP_DURATION_MS - timeElapsed,
+        );
 
         const fadeOutAnim = withTiming(
           0,
-          { duration: FADE_OUT_DURATION },
+          { duration: RIPPLE_CONFIG.FADE_OUT_DURATION_MS },
           (finished) => {
             if (finished) {
               runOnJS(onFinished)(uniqueKey);
@@ -79,28 +99,32 @@ export const Ripple = memo(
           opacity.value = fadeOutAnim;
         }
       }
-    }, [isActive, onFinished, uniqueKey, opacity, createdAt]);
+    }, [isActive, onFinished, uniqueKey, opacity]);
 
     return (
       <Animated.View
         pointerEvents="none"
         style={[
-          styles.ripple,
+          styles.rippleOrigin,
           {
-            width: radius * 2,
-            height: radius * 2,
-            borderRadius: radius,
-            backgroundColor: color,
+            width: geometry.initialDiameter,
+            height: geometry.initialDiameter,
           },
           animatedStyle,
         ]}
-      />
+      >
+        <SoftEdgeRipple
+          size={geometry.initialDiameter}
+          color={color}
+          gradientId={`grad_${uniqueKey}`}
+        />
+      </Animated.View>
     );
   },
 );
 
 const styles = StyleSheet.create({
-  ripple: {
+  rippleOrigin: {
     position: "absolute",
     top: 0,
     left: 0,

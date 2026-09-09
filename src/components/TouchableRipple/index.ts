@@ -1,2 +1,9 @@
 export { TouchableRipple } from "./TouchableRipple";
-export type { TouchableRippleProps } from "./types";
+export { Ripple } from "./Ripple";
+export { RIPPLE_CONFIG } from "./const";
+export type {
+  TouchableRippleProps,
+  RippleProps,
+  RippleGeometry,
+  RippleItem,
+} from "./types";
