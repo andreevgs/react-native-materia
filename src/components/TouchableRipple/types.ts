@@ -14,7 +14,7 @@ export interface TouchableRippleProps extends Omit<PressableProps, "style"> {
   rippleColor?: string;
   /** Whether to use native Android ripple on supported devices. Defaults to `true` */
   useNativeEffect?: boolean;
-  /** Pointer events for the content container. Defaults to `undefined` */
+  /** Pointer events for the content container. Defaults to `"none"` */
   contentPointerEvents?: ViewProps["pointerEvents"];
   /** Delay in milliseconds before showing ripple on touch down. Defaults to 150ms on mobile, 0ms on web */
   touchDelay?: number;

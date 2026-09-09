@@ -14,7 +14,10 @@ export const isWebFocusVisible = (
 ): boolean => {
   if (Platform.OS !== "web") return true;
   try {
-    const target = e.target || e.nativeEvent?.target;
+    const target =
+      (e as unknown as { currentTarget?: any })?.currentTarget ||
+      e.target ||
+      e.nativeEvent?.target;
     // @ts-ignore: React Native types don't include DOM methods like matches() on EventTarget, but we know it's an HTMLElement on Web
     if (target && typeof target.matches === "function") {
       // @ts-ignore

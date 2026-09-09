@@ -34,3 +34,5 @@ export const SoftEdgeRipple = memo(
     );
   },
 );
+
+SoftEdgeRipple.displayName = "SoftEdgeRipple";

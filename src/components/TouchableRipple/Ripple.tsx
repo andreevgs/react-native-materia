@@ -179,6 +179,8 @@ export const Ripple = memo(
   },
 );
 
+Ripple.displayName = "Ripple";
+
 const styles = StyleSheet.create({
   rippleOrigin: {
     position: "absolute",

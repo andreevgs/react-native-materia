@@ -45,11 +45,12 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
       onHoverOut,
       onFocus,
       onBlur,
+      onLayout,
       borderless = false,
       disabled = false,
       rippleColor,
       useNativeEffect = true,
-      contentPointerEvents,
+      contentPointerEvents = "none",
       touchDelay,
       ...props
     },
@@ -72,32 +73,28 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
       const flattened = StyleSheet.flatten(style) || {};
       const result: ViewStyle = {};
 
-      if (typeof flattened.borderRadius === "number") {
-        result.borderRadius = flattened.borderRadius;
-      }
-      if (typeof flattened.borderTopLeftRadius === "number") {
-        result.borderTopLeftRadius = flattened.borderTopLeftRadius;
-      }
-      if (typeof flattened.borderTopRightRadius === "number") {
-        result.borderTopRightRadius = flattened.borderTopRightRadius;
-      }
-      if (typeof flattened.borderBottomLeftRadius === "number") {
-        result.borderBottomLeftRadius = flattened.borderBottomLeftRadius;
-      }
-      if (typeof flattened.borderBottomRightRadius === "number") {
-        result.borderBottomRightRadius = flattened.borderBottomRightRadius;
-      }
-      if (typeof flattened.borderStartStartRadius === "number") {
-        result.borderStartStartRadius = flattened.borderStartStartRadius;
-      }
-      if (typeof flattened.borderStartEndRadius === "number") {
-        result.borderStartEndRadius = flattened.borderStartEndRadius;
-      }
-      if (typeof flattened.borderEndStartRadius === "number") {
-        result.borderEndStartRadius = flattened.borderEndStartRadius;
-      }
-      if (typeof flattened.borderEndEndRadius === "number") {
-        result.borderEndEndRadius = flattened.borderEndEndRadius;
+      const radiusProps: (keyof ViewStyle)[] = [
+        "borderRadius",
+        "borderTopLeftRadius",
+        "borderTopRightRadius",
+        "borderBottomLeftRadius",
+        "borderBottomRightRadius",
+        "borderTopStartRadius",
+        "borderTopEndRadius",
+        "borderBottomStartRadius",
+        "borderBottomEndRadius",
+        "borderStartStartRadius",
+        "borderStartEndRadius",
+        "borderEndStartRadius",
+        "borderEndEndRadius",
+      ];
+
+      for (const prop of radiusProps) {
+        const val = flattened[prop];
+        if (typeof val === "number" || typeof val === "string") {
+          // @ts-ignore
+          result[prop] = val;
+        }
       }
 
       return result;
@@ -135,14 +132,18 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
       }
     }, [isFocused, isHovered, disabled, stateLayerOpacity, tokens]);
 
-    const handleLayout = useCallback((e: LayoutChangeEvent) => {
-      const { width, height } = e.nativeEvent.layout;
-      setLayout((prev) =>
-        prev.width === width && prev.height === height
-          ? prev
-          : { width, height },
-      );
-    }, []);
+    const handleLayout = useCallback(
+      (e: LayoutChangeEvent) => {
+        const { width, height } = e.nativeEvent.layout;
+        setLayout((prev) =>
+          prev.width === width && prev.height === height
+            ? prev
+            : { width, height },
+        );
+        onLayout?.(e);
+      },
+      [onLayout],
+    );
 
     const addRipple = useCallback(
       (x?: number, y?: number, isActive = true) => {
@@ -262,6 +263,9 @@ export const TouchableRipple = React.forwardRef<View, TouchableRippleProps>(
             : null
         }
         style={[
+          Platform.select({
+            web: { cursor: disabled ? "default" : "pointer" } as ViewStyle,
+          }),
           style,
           borderless ? styles.borderless : styles.clipping,
         ]}
@@ -325,3 +329,5 @@ const styles = StyleSheet.create({
     }),
   },
 });
+
+TouchableRipple.displayName = "TouchableRipple";
