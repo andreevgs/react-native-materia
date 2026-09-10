@@ -1,7 +1,6 @@
 export { TouchableRipple } from "./TouchableRipple";
 export { Ripple } from "./Ripple";
 export {
-  RIPPLE_CONFIG,
   STATE_LAYER_HOVER_TRANSITION_MS,
   STATE_LAYER_FOCUS_TRANSITION_MS,
   RIPPLE_EXPAND_DURATION_MS,

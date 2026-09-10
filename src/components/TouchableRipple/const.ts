@@ -51,25 +51,6 @@ export const SOFT_EDGE_MIN_SIZE_DP = 75;
 /** Feather boundary ratio relative to container max dimension (0.35). */
 export const SOFT_EDGE_CONTAINER_RATIO = 0.35;
 
-// --- Config Object ---
-
-/** Grouped configuration constants for ripple animation physics, timing, and dimensions. */
-export const RIPPLE_CONFIG = {
-  STATE_LAYER_HOVER_TRANSITION_MS,
-  STATE_LAYER_FOCUS_TRANSITION_MS,
-  RIPPLE_EXPAND_DURATION_MS,
-  RIPPLE_MIN_TAP_DURATION_MS,
-  RIPPLE_FADE_IN_DURATION_MS,
-  RIPPLE_FADE_OUT_DURATION_MS,
-  RIPPLE_PRESS_DELAY_MS,
-  RIPPLE_START_DIAMETER_RATIO,
-  RIPPLE_OVERFLOW_PADDING_DP,
-  RIPPLE_STANDARD_EASING,
-  RIPPLE_OPACITY_EASING,
-  SOFT_EDGE_MIN_SIZE_DP,
-  SOFT_EDGE_CONTAINER_RATIO,
-} as const;
-
 // --- Border Radius Properties ---
 
 /** Style property keys extracted from style prop to apply border clipping to ripple waves and state layers. */
