@@ -12,7 +12,14 @@ import Animated, {
 
 import { RippleProps } from "./types";
 import { calculateRippleGeometry } from "./utils";
-import { RIPPLE_CONFIG } from "./const";
+import {
+  RIPPLE_EXPAND_DURATION_MS,
+  RIPPLE_STANDARD_EASING,
+  RIPPLE_FADE_IN_DURATION_MS,
+  RIPPLE_FADE_OUT_DURATION_MS,
+  RIPPLE_OPACITY_EASING,
+  RIPPLE_MIN_TAP_DURATION_MS,
+} from "./const";
 import { SoftEdgeRipple } from "./SoftEdgeRipple";
 
 export const Ripple = memo(
@@ -80,8 +87,8 @@ export const Ripple = memo(
     // 1. Expand scale and drift towards center
     useEffect(() => {
       progress.value = withTiming(1, {
-        duration: RIPPLE_CONFIG.EXPAND_DURATION_MS,
-        easing: RIPPLE_CONFIG.STANDARD_EASING,
+        duration: RIPPLE_EXPAND_DURATION_MS,
+        easing: RIPPLE_STANDARD_EASING,
       });
     }, [progress]);
 
@@ -89,8 +96,8 @@ export const Ripple = memo(
     useEffect(() => {
       if (isActive && !isFinished.current) {
         opacity.value = withTiming(initialOpacity, {
-          duration: RIPPLE_CONFIG.FADE_IN_DURATION_MS,
-          easing: RIPPLE_CONFIG.OPACITY_EASING,
+          duration: RIPPLE_FADE_IN_DURATION_MS,
+          easing: RIPPLE_OPACITY_EASING,
         });
       }
     }, [isActive, initialOpacity, opacity]);
@@ -103,23 +110,23 @@ export const Ripple = memo(
         const timeElapsed = Date.now() - createdAt.current;
 
         // If released before fade-in completes, sequence the rest of fade-in before fade-out
-        if (timeElapsed < RIPPLE_CONFIG.FADE_IN_DURATION_MS) {
-          const remainingFadeIn = RIPPLE_CONFIG.FADE_IN_DURATION_MS - timeElapsed;
+        if (timeElapsed < RIPPLE_FADE_IN_DURATION_MS) {
+          const remainingFadeIn = RIPPLE_FADE_IN_DURATION_MS - timeElapsed;
           const holdDelay =
-            RIPPLE_CONFIG.MIN_TAP_DURATION_MS - RIPPLE_CONFIG.FADE_IN_DURATION_MS;
+            RIPPLE_MIN_TAP_DURATION_MS - RIPPLE_FADE_IN_DURATION_MS;
 
           opacity.value = withSequence(
             withTiming(initialOpacity, {
               duration: remainingFadeIn,
-              easing: RIPPLE_CONFIG.OPACITY_EASING,
+              easing: RIPPLE_OPACITY_EASING,
             }),
             withDelay(
               holdDelay,
               withTiming(
                 0,
                 {
-                  duration: RIPPLE_CONFIG.FADE_OUT_DURATION_MS,
-                  easing: RIPPLE_CONFIG.OPACITY_EASING,
+                  duration: RIPPLE_FADE_OUT_DURATION_MS,
+                  easing: RIPPLE_OPACITY_EASING,
                 },
                 (finished) => {
                   if (finished) {
@@ -132,14 +139,14 @@ export const Ripple = memo(
         } else {
           const delay = Math.max(
             0,
-            RIPPLE_CONFIG.MIN_TAP_DURATION_MS - timeElapsed,
+            RIPPLE_MIN_TAP_DURATION_MS - timeElapsed,
           );
 
           const fadeOutAnim = withTiming(
             0,
             {
-              duration: RIPPLE_CONFIG.FADE_OUT_DURATION_MS,
-              easing: RIPPLE_CONFIG.OPACITY_EASING,
+              duration: RIPPLE_FADE_OUT_DURATION_MS,
+              easing: RIPPLE_OPACITY_EASING,
             },
             (finished) => {
               if (finished) {

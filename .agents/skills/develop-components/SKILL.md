@@ -42,25 +42,41 @@ export type { ComponentNameProps, ComponentNameMode } from "./types";
 - Extend base React Native types with `Omit` where applicable (e.g. `Omit<PressableProps, "style">`).
 - Define union types for variants/modes (e.g., `export type ButtonMode = "filled" | "tonal" | "outlined" | "elevated" | "text";`).
 - Define style config interfaces (e.g., `<ComponentName>StyleConfig`) representing the resolved colors, borders, and ripples for the current state.
+- **JSDoc Standards for Types & Interfaces**:
+  - Every interface, type alias, prop, and interface field MUST have a concise, single-line JSDoc comment (`/** ... */`).
+  - Avoid bulky multi-line comment blocks (`/**\n * ...\n */`) for simple properties.
+  - When describing physical dimensions (paddings, margins, sizes, radiuses, offsets), ALWAYS use **`dp`** (mobile-first), NEVER `px`.
+  - When describing durations or intervals, ALWAYS use **`ms`**.
+  - Always note default values for optional props (e.g., `Defaults to "none"`, `Defaults to 16dp`).
 ```typescript
 import { ReactNode } from "react";
 import { ViewStyle, StyleProp, PressableProps } from "react-native";
 import { IconSource } from "../../types";
 
+/** Visual presentation modes for the component. */
 export type ComponentMode = "filled" | "outlined" | "elevated";
 
 export interface ComponentNameProps extends Omit<PressableProps, "style"> {
+  /** Text or element rendered inside the surface. */
   children?: ReactNode;
+  /** Visual presentation mode. Defaults to `"filled"`. */
   mode?: ComponentMode;
+  /** Whether interaction is disabled. Defaults to `false`. */
   disabled?: boolean;
+  /** Custom style for the outer container. */
   style?: StyleProp<ViewStyle>;
-  // ...
+  /** Horizontal padding inside the container in dp. Defaults to `16dp`. */
+  paddingHorizontal?: number;
 }
 
 export interface ComponentNameStyleConfig {
+  /** Background color for the current state. */
   backgroundColor: string;
+  /** Content and text color for the current state. */
   textColor: string;
+  /** Border stroke color for the current state. */
   borderColor: string;
+  /** Color of the ripple wave and state layer. */
   rippleColor: string;
 }
 ```
@@ -70,6 +86,7 @@ export interface ComponentNameStyleConfig {
 
 - Use the `color` library to calculate alpha opacity based on `tokens.stateOpacity` (e.g., `pressed`, `hover`, `focus`, `disabledContainer`, `disabledContent`).
 - Standard signature: `get<Component>Colors(mode, colors, tokens, disabled, ...): StyleConfig`.
+- **No JSDoc in `utils.ts`**: Do NOT write JSDoc comments in `utils.ts`. Keep functions self-documenting through precise TypeScript types and descriptive names. JSDoc is strictly reserved for `types.ts` and `const.ts`.
 ```typescript
 import Color from "color";
 import { ComponentMode, ComponentNameStyleConfig } from "./types";
@@ -125,15 +142,57 @@ export const getComponentShadowStyle = (
     : tokens.elevation.level0;
 ```
 
-### 2.4. `const.ts` (Constants & MD3 Specs)
-Use `const.ts` when the component relies on fixed dimensions, timing, spring curves, or layout offsets:
-- If the constants or behaviors directly reflect values dictated by the official Material Design 3 specification, include the spec URL in a JSDoc `@see` comment. Do not add spec links if the constants are internal implementation details.
+### 2.4. `const.ts` (Constants, Specs & Platform Styles)
+Use `const.ts` when the component relies on fixed dimensions, timing, spring curves, layout offsets, or platform styles:
+1. **Spec Link**: If constants reflect MD3 specifications, include the spec URL in a header JSDoc `@see` comment.
+2. **Anatomical Prefixes**: Prefix constants by the anatomical element they govern (e.g. `LABEL_*`, `NOTCH_*`, `STATE_LAYER_*`, `RIPPLE_*`, `SOFT_EDGE_*`).
+3. **JSDoc Standards & Section Spacing**:
+   - Group related constants into anatomical sections with clean comment headers, followed by an **empty line**:
+     ```typescript
+     // --- Section Name ---
+
+     /** Description of the constant (units in dp or ms). */
+     export const SECTION_CONSTANT_NAME = 15;
+     ```
+   - Use clean, single-line JSDoc comments (`/** ... */`) for each individual constant so that IDE hover tooltips show exact documentation.
+   - When referencing measurements in comments, always use **`dp`** (mobile-first), not `px`.
+   - When referencing durations, always use **`ms`**.
+4. **Mandatory Static Platform Style Extraction**:
+   - **Rule**: NEVER write inline `Platform.select({ web: ... })` inside JSX or component render functions.
+   - Extract all static platform styles (such as web touch cursor, outline, and selection styles) into `const.ts`:
+     ```typescript
+     export const webTouchStyle: ViewStyle = Platform.select({
+       web: {
+         userSelect: "none",
+         outlineStyle: "none",
+         cursor: "pointer",
+       },
+       default: {},
+     }) as ViewStyle;
+
+     export const webDisabledStyle: ViewStyle = Platform.select({
+       web: {
+         cursor: "default",
+       },
+       default: {},
+     }) as ViewStyle;
+     ```
+   - In `createStyles` or component JSX, simply spread or reference these pre-compiled styles: `style={[styles.container, webTouchStyle, disabled && styles.disabledWeb]}`.
+   - This eliminates repetitive object creation at runtime, improves SSR/web stability, and keeps JSX declarative.
 ```typescript
 /**
  * Layout constants for TextField based on MD3 specification.
  * @see https://m3.material.io/components/text-fields/specs
  */
+
+// --- Label Specs ---
+
+/** Scale factor applied to the label when floating. */
 export const LABEL_SCALE = 0.75;
+
+// --- Notch Specs ---
+
+/** Horizontal padding for the notch on each side of the label text (8dp). */
 export const NOTCH_PADDING = 8;
 ```
 
@@ -264,5 +323,69 @@ For pressable surfaces:
    - For decorative icons or icons next to text, hide them from the screen reader:
      `accessibilityElementsHidden={true}` and `importantForAccessibility="no-hide-descendants"`.
 2. **Web Adaptations**:
-   - Use `Platform.select` for web-specific styling (e.g., removing text input outlines: `outlineStyle: "none"`).
-   - Ensure `userSelect: "none"` on touchable surfaces.
+   - **Static Extraction**: Extract web-specific styles into `const.ts` via `Platform.select` (e.g. `webTouchStyle` for `userSelect: "none"`, `outlineStyle: "none"`, `cursor: "pointer"`, and `webDisabledStyle` for `cursor: "default"`). Never inline `Platform.select` into JSX or render functions.
+   - Ensure `userSelect: "none"` on touchable surfaces to prevent text selection during taps.
+
+---
+
+## 9. TypeScript Strictness (Zero-Pain Type Safety)
+
+**Rule: If `unknown` or `any` (or `@ts-ignore`) can be avoided without pain, they MUST be avoided.**
+
+Always prefer clean, idiomatic TypeScript solutions over type-widening or compiler suppression:
+1. **No double casts via `as unknown as ...`**:
+   Use intersection types (`Event & CustomEvent`) when extending standard native events with platform-specific fields:
+   ```typescript
+   interface WebPointerEvent {
+     nativeEvent?: { pointerType?: string };
+   }
+   // Clean intersection instead of `e as unknown as { ... }`
+   const nativeEvent = (e as MouseEvent & WebPointerEvent).nativeEvent;
+   ```
+2. **Targeted interfaces instead of `any` / `@ts-ignore`**:
+   When checking optional DOM methods on Web event targets, declare a lightweight interface:
+   ```typescript
+   interface MatchableElement {
+     matches?: (selector: string) => boolean;
+   }
+   const target = (e.currentTarget || e.target) as
+     | (EventTarget & MatchableElement)
+     | null
+     | undefined;
+
+   if (typeof target?.matches === "function") {
+     return target.matches(":focus-visible");
+   }
+   ```
+3. **Record indexing instead of `@ts-ignore`**:
+   When dynamically populating an object by iterating over a list of typed keys:
+   ```typescript
+   // Use Record<string, T> instead of `@ts-ignore`
+   (result as Record<string, string | number>)[prop] = val;
+   ```
+4. **Clean type narrowing instead of `unknown` / `any`**:
+   Use TypeScript type guards (`typeof`, `in`, `instanceof`, `Array.isArray`) and optional chaining (`target?.matches`) to narrow down types cleanly without loose casting.
+
+---
+
+## 10. JSDoc & Documentation Standards
+
+**Strict Scope Rule**: JSDoc comments MUST ONLY be written in `const.ts` and `types.ts`.
+- **Allowed in**: `src/components/<ComponentName>/types.ts` and `src/components/<ComponentName>/const.ts`.
+- **Forbidden in**: `<ComponentName>.tsx`, sub-components (`<SubComponent>.tsx`), `utils.ts`, and `index.ts`. Do not write JSDoc comments for React components, hooks, utility functions, or barrel exports; keep them clean and self-documenting through TypeScript types and clear naming.
+
+### Formatting Rules for `types.ts` and `const.ts`:
+1. **Single-line format**:
+   Use `/** Concise description. */`. Avoid bulky multi-line blocks (`/**\n * ...\n */`) for simple props, type properties, and constants. Multi-line is reserved for header spec links (`@see ...`) in `const.ts`.
+2. **100% Coverage in Scope**:
+   Every exported interface, prop, type alias, and constant in `types.ts` and `const.ts` MUST have a JSDoc comment explaining its role.
+3. **Units of Measurement**:
+   - Physical dimensions (paddings, margins, sizes, radiuses, offsets): ALWAYS use **`dp`** (e.g. `8dp`, `16dp`), NEVER `px`. We are mobile-first.
+   - Durations and intervals: ALWAYS use **`ms`** (e.g. `150ms`, `250ms`).
+4. **Props & Interfaces (`types.ts`)**:
+   - Explicitly state default values where applicable (e.g. `Defaults to "none"`, `Defaults to 0`).
+5. **Constants (`const.ts`)**:
+   - Group constants into anatomical sections with `// --- Section Name ---` headers.
+   - Always leave an **empty blank line** between the section header and the first constant's JSDoc comment.
+   - Use anatomical prefixes (e.g., `STATE_LAYER_*`, `RIPPLE_*`, `LABEL_*`, `NOTCH_*`).
+

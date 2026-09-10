@@ -25,7 +25,7 @@ export const ListItem = ({
       style={[styles.container, style]}
       contentContainerStyle={styles.content}
       contentPointerEvents="none"
-      unstable_pressDelay={pressDelay}
+      pressDelay={pressDelay}
       {...props}
     >
       {leadingContent && (

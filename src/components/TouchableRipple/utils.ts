@@ -1,26 +1,29 @@
 import { Platform, NativeSyntheticEvent, TargetedEvent } from "react-native";
 import React from "react";
 
-import { RIPPLE_CONFIG } from "./const";
+import {
+  SOFT_EDGE_CONTAINER_RATIO,
+  SOFT_EDGE_MIN_SIZE_DP,
+  RIPPLE_START_DIAMETER_RATIO,
+  RIPPLE_OVERFLOW_PADDING_DP,
+} from "./const";
 import { RippleGeometry } from "./types";
 
-/**
- * Checks if a focus event in Web was triggered by a keyboard interaction (focus-visible).
- * We use a try/catch block here because very old browsers (e.g. Safari < 15.4)
- * will throw a SyntaxError if they do not support the ':focus-visible' pseudo-class.
- */
+interface MatchableElement {
+  matches?: (selector: string) => boolean;
+}
+
 export const isWebFocusVisible = (
   e: NativeSyntheticEvent<TargetedEvent> | React.FocusEvent,
 ): boolean => {
   if (Platform.OS !== "web") return true;
   try {
-    const target =
-      (e as unknown as { currentTarget?: any })?.currentTarget ||
-      e.target ||
-      e.nativeEvent?.target;
-    // @ts-ignore: React Native types don't include DOM methods like matches() on EventTarget, but we know it's an HTMLElement on Web
-    if (target && typeof target.matches === "function") {
-      // @ts-ignore
+    const target = (e.currentTarget || e.target || e.nativeEvent?.target) as
+      | (EventTarget & MatchableElement)
+      | null
+      | undefined;
+
+    if (typeof target?.matches === "function") {
       return target.matches(":focus-visible");
     }
   } catch {
@@ -37,19 +40,19 @@ export const calculateRippleGeometry = (
 ): RippleGeometry => {
   const largestDimension = Math.max(containerHeight, containerWidth);
   const featherOffset = Math.max(
-    RIPPLE_CONFIG.FEATHER_CONTAINER_RATIO * largestDimension,
-    RIPPLE_CONFIG.MIN_FEATHER_SIZE_PX,
+    SOFT_EDGE_CONTAINER_RATIO * largestDimension,
+    SOFT_EDGE_MIN_SIZE_DP,
   );
 
   const initialDiameter = Math.max(
     1,
-    Math.floor(largestDimension * RIPPLE_CONFIG.START_DIAMETER_RATIO),
+    Math.floor(largestDimension * RIPPLE_START_DIAMETER_RATIO),
   );
   const containerDiagonal = Math.sqrt(
     containerWidth ** 2 + containerHeight ** 2,
   );
   const boundingRadius =
-    containerDiagonal + RIPPLE_CONFIG.OVERFLOW_PADDING_PX;
+    containerDiagonal + RIPPLE_OVERFLOW_PADDING_DP;
 
   const expansionScale =
     (boundingRadius + featherOffset) / initialDiameter;
