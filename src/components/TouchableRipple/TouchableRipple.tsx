@@ -17,29 +17,28 @@ import {
   NativeSyntheticEvent,
   TargetedEvent,
   MouseEvent,
-  ViewStyle,
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import Color from "color";
+import { useSharedValue, withTiming } from "react-native-reanimated";
 
 import { RippleItem, TouchableRippleProps, WebPointerEvent } from "./types";
-import { Ripple } from "./Ripple";
 import {
   STATE_LAYER_HOVER_TRANSITION_MS,
   STATE_LAYER_FOCUS_TRANSITION_MS,
   RIPPLE_PRESS_DELAY_MS,
+  RIPPLE_MAX_CONCURRENT_COUNT,
   webTouchStyle,
   webDisabledStyle,
-  RADIUS_PROPERTIES,
 } from "./const";
 import { useMateriaColors, useMateriaTokens } from "../../core";
-import { isWebFocusVisible } from "./utils";
-
-const supportNativeRipple = Platform.OS === "android" && Platform.Version >= 21;
+import {
+  canUseNativeRipple,
+  canUseNativeRippleForeground,
+  extractBorderRadiusStyles,
+  getRippleColors,
+  isWebFocusVisible,
+} from "./utils";
+import { StateLayer } from "./StateLayer";
+import { RippleOverlay } from "./RippleOverlay";
 
 export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
   (
@@ -58,7 +57,7 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
       borderless = false,
       disabled = false,
       rippleColor,
-      useNativeEffect = true,
+      useNativeEffect = false,
       contentPointerEvents = "none",
       pressDelay,
       accessibilityRole,
@@ -70,55 +69,48 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
     const colors = useMateriaColors();
     const tokens = useMateriaTokens();
 
-    const hasNativeRipple = supportNativeRipple && useNativeEffect;
+    const hasNativeRipple = canUseNativeRipple(useNativeEffect);
+    const useForeground = canUseNativeRippleForeground(borderless);
 
-    const [layout, setLayout] = useState({ width: 0, height: 0 });
-    const [ripples, setRipples] = useState<RippleItem[]>([]);
+    const { solidColor, nativeColor } = useMemo(
+      () =>
+        getRippleColors(
+          rippleColor,
+          colors.onSurface,
+          tokens.stateOpacity.pressed,
+        ),
+      [rippleColor, colors.onSurface, tokens.stateOpacity.pressed],
+    );
 
-    const [isFocused, setIsFocused] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
+    const borderStyles = useMemo(
+      () => extractBorderRadiusStyles(style),
+      [style],
+    );
 
+    const layoutRef = useRef({ width: 0, height: 0 });
+
+    const handleLayout = useCallback(
+      (e: LayoutChangeEvent) => {
+        layoutRef.current = e.nativeEvent.layout;
+        onLayout?.(e);
+      },
+      [onLayout],
+    );
+
+    const isHoveredRef = useRef(false);
+    const isFocusedRef = useRef(false);
     const stateLayerOpacity = useSharedValue(0);
 
-    const idPrefix = useId();
-    const rippleCounterRef = useRef(0);
-
-    const borderStyles = useMemo(() => {
-      const flattened = StyleSheet.flatten(style) || {};
-      const result: ViewStyle = {};
-
-      for (const prop of RADIUS_PROPERTIES) {
-        const val = flattened[prop];
-        if (typeof val === "number" || typeof val === "string") {
-          (result as Record<string, string | number>)[prop] = val;
-        }
-      }
-
-      return result;
-    }, [style]);
-
-    const solidRippleColor = useMemo(() => {
-      return rippleColor || colors.onSurface;
-    }, [rippleColor, colors.onSurface]);
-
-    const nativeRippleColor = useMemo(() => {
-      return Color(solidRippleColor)
-        .alpha(tokens.stateOpacity.pressed)
-        .rgb()
-        .string();
-    }, [solidRippleColor, tokens]);
-
-    // M3 State Layer handles hover and focus over the surface
-    useEffect(() => {
+    const updateStateLayer = useCallback(() => {
       if (disabled) {
         stateLayerOpacity.value = withTiming(0, {
           duration: STATE_LAYER_HOVER_TRANSITION_MS,
         });
-      } else if (isFocused) {
+      } else if (isFocusedRef.current) {
         stateLayerOpacity.value = withTiming(tokens.stateOpacity.focus, {
           duration: STATE_LAYER_FOCUS_TRANSITION_MS,
         });
-      } else if (isHovered) {
+      } else if (isHoveredRef.current) {
         stateLayerOpacity.value = withTiming(tokens.stateOpacity.hover, {
           duration: STATE_LAYER_HOVER_TRANSITION_MS,
         });
@@ -127,52 +119,104 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
           duration: STATE_LAYER_HOVER_TRANSITION_MS,
         });
       }
-    }, [isFocused, isHovered, disabled, stateLayerOpacity, tokens]);
+    }, [disabled, tokens.stateOpacity, stateLayerOpacity]);
 
-    const handleLayout = useCallback(
-      (e: LayoutChangeEvent) => {
-        const { width, height } = e.nativeEvent.layout;
-        setLayout((prev) =>
-          prev.width === width && prev.height === height
-            ? prev
-            : { width, height },
-        );
-        onLayout?.(e);
+    useEffect(() => {
+      updateStateLayer();
+    }, [disabled, updateStateLayer]);
+
+    const handleHoverIn = useCallback(
+      (e: MouseEvent) => {
+        if (Platform.OS === "web") {
+          const nativeEvent = (e as MouseEvent & WebPointerEvent).nativeEvent;
+          if (nativeEvent?.pointerType && nativeEvent.pointerType !== "mouse") {
+            return;
+          }
+        }
+        isHoveredRef.current = true;
+        updateStateLayer();
+        onHoverIn?.(e);
       },
-      [onLayout],
+      [updateStateLayer, onHoverIn],
     );
+
+    const handleHoverOut = useCallback(
+      (e: MouseEvent) => {
+        isHoveredRef.current = false;
+        updateStateLayer();
+        onHoverOut?.(e);
+      },
+      [updateStateLayer, onHoverOut],
+    );
+
+    const handleFocus = useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        isFocusedRef.current = isWebFocusVisible(e);
+        updateStateLayer();
+        onFocus?.(e);
+      },
+      [updateStateLayer, onFocus],
+    );
+
+    const handleBlur = useCallback(
+      (e: NativeSyntheticEvent<TargetedEvent>) => {
+        isFocusedRef.current = false;
+        updateStateLayer();
+        onBlur?.(e);
+      },
+      [updateStateLayer, onBlur],
+    );
+
+    const [ripples, setRipples] = useState<RippleItem[]>([]);
+    const idPrefix = useId();
+    const rippleCounterRef = useRef(0);
 
     const addRipple = useCallback(
       (x?: number, y?: number, isActive = true) => {
-        if (hasNativeRipple || layout.width === 0 || layout.height === 0)
-          return;
+        const { width, height } = layoutRef.current;
+        if (hasNativeRipple || width === 0 || height === 0) return;
 
-        const posX = typeof x === "number" && !isNaN(x) ? x : layout.width / 2;
-        const posY = typeof y === "number" && !isNaN(y) ? y : layout.height / 2;
+        const posX = typeof x === "number" && !isNaN(x) ? x : width / 2;
+        const posY = typeof y === "number" && !isNaN(y) ? y : height / 2;
 
         const id = `${idPrefix}_${++rippleCounterRef.current}`;
-        setRipples((prev) => [
-          ...prev,
-          { uniqueKey: id, x: posX, y: posY, isActive },
-        ]);
+        setRipples((prev) => {
+          const trimmed =
+            prev.length >= RIPPLE_MAX_CONCURRENT_COUNT
+              ? prev.slice(prev.length - (RIPPLE_MAX_CONCURRENT_COUNT - 1))
+              : prev;
+
+          const updatedPrev = trimmed.map((r) => ({
+            ...r,
+            isActive: false,
+            isExiting: true,
+          }));
+
+          return [
+            ...updatedPrev,
+            {
+              uniqueKey: id,
+              x: posX,
+              y: posY,
+              isActive,
+              isExiting: false,
+              parentWidth: width,
+              parentHeight: height,
+            },
+          ];
+        });
       },
-      [hasNativeRipple, layout, idPrefix],
+      [hasNativeRipple, idPrefix],
     );
 
     const removeRipple = useCallback((key: string) => {
       setRipples((prev) => prev.filter((r) => r.uniqueKey !== key));
     }, []);
 
-    const defaultDelay =
-      Platform.OS === "web" || hasNativeRipple ? 0 : RIPPLE_PRESS_DELAY_MS;
-    const delay = pressDelay ?? defaultDelay;
-
     const handlePressIn = useCallback(
       (e: GestureResponderEvent) => {
         if (disabled) return;
-        const x = e.nativeEvent.locationX;
-        const y = e.nativeEvent.locationY;
-        addRipple(x, y, true);
+        addRipple(e.nativeEvent.locationX, e.nativeEvent.locationY, true);
         onPressIn?.(e);
       },
       [disabled, addRipple, onPressIn],
@@ -188,48 +232,18 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
       [onPressOut],
     );
 
-    const handleHoverIn = useCallback(
-      (e: MouseEvent) => {
-        if (Platform.OS === "web") {
-          const nativeEvent = (e as MouseEvent & WebPointerEvent).nativeEvent;
-          if (nativeEvent?.pointerType && nativeEvent.pointerType !== "mouse") {
-            return;
-          }
-        }
-        setIsHovered(true);
-        onHoverIn?.(e);
-      },
-      [onHoverIn],
-    );
+    const defaultDelay =
+      Platform.OS === "web" || hasNativeRipple ? 0 : RIPPLE_PRESS_DELAY_MS;
+    const delay = pressDelay ?? defaultDelay;
 
-    const handleHoverOut = useCallback(
-      (e: MouseEvent) => {
-        setIsHovered(false);
-        onHoverOut?.(e);
-      },
-      [onHoverOut],
-    );
-
-    const handleFocus = useCallback(
-      (e: NativeSyntheticEvent<TargetedEvent>) => {
-        setIsFocused(isWebFocusVisible(e));
-        onFocus?.(e);
-      },
-      [onFocus],
-    );
-
-    const handleBlur = useCallback(
-      (e: NativeSyntheticEvent<TargetedEvent>) => {
-        setIsFocused(false);
-        onBlur?.(e);
-      },
-      [onBlur],
-    );
-
-    const stateLayerStyle = useAnimatedStyle(() => ({
-      opacity: stateLayerOpacity.value,
-      backgroundColor: solidRippleColor,
-    }));
+    const androidRippleConfig = useMemo(() => {
+      if (!hasNativeRipple) return null;
+      return {
+        color: nativeColor,
+        borderless,
+        foreground: useForeground,
+      };
+    }, [hasNativeRipple, nativeColor, borderless, useForeground]);
 
     const renderedChildren = useMemo(
       () => (
@@ -264,15 +278,7 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
         onBlur={handleBlur}
         onLayout={handleLayout}
         focusable={!disabled}
-        android_ripple={
-          hasNativeRipple
-            ? {
-                color: nativeRippleColor,
-                borderless,
-                foreground: !borderless,
-              }
-            : null
-        }
+        android_ripple={androidRippleConfig}
         style={[
           borderless ? styles.borderless : styles.clipping,
           disabled && styles.disabledWeb,
@@ -282,37 +288,21 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
       >
         {renderedChildren}
 
-        {/* M3 State Layer for Hover / Focus */}
-        <Animated.View
-          style={[StyleSheet.absoluteFill, stateLayerStyle, borderStyles]}
-          pointerEvents="none"
+        <StateLayer
+          color={solidColor}
+          opacity={stateLayerOpacity}
+          borderStyles={borderStyles}
         />
 
-        {/* M3 Press Ripple Waves */}
         {!hasNativeRipple && (
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              borderless ? styles.borderless : styles.clipping,
-              borderStyles,
-            ]}
-            pointerEvents="none"
-          >
-            {ripples.map((ripple) => (
-              <Ripple
-                key={ripple.uniqueKey}
-                uniqueKey={ripple.uniqueKey}
-                x={ripple.x}
-                y={ripple.y}
-                color={solidRippleColor}
-                initialOpacity={tokens.stateOpacity.pressed}
-                parentWidth={layout.width}
-                parentHeight={layout.height}
-                onFinished={removeRipple}
-                isActive={ripple.isActive}
-              />
-            ))}
-          </View>
+          <RippleOverlay
+            ripples={ripples}
+            color={solidColor}
+            pressedOpacity={tokens.stateOpacity.pressed}
+            borderless={borderless}
+            borderStyles={borderStyles}
+            onRippleFinished={removeRipple}
+          />
         )}
       </Pressable>
     );

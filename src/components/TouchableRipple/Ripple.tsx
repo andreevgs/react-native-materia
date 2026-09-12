@@ -19,6 +19,7 @@ import {
   RIPPLE_FADE_OUT_DURATION_MS,
   RIPPLE_OPACITY_EASING,
   RIPPLE_MIN_TAP_DURATION_MS,
+  RIPPLE_RAPID_FADE_OUT_DURATION_MS,
 } from "./const";
 import { SoftEdgeRipple } from "./SoftEdgeRipple";
 
@@ -33,6 +34,7 @@ export const Ripple = memo(
     onFinished,
     uniqueKey,
     isActive,
+    isExiting = false,
   }: RippleProps) => {
     const progress = useSharedValue(0);
     const opacity = useSharedValue(0);
@@ -94,17 +96,36 @@ export const Ripple = memo(
 
     // 2. Fade in opacity on initial press
     useEffect(() => {
-      if (isActive && !isFinished.current) {
+      if (isActive && !isFinished.current && !isExiting) {
         opacity.value = withTiming(initialOpacity, {
           duration: RIPPLE_FADE_IN_DURATION_MS,
           easing: RIPPLE_OPACITY_EASING,
         });
       }
-    }, [isActive, initialOpacity, opacity]);
+    }, [isActive, initialOpacity, isExiting, opacity]);
 
-    // 3. Handle release (either immediately for quick taps or after touch release)
+    // 3. Fast-track fade out when preempted by newer taps
     useEffect(() => {
-      if (!isActive && !isFinished.current) {
+      if (isExiting) {
+        isFinished.current = true;
+        opacity.value = withTiming(
+          0,
+          {
+            duration: RIPPLE_RAPID_FADE_OUT_DURATION_MS,
+            easing: RIPPLE_OPACITY_EASING,
+          },
+          (finished) => {
+            if (finished) {
+              runOnJS(safeOnFinished)(uniqueKey);
+            }
+          },
+        );
+      }
+    }, [isExiting, opacity, safeOnFinished, uniqueKey]);
+
+    // 4. Handle release for single taps
+    useEffect(() => {
+      if (!isActive && !isFinished.current && !isExiting) {
         isFinished.current = true;
 
         const timeElapsed = Date.now() - createdAt.current;
@@ -162,7 +183,7 @@ export const Ripple = memo(
           }
         }
       }
-    }, [isActive, initialOpacity, safeOnFinished, uniqueKey, opacity]);
+    }, [isActive, initialOpacity, isExiting, safeOnFinished, uniqueKey, opacity]);
 
     return (
       <Animated.View

@@ -16,6 +16,12 @@ export const STATE_LAYER_FOCUS_TRANSITION_MS = 150;
 
 // --- Ripple Wave ---
 
+/** Maximum number of concurrent ripple waves allowed on the surface (2). */
+export const RIPPLE_MAX_CONCURRENT_COUNT = 2;
+
+/** Accelerated fade-out duration when a ripple is preempted by a newer tap (150ms). */
+export const RIPPLE_RAPID_FADE_OUT_DURATION_MS = 150;
+
 /** Ripple scale expansion duration (450ms). */
 export const RIPPLE_EXPAND_DURATION_MS = 450;
 

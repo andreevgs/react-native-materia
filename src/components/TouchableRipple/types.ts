@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleProp, ViewStyle, PressableProps, ViewProps } from "react-native";
+import { SharedValue } from "react-native-reanimated";
 
 /** Props for the TouchableRipple component. */
 export interface TouchableRippleProps extends Omit<PressableProps, "style"> {
@@ -21,16 +22,30 @@ export interface TouchableRippleProps extends Omit<PressableProps, "style"> {
   pressDelay?: number;
 }
 
+/** Resolved colors for the ripple and state layer. */
+export interface RippleColorConfig {
+  /** Solid color used for the state layer and JS ripple waves. */
+  solidColor: string;
+  /** Semi-transparent color used for native Android ripple. */
+  nativeColor: string;
+}
+
 /** Internal state tracking an active ripple animation instance. */
 export interface RippleItem {
   /** Unique identifier for the ripple instance. */
   uniqueKey: string;
   /** Whether the touch gesture is currently active. */
   isActive: boolean;
+  /** Whether the ripple should accelerate its exit due to newer taps. */
+  isExiting?: boolean;
   /** Touch X coordinate relative to container in dp. */
   x: number;
   /** Touch Y coordinate relative to container in dp. */
   y: number;
+  /** Container width at the moment ripple started in dp. */
+  parentWidth: number;
+  /** Container height at the moment ripple started in dp. */
+  parentHeight: number;
 }
 
 /** Props for an individual Ripple wave component. */
@@ -53,6 +68,8 @@ export interface RippleProps {
   uniqueKey: string;
   /** Whether the press gesture is still active. */
   isActive: boolean;
+  /** Whether the ripple should accelerate its exit due to newer taps. */
+  isExiting?: boolean;
 }
 
 /** Calculated dimensions and positions for ripple wave expansion. */
@@ -65,6 +82,32 @@ export interface RippleGeometry {
   originPosition: { x: number; y: number };
   /** Centered top-left coordinate where the ripple settles in dp. */
   centerPosition: { x: number; y: number };
+}
+
+/** Props for the StateLayer sub-component. */
+export interface StateLayerProps {
+  /** Color of the state layer background. */
+  color: string;
+  /** Shared opacity animated value. */
+  opacity: SharedValue<number>;
+  /** Border radius styles to constrain state layer clipping. */
+  borderStyles?: StyleProp<ViewStyle>;
+}
+
+/** Props for the RippleOverlay sub-component. */
+export interface RippleOverlayProps {
+  /** List of currently active ripple items. */
+  ripples: RippleItem[];
+  /** Color of the ripple waves. */
+  color: string;
+  /** Pressed opacity value from design tokens. */
+  pressedOpacity: number;
+  /** Whether the ripple overflows container bounds. */
+  borderless: boolean;
+  /** Border radius styles to constrain ripple clipping. */
+  borderStyles?: StyleProp<ViewStyle>;
+  /** Callback invoked when a ripple finishes its animation. */
+  onRippleFinished: (key: string) => void;
 }
 
 /** Props for the feathered soft-edge SVG circle. */
