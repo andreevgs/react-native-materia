@@ -34,4 +34,4 @@ To begin building with React Native Materia, visit the [Getting Started](/about/
 
 Understand the foundational architecture through dedicated guides covering the [Provider](/about/provider), the dynamic [Theming](/about/theming) engine, spatial [Tokens](/about/tokens), the fifteen-variant [Typography](/about/typography) scale, extensible [Iconography](/about/iconography), and the [Portal](/about/portal) overlay subsystem.
 
-Explore the component library through comprehensive references for [Button](/components/button), [Icon Button](/components/icon-button), [Icon](/components/icon), and [List](/components/list).
+Explore the component library through comprehensive references for [Button](/components/button), [Icon Button](/components/icon-button), [Icon](/components/icon), [List](/components/list), and [Text](/components/text).

@@ -28,6 +28,7 @@ export const NavBar = () => {
       <NavBarItem href="/components/icon-button" label="Icon Button" />
       <NavBarItem href="/components/icon" label="Icon" />
       <NavBarItem href="/components/list" label="List" />
+      <NavBarItem href="/components/text" label="Text" />
     </ScrollView>
   );
 };
