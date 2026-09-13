@@ -19,6 +19,7 @@ export type {
 
 export type {
   MateriaIconography,
+  MateriaIconName,
   MateriaIcon,
   IconSource,
 } from "../core/iconography/types";

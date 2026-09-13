@@ -26,6 +26,7 @@ export const NavBar = () => {
       <NavBarSubheader>Components</NavBarSubheader>
       <NavBarItem href="/components/button" label="Button" />
       <NavBarItem href="/components/icon-button" label="Icon Button" />
+      <NavBarItem href="/components/icon" label="Icon" />
       <NavBarItem href="/components/list" label="List" />
     </ScrollView>
   );
