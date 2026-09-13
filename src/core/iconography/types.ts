@@ -1,11 +1,5 @@
 import { ComponentType, ReactNode } from "react";
-import { StyleProp, ViewStyle, AccessibilityProps } from "react-native";
-
-export interface MateriaIconProps extends AccessibilityProps {
-  color: string;
-  size: number;
-  style?: StyleProp<ViewStyle>;
-}
+import { MateriaIconProps } from "../../icons/types";
 
 export type MateriaIcon = ComponentType<MateriaIconProps>;
 
