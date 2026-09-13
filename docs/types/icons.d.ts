@@ -7,5 +7,6 @@ declare module "react-native-materia/types" {
     "layers-rounded": MateriaIcon;
     "wifi-rounded": MateriaIcon;
     "bluetooth-rounded": MateriaIcon;
+    "search-rounded": MateriaIcon;
   }
 }
