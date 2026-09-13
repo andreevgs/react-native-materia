@@ -18,12 +18,27 @@ export const generateMateriaTypography = (
       variant.startsWith("display") || variant.startsWith("headline");
 
     const activeTypeface = isBrand ? brand : plain;
+    const resolvedFontWeight = activeTypeface.fontWeight ?? token.fontWeight;
+
+    let resolvedFontFamily: string;
+
+    if (
+      activeTypeface.fontFamily &&
+      typeof activeTypeface.fontFamily === "object"
+    ) {
+      resolvedFontFamily =
+        token.fontWeight === "500"
+          ? activeTypeface.fontFamily.fontFamilyMedium
+          : activeTypeface.fontFamily.fontFamilyRegular;
+    } else {
+      resolvedFontFamily = activeTypeface.fontFamily;
+    }
 
     typography[variant] = {
       ...(fixVerticalRhythm ? defaultCommonStyles : {}),
       ...token,
-      fontFamily: activeTypeface.fontFamily,
-      fontWeight: activeTypeface.fontWeight ?? token.fontWeight,
+      fontFamily: resolvedFontFamily,
+      fontWeight: resolvedFontWeight,
     };
   });
 

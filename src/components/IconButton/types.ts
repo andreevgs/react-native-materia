@@ -1,14 +1,12 @@
-import { StyleProp, ViewStyle } from "react-native";
+import { PressableProps, StyleProp, ViewStyle } from "react-native";
 import { IconSource } from "../../types";
 
 export type IconButtonMode = "filled" | "tonal" | "outlined" | "standard";
 
-export interface IconButtonProps {
+export interface IconButtonProps extends Omit<PressableProps, "style"> {
   icon: IconSource;
   mode?: IconButtonMode;
-  disabled?: boolean;
   loading?: boolean;
-  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }
 

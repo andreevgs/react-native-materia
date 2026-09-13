@@ -19,9 +19,25 @@ export const TextFieldOutline = ({
 }: TextFieldOutlineProps) => {
   const tokens = useMateriaTokens();
 
-  const borderWidthAnim = useAnimatedStyle(() => ({
-    borderWidth: interpolate(activeAnim.value, [0, 1], [1, 2]),
-  }));
+  const leftAnimatedStyle = useAnimatedStyle(() => {
+    const width = interpolate(activeAnim.value, [0, 1], [1, 2]);
+    return {
+      borderTopWidth: width,
+      borderBottomWidth: width,
+      borderLeftWidth: width,
+      borderRightWidth: 0,
+    };
+  });
+
+  const rightAnimatedStyle = useAnimatedStyle(() => {
+    const width = interpolate(activeAnim.value, [0, 1], [1, 2]);
+    return {
+      borderTopWidth: width,
+      borderBottomWidth: width,
+      borderRightWidth: width,
+      borderLeftWidth: 0,
+    };
+  });
 
   const borderColorAnim = useAnimatedStyle(() => ({
     borderColor: interpolateColor(
@@ -40,10 +56,19 @@ export const TextFieldOutline = ({
         )
       : 0;
 
+    const activeWidth = interpolate(activeAnim.value, [0, 1], [1, 2]);
+    const topWidth = interpolate(
+      populateAnim.value,
+      [0, 0.5, 1],
+      [activeWidth, activeWidth, 0],
+    );
+
     return {
       width: notchWidth,
-      borderTopWidth: interpolate(populateAnim.value, [0, 0.5, 1], [1, 1, 0]),
-      borderBottomWidth: interpolate(activeAnim.value, [0, 1], [1, 2]),
+      borderTopWidth: topWidth,
+      borderBottomWidth: activeWidth,
+      borderLeftWidth: 0,
+      borderRightWidth: 0,
     };
   });
 
@@ -61,7 +86,7 @@ export const TextFieldOutline = ({
             borderTopLeftRadius: tokens.shape.extraSmall,
             borderBottomLeftRadius: tokens.shape.extraSmall,
           },
-          borderWidthAnim,
+          leftAnimatedStyle,
           borderColorAnim,
         ]}
       />
@@ -73,7 +98,7 @@ export const TextFieldOutline = ({
             borderTopRightRadius: tokens.shape.extraSmall,
             borderBottomRightRadius: tokens.shape.extraSmall,
           },
-          borderWidthAnim,
+          rightAnimatedStyle,
           borderColorAnim,
         ]}
       />
@@ -88,10 +113,8 @@ const styles = StyleSheet.create({
   },
   left: {
     width: OUTLINED_NOTCH_LEAD_WIDTH,
-    borderRightWidth: 0,
   },
   right: {
     flex: 1,
-    borderLeftWidth: 0,
   },
 });

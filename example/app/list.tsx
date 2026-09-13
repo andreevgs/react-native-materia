@@ -16,7 +16,7 @@ const ListDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="List"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ScrollContent>
         <List variant="standard">
@@ -32,7 +32,7 @@ const ListDemo = () => {
               <Icon source="info-rounded" size={tokens.iconSize["20dp"]} />
             }
             trailingContent={
-              <Icon source="chevron-right" size={tokens.iconSize["20dp"]} />
+              <Icon source="chevron-right-rounded" size={tokens.iconSize["20dp"]} />
             }
             supportingText="Supporting text"
           />
@@ -51,7 +51,7 @@ const ListDemo = () => {
                 <Icon source="info-rounded" size={tokens.iconSize["20dp"]} />
               }
               trailingContent={
-                <Icon source="chevron-right" size={tokens.iconSize["20dp"]} />
+                <Icon source="chevron-right-rounded" size={tokens.iconSize["20dp"]} />
               }
               supportingText="Supporting text"
             />

@@ -28,13 +28,13 @@ const IconButtonDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="Icon Button"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ComponentDemo>
-        <IconButton icon="check" mode="standard" onPress={() => {}} />
-        <IconButton icon="check" mode="filled" onPress={() => {}} />
-        <IconButton icon="check" mode="tonal" onPress={() => {}} />
-        <IconButton icon={CustomIcon} mode="outlined" onPress={() => {}} />
+        <IconButton icon="check-rounded" mode="standard" onPress={() => { }} />
+        <IconButton icon="check-rounded" mode="filled" onPress={() => { }} />
+        <IconButton icon="check-rounded" mode="tonal" onPress={() => { }} />
+        <IconButton icon={CustomIcon} mode="outlined" onPress={() => { }} />
       </ComponentDemo>
     </ScreenWrapper>
   );

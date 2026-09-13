@@ -11,22 +11,22 @@ const ButtonDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="Button"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ComponentDemo>
-        <Button onPress={() => {}} mode="filled" icon="check">
+        <Button onPress={() => { }} mode="filled" icon="check-rounded">
           Filled Button
         </Button>
-        <Button onPress={() => {}} mode="tonal">
+        <Button onPress={() => { }} mode="tonal">
           Tonal Button
         </Button>
-        <Button onPress={() => {}} mode="outlined" icon="check">
+        <Button onPress={() => { }} mode="outlined" icon="check-rounded">
           Outlined Button
         </Button>
-        <Button onPress={() => {}} mode="elevated">
+        <Button onPress={() => { }} mode="elevated">
           Elevated Button
         </Button>
-        <Button onPress={() => {}} mode="text">
+        <Button onPress={() => { }} mode="text">
           Text Button
         </Button>
       </ComponentDemo>

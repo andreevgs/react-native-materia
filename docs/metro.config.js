@@ -7,6 +7,10 @@ const workspaceRoot = path.resolve(projectRoot, "..");
 
 const config = getDefaultConfig(projectRoot);
 
+config.transformer.babelTransformerPath =
+  require.resolve("./md-transformer.js");
+config.resolver.sourceExts.push("md");
+
 module.exports = withMetroConfig(config, {
   dirname: projectRoot,
   root: workspaceRoot,

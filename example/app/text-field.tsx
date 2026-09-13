@@ -16,7 +16,7 @@ import { ScrollContent } from "../components/ScrollContent";
 
 const ErrorIcon = () => {
   const colors = useMateriaColors();
-  return <Icon source="error" color={colors.error} />;
+  return <Icon source="error-rounded" color={colors.error} />;
 };
 
 const TextFieldDemo = () => {
@@ -45,7 +45,7 @@ const TextFieldDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="Text Field"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ScrollContent contentContainerStyle={styles.container}>
         <MateriaText variant="titleMedium" style={styles.sectionTitle}>
@@ -67,7 +67,7 @@ const TextFieldDemo = () => {
           label="With Trailing Icon"
           value={value3}
           onChangeText={setValue3}
-          trailingIcon="close"
+          trailingIcon="close-rounded"
         />
         <TextField
           label="With Supporting Text"
@@ -130,7 +130,7 @@ const TextFieldDemo = () => {
           label="With Trailing Icon"
           value={value3Outlined}
           onChangeText={setValue3Outlined}
-          trailingIcon="close"
+          trailingIcon="close-rounded"
         />
         <TextField
           mode="outlined"

@@ -4,12 +4,13 @@ import {
   TextStyle,
   StyleProp,
   GestureResponderEvent,
+  PressableProps,
 } from "react-native";
 import type { IconSource } from "../../types";
 
 export type ChipMode = "outlined" | "tonal" | "elevated";
 
-export interface ChipProps {
+export interface ChipProps extends Omit<PressableProps, "style"> {
   children: ReactNode;
   mode?: ChipMode;
   onPress?: (e: GestureResponderEvent) => void;

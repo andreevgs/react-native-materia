@@ -23,8 +23,13 @@ export type TypographyScale = Record<
 >;
 export type MateriaTypography = Record<TypographyVariant, TextStyle>;
 
+export interface TypefaceStaticFonts {
+  fontFamilyRegular: string;
+  fontFamilyMedium: string;
+}
+
 export interface Typeface {
-  fontFamily: string;
+  fontFamily: string | TypefaceStaticFonts;
   fontWeight?: TextStyle["fontWeight"];
 }
 

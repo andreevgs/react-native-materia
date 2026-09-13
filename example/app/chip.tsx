@@ -11,25 +11,25 @@ const ChipDemo = () => {
     <ScreenWrapper>
       <AppBar
         headline="Chip"
-        leading={<IconButton icon="arrow-back" onPress={() => router.back()} />}
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
       />
       <ComponentDemo>
-        <Chip onPress={() => {}} mode="outlined">
+        <Chip onPress={() => { }} mode="outlined">
           Outlined Chip
         </Chip>
-        <Chip onPress={() => {}} mode="tonal">
+        <Chip onPress={() => { }} mode="tonal">
           Tonal Chip
         </Chip>
-        <Chip onPress={() => {}} mode="elevated">
+        <Chip onPress={() => { }} mode="elevated">
           Elevated Chip
         </Chip>
-        <Chip onPress={() => {}} mode="outlined" leadingIcon="check">
+        <Chip onPress={() => { }} mode="outlined" leadingIcon="check-rounded">
           With Leading Icon
         </Chip>
-        <Chip onPress={() => {}} mode="tonal" leadingIcon="check">
+        <Chip onPress={() => { }} mode="tonal" leadingIcon="check-rounded">
           Tonal With Leading Icon
         </Chip>
-        <Chip onPress={() => {}} mode="tonal" trailingIcon="close">
+        <Chip onPress={() => { }} mode="tonal" trailingIcon="close-rounded">
           Tonal With Trailing Icon
         </Chip>
       </ComponentDemo>

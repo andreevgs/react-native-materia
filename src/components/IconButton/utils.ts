@@ -6,7 +6,7 @@ export const getIconButtonColors = (
   mode: IconButtonMode,
   colors: MateriaScheme,
   tokens: Tokens,
-  disabled: boolean,
+  disabled: boolean | null,
 ): IconButtonStyleConfig => {
   if (disabled) {
     const disabledContainerColor = Color(colors.onSurface)

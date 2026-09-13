@@ -9,23 +9,32 @@ module.exports = {
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
     ios: {
-      supportsTablet: true
+      supportsTablet: true,
     },
     android: {
       adaptiveIcon: {
         backgroundColor: "#E6F4FE",
         foregroundImage: "./assets/images/android-icon-foreground.png",
         backgroundImage: "./assets/images/android-icon-background.png",
-        monochromeImage: "./assets/images/android-icon-monochrome.png"
+        monochromeImage: "./assets/images/android-icon-monochrome.png",
       },
       edgeToEdgeEnabled: true,
-      predictiveBackGestureEnabled: false
+      predictiveBackGestureEnabled: false,
     },
     web: {
       output: "static",
-      favicon: "./assets/images/favicon.png"
+      favicon: "./assets/images/favicon.png",
     },
     plugins: [
+      [
+        "expo-font",
+        {
+          fonts: [
+            "node_modules/@expo-google-fonts/roboto/Roboto_400Regular.ttf",
+            "node_modules/@expo-google-fonts/roboto/Roboto_500Medium.ttf",
+          ],
+        },
+      ],
       "expo-router",
       [
         "expo-splash-screen",
@@ -35,15 +44,15 @@ module.exports = {
           resizeMode: "contain",
           backgroundColor: "#ffffff",
           dark: {
-            backgroundColor: "#000000"
-          }
-        }
-      ]
+            backgroundColor: "#000000",
+          },
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
       reactCompiler: true,
-      baseUrl: process.env.EXPO_BASE_URL || ""
-    }
-  }
+      baseUrl: process.env.EXPO_BASE_URL || "",
+    },
+  },
 };

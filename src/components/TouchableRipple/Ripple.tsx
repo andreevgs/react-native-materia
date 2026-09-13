@@ -1,18 +1,27 @@
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
   withDelay,
+  withSequence,
+  interpolate,
   runOnJS,
-  Easing,
 } from "react-native-reanimated";
-import { RippleProps } from "./types";
 
-const RIPPLE_DURATION = 400;
-const MIN_RIPPLE_LIFESPAN = 225;
-const FADE_OUT_DURATION = 200;
+import { RippleProps } from "./types";
+import { calculateRippleGeometry } from "./utils";
+import {
+  RIPPLE_EXPAND_DURATION_MS,
+  RIPPLE_STANDARD_EASING,
+  RIPPLE_FADE_IN_DURATION_MS,
+  RIPPLE_FADE_OUT_DURATION_MS,
+  RIPPLE_OPACITY_EASING,
+  RIPPLE_MIN_TAP_DURATION_MS,
+  RIPPLE_RAPID_FADE_OUT_DURATION_MS,
+} from "./const";
+import { SoftEdgeRipple } from "./SoftEdgeRipple";
 
 export const Ripple = memo(
   ({
@@ -25,82 +34,183 @@ export const Ripple = memo(
     onFinished,
     uniqueKey,
     isActive,
+    isExiting = false,
   }: RippleProps) => {
-    const scale = useSharedValue(0);
-    const opacity = useSharedValue(initialOpacity);
+    const progress = useSharedValue(0);
+    const opacity = useSharedValue(0);
 
     const isFinished = useRef(false);
-    const [createdAt] = useState(() => Date.now());
+    const createdAt = useRef(Date.now());
+    const isMountedRef = useRef(true);
 
-    const radius = useMemo(() => {
-      const distX = Math.max(x, parentWidth - x);
-      const distY = Math.max(y, parentHeight - y);
-      return Math.sqrt(distX * distX + distY * distY);
-    }, [x, y, parentWidth, parentHeight]);
+    const geometry = useMemo(
+      () => calculateRippleGeometry(x, y, parentWidth, parentHeight),
+      [x, y, parentWidth, parentHeight],
+    );
+
+    const safeOnFinished = useCallback(
+      (key: string) => {
+        if (isMountedRef.current) {
+          onFinished(key);
+        }
+      },
+      [onFinished],
+    );
+
+    useEffect(() => {
+      return () => {
+        isMountedRef.current = false;
+      };
+    }, []);
 
     const animatedStyle = useAnimatedStyle(() => {
+      const translateX = interpolate(
+        progress.value,
+        [0, 1],
+        [geometry.originPosition.x, geometry.centerPosition.x],
+      );
+      const translateY = interpolate(
+        progress.value,
+        [0, 1],
+        [geometry.originPosition.y, geometry.centerPosition.y],
+      );
+      const scale = interpolate(
+        progress.value,
+        [0, 1],
+        [1, geometry.expansionScale],
+      );
+
       return {
         opacity: opacity.value,
-        transform: [
-          { translateX: x - radius },
-          { translateY: y - radius },
-          { scale: scale.value },
-        ],
+        transform: [{ translateX }, { translateY }, { scale }],
       };
     });
 
+    // 1. Expand scale and drift towards center
     useEffect(() => {
-      scale.value = withTiming(1, {
-        duration: RIPPLE_DURATION,
-        easing: Easing.bezier(0.2, 0.0, 0.0, 1.0),
+      progress.value = withTiming(1, {
+        duration: RIPPLE_EXPAND_DURATION_MS,
+        easing: RIPPLE_STANDARD_EASING,
       });
-    }, [scale]);
+    }, [progress]);
 
+    // 2. Fade in opacity on initial press
     useEffect(() => {
-      if (!isActive && !isFinished.current) {
+      if (isActive && !isFinished.current && !isExiting) {
+        opacity.value = withTiming(initialOpacity, {
+          duration: RIPPLE_FADE_IN_DURATION_MS,
+          easing: RIPPLE_OPACITY_EASING,
+        });
+      }
+    }, [isActive, initialOpacity, isExiting, opacity]);
+
+    // 3. Fast-track fade out when preempted by newer taps
+    useEffect(() => {
+      if (isExiting) {
         isFinished.current = true;
-
-        const timeElapsed = Date.now() - createdAt;
-        const delay = Math.max(0, MIN_RIPPLE_LIFESPAN - timeElapsed);
-
-        const fadeOutAnim = withTiming(
+        opacity.value = withTiming(
           0,
-          { duration: FADE_OUT_DURATION },
+          {
+            duration: RIPPLE_RAPID_FADE_OUT_DURATION_MS,
+            easing: RIPPLE_OPACITY_EASING,
+          },
           (finished) => {
             if (finished) {
-              runOnJS(onFinished)(uniqueKey);
+              runOnJS(safeOnFinished)(uniqueKey);
             }
           },
         );
+      }
+    }, [isExiting, opacity, safeOnFinished, uniqueKey]);
 
-        if (delay > 0) {
-          opacity.value = withDelay(delay, fadeOutAnim);
+    // 4. Handle release for single taps
+    useEffect(() => {
+      if (!isActive && !isFinished.current && !isExiting) {
+        isFinished.current = true;
+
+        const timeElapsed = Date.now() - createdAt.current;
+
+        // If released before fade-in completes, sequence the rest of fade-in before fade-out
+        if (timeElapsed < RIPPLE_FADE_IN_DURATION_MS) {
+          const remainingFadeIn = RIPPLE_FADE_IN_DURATION_MS - timeElapsed;
+          const holdDelay =
+            RIPPLE_MIN_TAP_DURATION_MS - RIPPLE_FADE_IN_DURATION_MS;
+
+          opacity.value = withSequence(
+            withTiming(initialOpacity, {
+              duration: remainingFadeIn,
+              easing: RIPPLE_OPACITY_EASING,
+            }),
+            withDelay(
+              holdDelay,
+              withTiming(
+                0,
+                {
+                  duration: RIPPLE_FADE_OUT_DURATION_MS,
+                  easing: RIPPLE_OPACITY_EASING,
+                },
+                (finished) => {
+                  if (finished) {
+                    runOnJS(safeOnFinished)(uniqueKey);
+                  }
+                },
+              ),
+            ),
+          );
         } else {
-          opacity.value = fadeOutAnim;
+          const delay = Math.max(
+            0,
+            RIPPLE_MIN_TAP_DURATION_MS - timeElapsed,
+          );
+
+          const fadeOutAnim = withTiming(
+            0,
+            {
+              duration: RIPPLE_FADE_OUT_DURATION_MS,
+              easing: RIPPLE_OPACITY_EASING,
+            },
+            (finished) => {
+              if (finished) {
+                runOnJS(safeOnFinished)(uniqueKey);
+              }
+            },
+          );
+
+          if (delay > 0) {
+            opacity.value = withDelay(delay, fadeOutAnim);
+          } else {
+            opacity.value = fadeOutAnim;
+          }
         }
       }
-    }, [isActive, onFinished, uniqueKey, opacity, createdAt]);
+    }, [isActive, initialOpacity, isExiting, safeOnFinished, uniqueKey, opacity]);
 
     return (
       <Animated.View
         pointerEvents="none"
         style={[
-          styles.ripple,
+          styles.rippleOrigin,
           {
-            width: radius * 2,
-            height: radius * 2,
-            borderRadius: radius,
-            backgroundColor: color,
+            width: geometry.initialDiameter,
+            height: geometry.initialDiameter,
           },
           animatedStyle,
         ]}
-      />
+      >
+        <SoftEdgeRipple
+          size={geometry.initialDiameter}
+          color={color}
+          gradientId={`grad_${uniqueKey}`}
+        />
+      </Animated.View>
     );
   },
 );
 
+Ripple.displayName = "Ripple";
+
 const styles = StyleSheet.create({
-  ripple: {
+  rippleOrigin: {
     position: "absolute",
     top: 0,
     left: 0,

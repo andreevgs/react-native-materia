@@ -1,225 +1,160 @@
 # React Native Materia
 
-React Native Materia is a UI library for React Native built from the ground up, embracing the principles of the modern [Material You](https://m3.material.io/) (Material Design 3) specification. It offers a highly customizable, themeable, and accessible set of components that let you build beautiful and consistent interfaces seamlessly.
+A customizable component library implementing the modern [Material Design 3](https://m3.material.io/) specification for React Native.
 
-## Installation
-
-You can install `react-native-materia` along with its peer dependencies using your preferred package manager.
-
-```bash
-npm install react-native-materia react-native-gesture-handler react-native-svg
-# or
-yarn add react-native-materia react-native-gesture-handler react-native-svg
-# or
-pnpm add react-native-materia react-native-gesture-handler react-native-svg
-```
-
-**Note:** Since we rely on `react-native-gesture-handler` and `react-native-svg`, ensure they are correctly integrated according to their installation instructions (e.g., adding necessary Babel plugins for gesture handler).
-
-## Setup
-
-To use React Native Materia in your application, you must wrap your app's root component with the `MateriaProvider`. This provider seamlessly sets up the theming context, typography, color schemes, and icon registry. Additionally, it wraps your app in an underlying `GestureHandlerRootView` to ensure interactions work flawlessly across components.
-
-```tsx
-import React from "react";
-import { MateriaProvider } from "react-native-materia";
-import AppContent from "./AppContent";
-
-export default function App() {
-  return (
-    <MateriaProvider mode="system" contrastLevel="standard">
-      <AppContent />
-    </MateriaProvider>
-  );
-}
-```
-
-### Provider Props
-
-- `mode` - Theme mode (`"system" | "light" | "dark"`). Defaults to `"system"`.
-- `contrastLevel` - Contrast level (`"standard" | "medium" | "high"`). Defaults to `"standard"`.
-- `theme` / `typography` - (Optional) Provide your own customized Materia themes or typography scales.
-- `icons` - (Optional) Custom SVG path data for icons. By default, Core Icons are included.
-
-> **Tip:** The `theme` interface (`MateriaTheme`) is fully compatible with the JSON output from the official [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/), allowing you to quickly generate and drop in a new theme!
-
-## Usage
-
-React Native Materia exposes both components and utility hooks (like `useMateriaTheme`, `useMateriaColors`, `useMateriaTypography`, `useIconRegistry`) to help you build out your screens in the material way.
-
-## Components
-
-_(More components coming soon, here are the current essentials!)_
-
-### MateriaText
-
-A highly customizable text component linked to the `TypographyVariant` from the Material Design 3 guidelines. It scales properly out of the box and seamlessly maps to the theme's default text colors (using `onSurface` as the standard base).
-
-```tsx
-import { MateriaText } from 'react-native-materia';
-
-// Standard body text
-<MateriaText variant="bodyMedium">Hello World!</MateriaText>
-
-// Headline text
-<MateriaText variant="headlineLarge">My Title</MateriaText>
-```
-
-**Props:**
-
-- Inherits from the standard React Native `TextProps`.
-- `variant` (`TypographyVariant`): The typography variant to use. Defaults to `"bodyMedium"`.
-  - **Available Variants:** `"displayLarge"` | `"displayMedium"` | `"displaySmall"` | `"headlineLarge"` | `"headlineMedium"` | `"headlineSmall"` | `"titleLarge"` | `"titleMedium"` | `"titleSmall"` | `"labelLarge"` | `"labelMedium"` | `"labelSmall"` | `"bodyLarge"` | `"bodyMedium"` | `"bodySmall"`
-
-### Icon
-
-The `Icon` component allows rendering SVG icons with Material Design 3 spacing and theming baked in. You can use string-based core paths registered in your `MateriaProvider` or directly pass a custom SVG component as the source.
-
-```tsx
-import { Icon } from "react-native-materia";
-
-// Using a standard registered icon string
-<Icon source="search" size={24} />;
-
-// Passing custom SVG components directly
-import CustomSvg from "./custom-icon.svg";
-<Icon source={CustomSvg} color="red" />;
-```
-
-**Props:**
-
-- `source` (`IconSource`): Can be a registered string name (`IconName`) or a React function component (`React.FC<SvgProps>`).
-- `size` (`number`): The size of the icon container (width and height). Defaults to `tokens.iconSize["24dp"]` (24px).
-- `color` (`ColorValue`): The fill color of the icon. Defaults to the theme's `onSurfaceVariant` color.
-- `style` (`StyleProp<ViewStyle>`): Standard React Native `ViewStyle` passed to the wrapping container.
-
-### Extending IconRegistry
-
-By default, the library includes a small set of essential core icons: 
-`"arrow-back"`, `"arrow-forward"`, `"close"`, `"menu"`, `"more-vert"`, `"check"`, `"add"`, `"search"`, `"error"`, `"warning"`, `"delete"`.
-
-You can easily extend this default set of icons with your own custom paths. A great source for Material Design icons is [Iconify (Material Symbols)](https://icon-sets.iconify.design/material-symbols).
-
-To add a new icon:
-1. Find any SVG icon you like.
-2. Extract the value of the `d` attribute from the `<path>` element.
-3. Create an object where the keys are the icon names and the values are the path strings. This is similar to the internal `CORE_ICON_PATHS` structure.
-4. Pass this object to the `icons` prop of the `MateriaProvider`.
-
-```tsx
-import React from "react";
-import { MateriaProvider, Icon } from "react-native-materia";
-
-const myCustomIcons = {
-  // Value taken exactly from the `d` attribute of an SVG <path>
-  "my-custom-star": "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z",
-};
-
-export default function App() {
-  return (
-    <MateriaProvider icons={myCustomIcons}>
-      <Icon source="my-custom-star" size={24} color="blue" />
-    </MateriaProvider>
-  );
-}
-```
-
-> **Note:** The `IconRegistry` approach is currently designed for simple icons that consist of a single `<path>`. If you need to use a complex icon containing multiple paths or elements, we recommend using `react-native-svg` to create a standard component. You can then pass this component directly to the `source` prop of `Icon` or the `icon` prop of `Button` and `IconButton`.
-
-### Button
-
-A standard interactive button with all Material Design 3 state layers and ripples built-in.
-
-```tsx
-import { Button } from 'react-native-materia';
-
-<Button mode="filled" onPress={() => console.log('Pressed')}>
-  Submit
-</Button>
-
-<Button mode="outlined" icon="add">
-  Add Item
-</Button>
-```
-
-**Props:**
-- `mode` (`ButtonMode`): Visual variant `"filled" | "tonal" | "outlined" | "elevated" | "text"`. Defaults to `"filled"`.
-- `disabled` (`boolean`): Disables interaction and adapts colors.
-- `loading` (`boolean`): Shows an activity indicator inside the button and disables interaction.
-- `icon` (`IconSource`): Optional leading icon to display before the text.
-
-### IconButton
-
-Functions like a regular button, but its content consists exclusively of an icon. It provides the standard Material Design 3 state layers (like ripple effects) and comes in several visual styles (standard, filled, tonal, and outlined).
-
-```tsx
-import { IconButton } from 'react-native-materia';
-
-<IconButton 
-  icon="search" 
-  mode="standard" 
-  onPress={() => console.log('Search clicked')} 
-/>
-```
-
-**Props:**
-- `icon` (`IconSource`): The icon to render.
-- `mode` (`IconButtonMode`): Visual variant `"filled" | "tonal" | "outlined" | "standard"`. Defaults to `"standard"`.
-- `disabled` (`boolean`): Disables interaction.
-- `loading` (`boolean`): Shows an activity indicator instead of the icon.
-
-### List
-
-A flexible container for displaying rows of information, such as menus, settings, or items in a feed. It supports both standard continuous layouts and visually separated segmented variants.
-
-```tsx
-import { List } from 'react-native-materia';
-
-<List variant="standard">
-  <List.Item 
-    headline="List item" 
-    supportingText="Additional description" 
-    leadingContent={<Icon source="person" />} 
-    onPress={() => console.log('Item pressed')}
-  />
-</List>
-```
-
-**Props (List):**
-- `variant` (`"standard" | "segmented"`): Defines the visual layout style.
-
-**Props (List.Item):**
-
-- `headline` (`string`): The primary text of the item.
-- `supportingText` (`string`): Optional secondary text beneath the headline.
-- `leadingContent` (`ReactNode`): Element placed at the start.
-- `trailingContent` (`ReactNode`): Element placed at the end.
-- Multiple press props (`onPress`, etc) are inherited from `TouchableRipple`.
-
-### TouchableRipple
-
-The foundation component for interactive elements. It provides the Material Design state layer functionality including responsive hover, focus, and cross-platform ripple effects.
-
-```tsx
-import { TouchableRipple } from 'react-native-materia';
-import { View, Text } from 'react-native';
-
-<TouchableRipple 
-  onPress={() => console.log('Rippled!')} 
-  rippleColor="rgba(0,0,0,0.2)"
->
-  <View style={{ padding: 16 }}>
-    <Text>Press Me</Text>
-  </View>
-</TouchableRipple>
-```
-
-**Props:**
-- `onPress`, `onLongPress`, `onHoverIn`, `onFocus`, etc.: Interaction handlers.
-- `borderless` (`boolean`): Whether the ripple should flow identically to the container bounds or spread outside.
-- `rippleColor` (`string`): Custom color for the ripple and state layer.
-- `useNativeEffect` (`boolean`): Uses platform-specific native effects (like Android's native ripple) when available. Defaults to `true`.
+[![npm version](https://img.shields.io/npm/v/react-native-materia.svg)](https://www.npmjs.com/package/react-native-materia)
+[![license](https://img.shields.io/npm/l/react-native-materia.svg)](https://github.com/andreevgs/react-native-materia/blob/main/LICENSE)
 
 ---
 
-🚧 **Work in Progress:** This library is heavily under development and is preparing for further updates!
+## Overview
+
+React Native Materia is built around the modern Material Design 3 specification, treating color, shape, elevation, and motion as unified primitives. It provides faithful implementations of MD3 components with dynamic color schemes, tonal surfaces, and adaptive contrast levels.
+
+At the center of the library is `MateriaProvider`, an unopinionated runtime root that coordinates dynamic theming (`"light"`, `"dark"`, `"system"`), contrast levels (`"standard"`, `"medium"`, `"high"`), 8dp grid spacing tokens, fifteen typography variants, and global icon registries. Palettes can be generated programmatically from a seed color or imported directly from [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/).
+
+All animations and interactions run directly on the UI thread via `react-native-reanimated` and `react-native-gesture-handler` for smooth and consistent performance across iOS, Android, and Web. A built-in portal subsystem ensures floating elements like dialogs, menus, and bottom sheets render reliably above navigation hierarchies without context loss or layout clipping.
+
+---
+
+## Installation
+
+Install the package into your project using your package manager of choice:
+
+```bash
+npm install react-native-materia
+```
+
+```bash
+yarn add react-native-materia
+```
+
+```bash
+pnpm add react-native-materia
+```
+
+### Peer Dependencies
+
+React Native Materia requires several peer dependencies for animations, gesture interactions, and vector iconography:
+
+```bash
+npm install react-native-reanimated react-native-gesture-handler react-native-svg
+```
+
+```bash
+yarn add react-native-reanimated react-native-gesture-handler react-native-svg
+```
+
+```bash
+pnpm add react-native-reanimated react-native-gesture-handler react-native-svg
+```
+
+If you are using Expo, install matching dependency versions with:
+
+```bash
+npx expo install react-native-reanimated react-native-gesture-handler react-native-svg
+```
+
+---
+
+## Quick Start
+
+Wrap your application's root component with `MateriaProvider`. To support overlay components like modal dialogs and bottom sheets, also wrap your content with `PortalProvider` and render a root `PortalHost`:
+
+```tsx
+import React from "react";
+import {
+  MateriaProvider,
+  PortalProvider,
+  PortalHost,
+} from "react-native-materia";
+import { MainNavigation } from "./navigation";
+
+export default function App() {
+  return (
+    <MateriaProvider>
+      <PortalProvider>
+        <MainNavigation />
+        <PortalHost />
+      </PortalProvider>
+    </MateriaProvider>
+  );
+}
+```
+
+> **Note:** `MateriaProvider` automatically integrates `GestureHandlerRootView` with full-screen flex layout, so no separate gesture handler root wrapper is required.
+
+### Using Components
+
+You can now import and use any pre-built component across your application:
+
+```tsx
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Button } from "react-native-materia";
+
+export const ExampleScreen = () => {
+  return (
+    <View style={styles.container}>
+      <Button
+        mode="filled"
+        icon="check-rounded"
+        onPress={() => console.log("Pressed")}
+      >
+        Save Changes
+      </Button>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+```
+
+---
+
+## Documentation
+
+Comprehensive interactive documentation, live component playgrounds, and architecture guides are available in the dedicated documentation app.
+
+To launch the documentation app locally:
+
+```bash
+npm run docs
+```
+
+### Core Architecture
+
+- [Getting Started](docs/content/getting-started.md) — install dependencies and configure the root provider.
+- [Provider](docs/content/provider.md) — manage theme modes, contrast levels, and gesture roots.
+- [Theming](docs/content/theming.md) — seed color palettes and Material Theme Builder integration.
+- [Tokens](docs/content/tokens.md) — spacing, corner shapes, elevation shadows, and motion curves.
+- [Typography](docs/content/typography.md) — configure font families across the 15 MD3 type roles.
+- [Iconography](docs/content/iconography.md) — system icons, custom SVG packs, and icon styling.
+- [Portal](docs/content/portal.md) — render dialogs and sheets above navigation layers.
+
+### Components
+
+- [Button](docs/content/button.md) — actions across five emphasis levels.
+- [IconButton](docs/content/icon-button.md) — compact icon-only actions with ripple feedback.
+- [Icon](docs/content/icon.md) — scalable vector icons with automatic accessibility support.
+- [List](docs/content/list.md) — standard and segmented rows with content slots.
+
+---
+
+## Design Guidelines
+
+While React Native Materia implements the tokens, components, and motion curves of the design system, creating an effective user experience requires adhering to the official [Material Design 3 Guidelines](https://m3.material.io/).
+
+Structural decisions regarding screen composition, visual hierarchy, choosing appropriate component variants (such as filled vs. outlined buttons, or modal bottom sheets vs. dialogs), and spatial layout should always be guided by the official specification.
+
+---
+
+## License
+
+MIT © [andreevgs](https://github.com/andreevgs)
