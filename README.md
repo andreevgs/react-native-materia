@@ -5,8 +5,6 @@ A customizable component library implementing the modern [Material Design 3](htt
 [![npm version](https://img.shields.io/npm/v/react-native-materia.svg)](https://www.npmjs.com/package/react-native-materia)
 [![license](https://img.shields.io/npm/l/react-native-materia.svg)](https://github.com/andreevgs/react-native-materia/blob/main/LICENSE)
 
----
-
 ## Overview
 
 React Native Materia is built around the modern Material Design 3 specification, treating color, shape, elevation, and motion as unified primitives. It provides faithful implementations of MD3 components with dynamic color schemes, tonal surfaces, and adaptive contrast levels.
@@ -14,8 +12,6 @@ React Native Materia is built around the modern Material Design 3 specification,
 At the center of the library is `MateriaProvider`, an unopinionated runtime root that coordinates dynamic theming (`"light"`, `"dark"`, `"system"`), contrast levels (`"standard"`, `"medium"`, `"high"`), 8dp grid spacing tokens, fifteen typography variants, and global icon registries. Palettes can be generated programmatically from a seed color or imported directly from [Material Theme Builder](https://material-foundation.github.io/material-theme-builder/).
 
 All animations and interactions run directly on the UI thread via `react-native-reanimated` and `react-native-gesture-handler` for smooth and consistent performance across iOS, Android, and Web. A built-in portal subsystem ensures floating elements like dialogs, menus, and bottom sheets render reliably above navigation hierarchies without context loss or layout clipping.
-
----
 
 ## Installation
 
@@ -54,8 +50,6 @@ If you are using Expo, install matching dependency versions with:
 ```bash
 npx expo install react-native-reanimated react-native-gesture-handler react-native-svg
 ```
-
----
 
 ## Quick Start
 
@@ -116,8 +110,6 @@ const styles = StyleSheet.create({
 });
 ```
 
----
-
 ## Documentation
 
 Comprehensive interactive documentation, live component playgrounds, and architecture guides are available in the dedicated documentation app.
@@ -145,15 +137,11 @@ npm run docs
 - [Icon](docs/content/icon.md) — scalable vector icons with automatic accessibility support.
 - [List](docs/content/list.md) — standard and segmented rows with content slots.
 
----
-
 ## Design Guidelines
 
 While React Native Materia implements the tokens, components, and motion curves of the design system, creating an effective user experience requires adhering to the official [Material Design 3 Guidelines](https://m3.material.io/).
 
 Structural decisions regarding screen composition, visual hierarchy, choosing appropriate component variants (such as filled vs. outlined buttons, or modal bottom sheets vs. dialogs), and spatial layout should always be guided by the official specification.
-
----
 
 ## License
 
