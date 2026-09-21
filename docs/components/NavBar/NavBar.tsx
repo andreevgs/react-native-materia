@@ -30,6 +30,7 @@ export const NavBar = () => {
       <NavBarItem href="/components/list" label="List" />
       <NavBarItem href="/components/text" label="Text" />
       <NavBarItem href="/components/text-field" label="Text Field" />
+      <NavBarItem href="/components/touchable-ripple" label="Touchable Ripple" />
     </ScrollView>
   );
 };
