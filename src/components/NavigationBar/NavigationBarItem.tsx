@@ -12,6 +12,12 @@ import { Icon } from "../Icon";
 import { TouchableRipple } from "../TouchableRipple";
 import { MateriaText } from "../Text";
 import { Tokens } from "../../types";
+import {
+  INDICATOR_WIDTH,
+  INDICATOR_HEIGHT,
+  NAV_ITEM_HIT_SLOP,
+  IS_WEB,
+} from "./const";
 
 export const NavigationBarItem = ({
   route,
@@ -48,6 +54,53 @@ export const NavigationBarItem = ({
 
   const styles = useMemo(() => createStyles(tokens), [tokens]);
 
+  const renderIconWithIndicator = () => (
+    <>
+      <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
+      {route.icon && (
+        <View style={styles.iconWrapper} pointerEvents="none">
+          <Icon
+            source={
+              isActive && route.activeIcon ? route.activeIcon : route.icon
+            }
+            size={tokens.iconSize["24dp"]}
+            color={iconColor}
+            style={styles.icon}
+          />
+        </View>
+      )}
+    </>
+  );
+
+  const renderLabel = () =>
+    route.label ? (
+      <View style={styles.labelContainer} pointerEvents="none">
+        <MateriaText
+          variant="labelMedium"
+          style={{ color: textColor }}
+          numberOfLines={1}
+        >
+          {route.label}
+        </MateriaText>
+      </View>
+    ) : null;
+
+  if (IS_WEB) {
+    return (
+      <TouchableRipple
+        onPress={onPress}
+        style={styles.touchableWeb}
+        contentContainerStyle={styles.touchableContentWeb}
+        accessibilityLabel={route.accessibilityLabel}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: isActive }}
+      >
+        <View style={styles.iconContainer}>{renderIconWithIndicator()}</View>
+        {renderLabel()}
+      </TouchableRipple>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -55,34 +108,15 @@ export const NavigationBarItem = ({
           onPress={onPress}
           style={styles.touchable}
           contentContainerStyle={styles.touchableContent}
-          hitSlop={{ top: 6, bottom: 26, left: 500, right: 500 }}
+          hitSlop={NAV_ITEM_HIT_SLOP}
           accessibilityLabel={route.accessibilityLabel}
           accessibilityRole="tab"
           accessibilityState={{ selected: isActive }}
         >
-          <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
-          {route.icon && (
-            <Icon
-              source={
-                isActive && route.activeIcon ? route.activeIcon : route.icon
-              }
-              size={tokens.iconSize["24dp"]}
-              color={iconColor}
-            />
-          )}
+          {renderIconWithIndicator()}
         </TouchableRipple>
       </View>
-      {route.label && (
-        <View style={styles.labelContainer} pointerEvents="none">
-          <MateriaText
-            variant="labelMedium"
-            style={{ color: textColor }}
-            numberOfLines={1}
-          >
-            {route.label}
-          </MateriaText>
-        </View>
-      )}
+      {renderLabel()}
     </View>
   );
 };
@@ -98,14 +132,14 @@ const createStyles = (tokens: Tokens) =>
       overflow: "hidden",
     },
     iconContainer: {
-      width: 56,
-      height: 32,
+      width: INDICATOR_WIDTH,
+      height: INDICATOR_HEIGHT,
       justifyContent: "center",
       alignItems: "center",
     },
     touchable: {
-      width: 56,
-      height: 32,
+      width: INDICATOR_WIDTH,
+      height: INDICATOR_HEIGHT,
       borderRadius: tokens.shape.full,
       alignItems: "center",
       justifyContent: "center",
@@ -118,9 +152,31 @@ const createStyles = (tokens: Tokens) =>
       alignItems: "center",
       justifyContent: "center",
     },
+    touchableWeb: {
+      flex: 1,
+      height: "100%",
+      overflow: "hidden",
+    },
+    touchableContentWeb: {
+      flex: 1,
+      width: "100%",
+      height: "100%",
+      alignItems: "center",
+      justifyContent: "flex-start",
+      paddingTop: tokens.spacing.xss,
+    },
     indicator: {
       ...StyleSheet.absoluteFillObject,
       borderRadius: tokens.shape.full,
+      zIndex: 0,
+    },
+    iconWrapper: {
+      zIndex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    icon: {
+      zIndex: 1,
     },
     labelContainer: {
       marginTop: tokens.spacing.xs,
