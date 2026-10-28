@@ -19,53 +19,77 @@ const ButtonPage = () => {
           DEMO_MAIN: (
             <Figure>
               <RowWrap>
-                <Button mode="filled">Filled</Button>
-                <Button mode="tonal">Tonal</Button>
-                <Button mode="outlined">Outlined</Button>
-                <Button mode="elevated">Elevated</Button>
-                <Button mode="text">Text</Button>
+                <Button mode="filled" onPress={() => {}}>
+                  Filled
+                </Button>
+                <Button mode="tonal" onPress={() => {}}>
+                  Tonal
+                </Button>
+                <Button mode="outlined" onPress={() => {}}>
+                  Outlined
+                </Button>
+                <Button mode="elevated" onPress={() => {}}>
+                  Elevated
+                </Button>
+                <Button mode="text" onPress={() => {}}>
+                  Text
+                </Button>
               </RowWrap>
             </Figure>
           ),
           DEMO_FILLED: (
             <Figure>
               <RowWrap>
-                <Button mode="filled">Filled Button</Button>
+                <Button mode="filled" onPress={() => {}}>
+                  Filled Button
+                </Button>
               </RowWrap>
             </Figure>
           ),
           DEMO_TONAL: (
             <Figure>
               <RowWrap>
-                <Button mode="tonal">Tonal Button</Button>
+                <Button mode="tonal" onPress={() => {}}>
+                  Tonal Button
+                </Button>
               </RowWrap>
             </Figure>
           ),
           DEMO_OUTLINED: (
             <Figure>
               <RowWrap>
-                <Button mode="outlined">Outlined Button</Button>
+                <Button mode="outlined" onPress={() => {}}>
+                  Outlined Button
+                </Button>
               </RowWrap>
             </Figure>
           ),
           DEMO_ELEVATED: (
             <Figure>
               <RowWrap>
-                <Button mode="elevated">Elevated Button</Button>
+                <Button mode="elevated" onPress={() => {}}>
+                  Elevated Button
+                </Button>
               </RowWrap>
             </Figure>
           ),
           DEMO_TEXT: (
             <Figure>
               <RowWrap>
-                <Button mode="text">Text Button</Button>
+                <Button mode="text" onPress={() => {}}>
+                  Text Button
+                </Button>
               </RowWrap>
             </Figure>
           ),
           DEMO_ICON: (
             <Figure>
               <RowWrap>
-                <Button mode="filled" icon="check-rounded">
+                <Button
+                  mode="filled"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                >
                   Save Changes
                 </Button>
               </RowWrap>

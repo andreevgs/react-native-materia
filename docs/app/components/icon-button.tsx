@@ -19,38 +19,70 @@ const IconButtonPage = () => {
           DEMO_MAIN: (
             <Figure>
               <RowWrap>
-                <IconButton mode="filled" icon="check-rounded" />
-                <IconButton mode="tonal" icon="check-rounded" />
-                <IconButton mode="outlined" icon="check-rounded" />
-                <IconButton mode="standard" icon="check-rounded" />
+                <IconButton
+                  mode="filled"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
+                <IconButton
+                  mode="tonal"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
+                <IconButton
+                  mode="outlined"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
+                <IconButton
+                  mode="standard"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
               </RowWrap>
             </Figure>
           ),
           DEMO_FILLED: (
             <Figure>
               <RowWrap>
-                <IconButton mode="filled" icon="check-rounded" />
+                <IconButton
+                  mode="filled"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
               </RowWrap>
             </Figure>
           ),
           DEMO_TONAL: (
             <Figure>
               <RowWrap>
-                <IconButton mode="tonal" icon="check-rounded" />
+                <IconButton
+                  mode="tonal"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
               </RowWrap>
             </Figure>
           ),
           DEMO_OUTLINED: (
             <Figure>
               <RowWrap>
-                <IconButton mode="outlined" icon="check-rounded" />
+                <IconButton
+                  mode="outlined"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
               </RowWrap>
             </Figure>
           ),
           DEMO_STANDARD: (
             <Figure>
               <RowWrap>
-                <IconButton mode="standard" icon="check-rounded" />
+                <IconButton
+                  mode="standard"
+                  icon="check-rounded"
+                  onPress={() => {}}
+                />
               </RowWrap>
             </Figure>
           ),

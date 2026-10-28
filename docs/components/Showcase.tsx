@@ -38,35 +38,61 @@ export const Showcase = () => {
     <Figure>
       <RowWrap style={styles.container}>
         <View style={styles.column}>
-          <Button mode="filled">Button</Button>
-          <Button mode="tonal">Button</Button>
-          <Button mode="outlined">Button</Button>
-          <Button mode="elevated">Button</Button>
-          <Button mode="text">Button</Button>
+          <Button mode="filled" onPress={() => {}}>
+            Button
+          </Button>
+          <Button mode="tonal" onPress={() => {}}>
+            Button
+          </Button>
+          <Button mode="outlined" onPress={() => {}}>
+            Button
+          </Button>
+          <Button mode="elevated" onPress={() => {}}>
+            Button
+          </Button>
+          <Button mode="text" onPress={() => {}}>
+            Button
+          </Button>
         </View>
         <View style={styles.column}>
-          <IconButton icon="check-rounded" mode="filled" />
-          <IconButton icon="check-rounded" mode="tonal" />
-          <IconButton icon="check-rounded" mode="outlined" />
-          <IconButton icon="check-rounded" mode="standard" />
+          <IconButton
+            icon="check-rounded"
+            mode="filled"
+            onPress={() => {}}
+          />
+          <IconButton icon="check-rounded" mode="tonal" onPress={() => {}} />
+          <IconButton
+            icon="check-rounded"
+            mode="outlined"
+            onPress={() => {}}
+          />
+          <IconButton
+            icon="check-rounded"
+            mode="standard"
+            onPress={() => {}}
+          />
         </View>
         <View style={[styles.column, styles.list]}>
           <List variant="segmented">
             <List.Item
               headline="First List Item"
               trailingContent={<ChevronIcon />}
+              onPress={() => {}}
             />
             <List.Item
               headline="Second List Item"
               trailingContent={<ChevronIcon />}
+              onPress={() => {}}
             />
             <List.Item
               headline="Third List Item"
               trailingContent={<ChevronIcon />}
+              onPress={() => {}}
             />
             <List.Item
               headline="Fourth List Item"
               trailingContent={<ChevronIcon />}
+              onPress={() => {}}
             />
           </List>
         </View>
