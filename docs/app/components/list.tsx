@@ -18,25 +18,25 @@ const ListPage = () => {
           DEMO_MAIN: (
             <Figure>
               <List variant="segmented" style={styles.list}>
-                <List.Item headline="Item 1" />
-                <List.Item headline="Item 2" />
-                <List.Item headline="Item 3" />
+                <List.Item headline="Item 1" onPress={() => {}} />
+                <List.Item headline="Item 2" onPress={() => {}} />
+                <List.Item headline="Item 3" onPress={() => {}} />
               </List>
             </Figure>
           ),
           DEMO_STANDARD: (
             <Figure>
               <List variant="standard" style={styles.list}>
-                <List.Item headline="Standard Item 1" />
-                <List.Item headline="Standard Item 2" />
+                <List.Item headline="Standard Item 1" onPress={() => {}} />
+                <List.Item headline="Standard Item 2" onPress={() => {}} />
               </List>
             </Figure>
           ),
           DEMO_SEGMENTED: (
             <Figure>
               <List variant="segmented" style={styles.list}>
-                <List.Item headline="Segmented Item 1" />
-                <List.Item headline="Segmented Item 2" />
+                <List.Item headline="Segmented Item 1" onPress={() => {}} />
+                <List.Item headline="Segmented Item 2" onPress={() => {}} />
               </List>
             </Figure>
           ),
