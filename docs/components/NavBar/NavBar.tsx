@@ -24,6 +24,7 @@ export const NavBar = () => {
 
       <NavBarDivider />
       <NavBarSubheader>Components</NavBarSubheader>
+      <NavBarItem href="/components/app-bar" label="App Bar" />
       <NavBarItem href="/components/button" label="Button" />
       <NavBarItem href="/components/icon-button" label="Icon Button" />
       <NavBarItem href="/components/icon" label="Icon" />
