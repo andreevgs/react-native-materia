@@ -1,22 +1,21 @@
-import React, { useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useMemo, useEffect, useRef } from "react";
+import { View, StyleSheet, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
-  useDerivedValue,
+  useSharedValue,
   withTiming,
   Easing,
 } from "react-native-reanimated";
 import { NavigationBarItemProps } from "./types";
 import { useMateriaColors, useMateriaTokens } from "../../core/MateriaProvider";
 import { Icon } from "../Icon";
-import { TouchableRipple } from "../TouchableRipple";
+import { useRipple, RippleHost } from "../TouchableRipple";
 import { MateriaText } from "../Text";
 import { Tokens } from "../../types";
 import {
   INDICATOR_WIDTH,
   INDICATOR_HEIGHT,
-  NAV_ITEM_HIT_SLOP,
-  IS_WEB,
+  webTouchStyle,
 } from "./const";
 
 export const NavigationBarItem = ({
@@ -27,17 +26,20 @@ export const NavigationBarItem = ({
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
 
-  const activeProgress = useDerivedValue(() => {
-    return withTiming(isActive ? 1 : 0, {
+  const isFirstRender = useRef(true);
+  const activeProgress = useSharedValue(isActive ? 1 : 0);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      activeProgress.value = isActive ? 1 : 0;
+      return;
+    }
+    activeProgress.value = withTiming(isActive ? 1 : 0, {
       duration: tokens.duration.short4,
-      easing: Easing.bezier(
-        tokens.easing.standard[0],
-        tokens.easing.standard[1],
-        tokens.easing.standard[2],
-        tokens.easing.standard[3],
-      ),
+      easing: Easing.bezier(...tokens.easing.standard),
     });
-  }, [isActive, tokens]);
+  }, [isActive, tokens, activeProgress]);
 
   const animatedIndicatorStyle = useAnimatedStyle(() => {
     return {
@@ -52,28 +54,38 @@ export const NavigationBarItem = ({
     : colors.onSurfaceVariant;
   const textColor = isActive ? colors.secondary : colors.onSurfaceVariant;
 
+  const ripple = useRipple({
+    color: iconColor,
+    centered: true,
+    useNativeEffect: false,
+  });
+
   const styles = useMemo(() => createStyles(tokens), [tokens]);
 
-  const renderIconWithIndicator = () => (
-    <>
-      <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
-      {route.icon && (
-        <View style={styles.iconWrapper} pointerEvents="none">
-          <Icon
-            source={
-              isActive && route.activeIcon ? route.activeIcon : route.icon
-            }
-            size={tokens.iconSize["24dp"]}
-            color={iconColor}
-            style={styles.icon}
-          />
-        </View>
-      )}
-    </>
-  );
-
-  const renderLabel = () =>
-    route.label ? (
+  return (
+    <Pressable
+      onPress={onPress}
+      style={styles.container}
+      accessibilityRole="tab"
+      accessibilityState={{ selected: isActive }}
+      accessibilityLabel={route.accessibilityLabel ?? route.label}
+      {...ripple.handlers}
+    >
+      <View style={styles.iconContainer}>
+        <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
+        <RippleHost ripple={ripple} style={styles.pillShape} />
+        {route.icon && (
+          <View style={styles.iconWrapper} pointerEvents="none">
+            <Icon
+              source={
+                isActive && route.activeIcon ? route.activeIcon : route.icon
+              }
+              size={tokens.iconSize["24dp"]}
+              color={iconColor}
+            />
+          </View>
+        )}
+      </View>
       <View style={styles.labelContainer} pointerEvents="none">
         <MateriaText
           variant="labelMedium"
@@ -83,41 +95,7 @@ export const NavigationBarItem = ({
           {route.label}
         </MateriaText>
       </View>
-    ) : null;
-
-  if (IS_WEB) {
-    return (
-      <TouchableRipple
-        onPress={onPress}
-        style={styles.touchableWeb}
-        contentContainerStyle={styles.touchableContentWeb}
-        accessibilityLabel={route.accessibilityLabel}
-        accessibilityRole="tab"
-        accessibilityState={{ selected: isActive }}
-      >
-        <View style={styles.iconContainer}>{renderIconWithIndicator()}</View>
-        {renderLabel()}
-      </TouchableRipple>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <TouchableRipple
-          onPress={onPress}
-          style={styles.touchable}
-          contentContainerStyle={styles.touchableContent}
-          hitSlop={NAV_ITEM_HIT_SLOP}
-          accessibilityLabel={route.accessibilityLabel}
-          accessibilityRole="tab"
-          accessibilityState={{ selected: isActive }}
-        >
-          {renderIconWithIndicator()}
-        </TouchableRipple>
-      </View>
-      {renderLabel()}
-    </View>
+    </Pressable>
   );
 };
 
@@ -127,9 +105,9 @@ const createStyles = (tokens: Tokens) =>
       flex: 1,
       alignItems: "center",
       justifyContent: "flex-start",
-      paddingTop: tokens.spacing.xss,
+      paddingTop: tokens.spacing.m,
       height: "100%",
-      overflow: "hidden",
+      ...webTouchStyle,
     },
     iconContainer: {
       width: INDICATOR_WIDTH,
@@ -137,46 +115,18 @@ const createStyles = (tokens: Tokens) =>
       justifyContent: "center",
       alignItems: "center",
     },
-    touchable: {
-      width: INDICATOR_WIDTH,
-      height: INDICATOR_HEIGHT,
-      borderRadius: tokens.shape.full,
-      alignItems: "center",
-      justifyContent: "center",
-      overflow: "hidden",
-    },
-    touchableContent: {
-      flex: 1,
-      width: "100%",
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    touchableWeb: {
-      flex: 1,
-      height: "100%",
-      overflow: "hidden",
-    },
-    touchableContentWeb: {
-      flex: 1,
-      width: "100%",
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "flex-start",
-      paddingTop: tokens.spacing.xss,
-    },
     indicator: {
       ...StyleSheet.absoluteFillObject,
       borderRadius: tokens.shape.full,
       zIndex: 0,
     },
+    pillShape: {
+      borderRadius: tokens.shape.full,
+    },
     iconWrapper: {
       zIndex: 1,
       alignItems: "center",
       justifyContent: "center",
-    },
-    icon: {
-      zIndex: 1,
     },
     labelContainer: {
       marginTop: tokens.spacing.xs,
