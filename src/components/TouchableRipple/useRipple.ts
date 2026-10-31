@@ -1,4 +1,11 @@
-import { useState, useCallback, useMemo, useEffect, useRef, useId } from "react";
+import {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+  useId,
+} from "react";
 import {
   LayoutChangeEvent,
   GestureResponderEvent,
@@ -50,12 +57,7 @@ export const useRipple = ({
   const useForeground = canUseNativeRippleForeground(borderless);
 
   const { solidColor, nativeColor } = useMemo(
-    () =>
-      getRippleColors(
-        color,
-        colors.onSurface,
-        tokens.stateOpacity.pressed,
-      ),
+    () => getRippleColors(color, colors.onSurface, tokens.stateOpacity.pressed),
     [color, colors.onSurface, tokens.stateOpacity.pressed],
   );
 

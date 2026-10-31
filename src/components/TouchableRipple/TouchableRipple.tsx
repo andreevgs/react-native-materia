@@ -1,5 +1,5 @@
-import { useCallback, useMemo, forwardRef } from "react";
-import { StyleSheet, View, LayoutChangeEvent, Pressable } from "react-native";
+import { useMemo, forwardRef } from "react";
+import { StyleSheet, View, Pressable } from "react-native";
 import { TouchableRippleProps } from "./types";
 import { webTouchStyle, webDisabledStyle } from "./const";
 import { extractBorderRadiusStyles } from "./utils";
@@ -23,7 +23,7 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
       borderless = false,
       disabled = false,
       rippleColor,
-      useNativeEffect = false,
+      useNativeEffect = true,
       contentPointerEvents = "none",
       pressDelay,
       accessibilityRole,
@@ -51,14 +51,6 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
       [style],
     );
 
-    const handleLayout = useCallback(
-      (e: LayoutChangeEvent) => {
-        ripple.onHostLayout(e);
-        onLayout?.(e);
-      },
-      [ripple, onLayout],
-    );
-
     return (
       <Pressable
         ref={ref}
@@ -71,7 +63,7 @@ export const TouchableRipple = forwardRef<View, TouchableRippleProps>(
           ...accessibilityState,
         }}
         onLongPress={onLongPress}
-        onLayout={handleLayout}
+        onLayout={onLayout}
         focusable={!disabled}
         style={[
           borderless ? styles.borderless : styles.clipping,

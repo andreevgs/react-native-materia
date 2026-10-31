@@ -24,6 +24,7 @@ export const NAVIGATION_BAR_HEIGHT = 64;
 export const webTouchStyle: ViewStyle = Platform.select({
   web: {
     userSelect: "none",
+    outlineStyle: "none",
     cursor: "pointer",
   },
   default: {},

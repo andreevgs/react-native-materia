@@ -218,4 +218,3 @@ export interface RippleHostProps {
   /** Whether the ripple overflows container bounds. Defaults to `ripple.borderless`. */
   borderless?: boolean;
 }
-

@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useRef } from "react";
+import React, { useMemo, useEffect, useRef, useCallback } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -12,100 +12,103 @@ import { Icon } from "../Icon";
 import { useRipple, RippleHost } from "../TouchableRipple";
 import { MateriaText } from "../Text";
 import { Tokens } from "../../types";
-import {
-  INDICATOR_WIDTH,
-  INDICATOR_HEIGHT,
-  webTouchStyle,
-} from "./const";
+import { INDICATOR_WIDTH, INDICATOR_HEIGHT, webTouchStyle } from "./const";
 
-export const NavigationBarItem = ({
-  route,
-  isActive,
-  onPress,
-}: NavigationBarItemProps) => {
-  const colors = useMateriaColors();
-  const tokens = useMateriaTokens();
+export const NavigationBarItem = React.memo(
+  ({ route, index, isActive, onTabPress }: NavigationBarItemProps) => {
+    const colors = useMateriaColors();
+    const tokens = useMateriaTokens();
 
-  const isFirstRender = useRef(true);
-  const activeProgress = useSharedValue(isActive ? 1 : 0);
+    const isFirstRender = useRef(true);
+    const activeProgress = useSharedValue(isActive ? 1 : 0);
 
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      activeProgress.value = isActive ? 1 : 0;
-      return;
-    }
-    activeProgress.value = withTiming(isActive ? 1 : 0, {
-      duration: tokens.duration.short4,
-      easing: Easing.bezier(...tokens.easing.standard),
+    useEffect(() => {
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        activeProgress.value = isActive ? 1 : 0;
+        return;
+      }
+      activeProgress.value = withTiming(isActive ? 1 : 0, {
+        duration: tokens.duration.short4,
+        easing: Easing.bezier(...tokens.easing.standard),
+      });
+    }, [isActive, tokens, activeProgress]);
+
+    const animatedIndicatorStyle = useAnimatedStyle(() => {
+      return {
+        opacity: activeProgress.value,
+        transform: [{ scaleX: activeProgress.value }],
+        backgroundColor: colors.secondaryContainer,
+      };
+    }, [colors, activeProgress]);
+
+    const iconColor = isActive
+      ? colors.onSecondaryContainer
+      : colors.onSurfaceVariant;
+    const textColor = isActive ? colors.secondary : colors.onSurfaceVariant;
+
+    const ripple = useRipple({
+      color: iconColor,
+      centered: true,
+      useNativeEffect: false,
     });
-  }, [isActive, tokens, activeProgress]);
 
-  const animatedIndicatorStyle = useAnimatedStyle(() => {
-    return {
-      opacity: activeProgress.value,
-      transform: [{ scaleX: activeProgress.value }],
-      backgroundColor: colors.secondaryContainer,
-    };
-  }, [colors, activeProgress]);
+    const styles = useMemo(() => createStyles(tokens), [tokens]);
 
-  const iconColor = isActive
-    ? colors.onSecondaryContainer
-    : colors.onSurfaceVariant;
-  const textColor = isActive ? colors.secondary : colors.onSurfaceVariant;
+    const handlePress = useCallback(() => {
+      onTabPress(index, route.key);
+    }, [onTabPress, index, route.key]);
 
-  const ripple = useRipple({
-    color: iconColor,
-    centered: true,
-    useNativeEffect: false,
-  });
+    return (
+      <Pressable
+        onPress={handlePress}
+        style={styles.container}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: isActive }}
+        accessibilityLabel={route.accessibilityLabel ?? route.label}
+        {...ripple.handlers}
+      >
+        <View style={styles.iconContainer}>
+          <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
+          <RippleHost
+            ripple={ripple}
+            style={styles.pillShape}
+            borderStyles={styles.pillShape}
+          />
+          {route.icon && (
+            <View style={styles.iconWrapper} pointerEvents="none">
+              <Icon
+                source={
+                  isActive && route.activeIcon ? route.activeIcon : route.icon
+                }
+                size={tokens.iconSize["24dp"]}
+                color={iconColor}
+              />
+            </View>
+          )}
+        </View>
+        <View style={styles.labelContainer} pointerEvents="none">
+          <MateriaText
+            variant="labelMedium"
+            style={{ color: textColor }}
+            numberOfLines={1}
+          >
+            {route.label}
+          </MateriaText>
+        </View>
+      </Pressable>
+    );
+  },
+);
 
-  const styles = useMemo(() => createStyles(tokens), [tokens]);
-
-  return (
-    <Pressable
-      onPress={onPress}
-      style={styles.container}
-      accessibilityRole="tab"
-      accessibilityState={{ selected: isActive }}
-      accessibilityLabel={route.accessibilityLabel ?? route.label}
-      {...ripple.handlers}
-    >
-      <View style={styles.iconContainer}>
-        <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
-        <RippleHost ripple={ripple} style={styles.pillShape} />
-        {route.icon && (
-          <View style={styles.iconWrapper} pointerEvents="none">
-            <Icon
-              source={
-                isActive && route.activeIcon ? route.activeIcon : route.icon
-              }
-              size={tokens.iconSize["24dp"]}
-              color={iconColor}
-            />
-          </View>
-        )}
-      </View>
-      <View style={styles.labelContainer} pointerEvents="none">
-        <MateriaText
-          variant="labelMedium"
-          style={{ color: textColor }}
-          numberOfLines={1}
-        >
-          {route.label}
-        </MateriaText>
-      </View>
-    </Pressable>
-  );
-};
+NavigationBarItem.displayName = "NavigationBarItem";
 
 const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
     container: {
       flex: 1,
       alignItems: "center",
-      justifyContent: "flex-start",
-      paddingTop: tokens.spacing.m,
+      justifyContent: "center",
       height: "100%",
       ...webTouchStyle,
     },
@@ -130,7 +133,6 @@ const createStyles = (tokens: Tokens) =>
     },
     labelContainer: {
       marginTop: tokens.spacing.xs,
-      alignItems: "center",
       paddingHorizontal: tokens.spacing.xs,
     },
   });

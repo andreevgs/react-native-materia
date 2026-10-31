@@ -28,9 +28,7 @@ export const canUseNativeRipple = (useNativeEffect: boolean): boolean => {
 
 export const canUseNativeRippleForeground = (borderless: boolean): boolean => {
   return (
-    !borderless &&
-    Platform.OS === "android" &&
-    Number(Platform.Version) >= 23
+    !borderless && Platform.OS === "android" && Number(Platform.Version) >= 23
   );
 };
 
@@ -40,10 +38,7 @@ export const getRippleColors = (
   pressedOpacity: number,
 ): RippleColorConfig => {
   const solidColor = rippleColor || defaultColor;
-  const nativeColor = Color(solidColor)
-    .alpha(pressedOpacity)
-    .rgb()
-    .string();
+  const nativeColor = Color(solidColor).alpha(pressedOpacity).rgb().string();
 
   return { solidColor, nativeColor };
 };

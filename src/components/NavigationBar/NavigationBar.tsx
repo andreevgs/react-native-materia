@@ -21,10 +21,7 @@ export const NavigationBar = ({
   const colors = useMateriaColors();
   const insets = useSafeAreaInsets();
 
-  const styles = useMemo(
-    () => createStyles(colors, insets),
-    [colors, insets],
-  );
+  const styles = useMemo(() => createStyles(colors, insets), [colors, insets]);
 
   return (
     <View style={styles.container} accessibilityRole="tablist">
@@ -32,18 +29,16 @@ export const NavigationBar = ({
         <NavigationBarItem
           key={route.key}
           route={route}
+          index={index}
           isActive={selectedIndex === index}
-          onPress={() => onTabPress(index, route.key)}
+          onTabPress={onTabPress}
         />
       ))}
     </View>
   );
 };
 
-const createStyles = (
-  colors: MateriaScheme,
-  insets: EdgeInsets,
-) =>
+const createStyles = (colors: MateriaScheme, insets: EdgeInsets) =>
   StyleSheet.create({
     container: {
       flexDirection: "row",

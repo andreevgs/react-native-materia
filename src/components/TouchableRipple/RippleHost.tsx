@@ -15,13 +15,20 @@ export const RippleHost = memo(
       <View
         pointerEvents="none"
         onLayout={ripple.onHostLayout}
-        style={[styles.host, borderStyles, style]}
+        style={[
+          styles.host,
+          borderless ? styles.borderless : styles.clipping,
+          borderStyles,
+          style,
+        ]}
       >
-        <StateLayer
-          color={ripple.solidColor}
-          opacity={ripple.stateLayerOpacity}
-          borderStyles={borderStyles}
-        />
+        {!ripple.hasNativeRipple && (
+          <StateLayer
+            color={ripple.solidColor}
+            opacity={ripple.stateLayerOpacity}
+            borderStyles={borderStyles}
+          />
+        )}
         {!ripple.hasNativeRipple && (
           <RippleOverlay
             ripples={ripple.ripples}
@@ -40,7 +47,12 @@ export const RippleHost = memo(
 const styles = StyleSheet.create({
   host: {
     ...StyleSheet.absoluteFillObject,
+  },
+  clipping: {
     overflow: "hidden",
+  },
+  borderless: {
+    overflow: "visible",
   },
 });
 

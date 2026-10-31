@@ -28,8 +28,10 @@ export interface NavigationBarProps {
 export interface NavigationBarItemProps {
   /** Route descriptor for this item. */
   route: NavigationRoute;
+  /** Index of this tab item. */
+  index: number;
   /** Whether this tab is currently selected. */
   isActive: boolean;
-  /** Callback invoked when this tab item is pressed. */
-  onPress: () => void;
+  /** Global tab press handler passed down from NavigationBar. */
+  onTabPress: (index: number, key: string) => void;
 }
