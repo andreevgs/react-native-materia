@@ -1,5 +1,16 @@
 import React from "react";
-import { StyleProp, ViewStyle, PressableProps, ViewProps } from "react-native";
+import {
+  StyleProp,
+  ViewStyle,
+  PressableProps,
+  ViewProps,
+  GestureResponderEvent,
+  LayoutChangeEvent,
+  NativeSyntheticEvent,
+  TargetedEvent,
+  MouseEvent,
+  PressableAndroidRippleConfig,
+} from "react-native";
 import { SharedValue } from "react-native-reanimated";
 
 /** Props for the TouchableRipple component. */
@@ -125,3 +136,86 @@ export interface WebPointerEvent {
   /** Native event payload containing pointer metadata. */
   nativeEvent?: { pointerType?: string };
 }
+
+/** Configuration options for the useRipple hook. */
+export interface UseRippleOptions {
+  /** Color of the ripple wave and state layer. Defaults to `colors.onSurface`. */
+  color?: string;
+  /** Whether ripples should always originate from the center of the host. Defaults to `false`. */
+  centered?: boolean;
+  /** Whether the ripple extends beyond host bounds. Defaults to `false`. */
+  borderless?: boolean;
+  /** Whether interactions are disabled. Defaults to `false`. */
+  disabled?: boolean | null;
+  /** Whether to use native Android ripple on supported devices. Defaults to `true`. */
+  useNativeEffect?: boolean;
+  /** Delay in milliseconds before showing ripple on touch down. Defaults to `150ms` on mobile, `0ms` on web. */
+  pressDelay?: number;
+  /** Callback fired when a touch gesture begins. */
+  onPressIn?: ((e: GestureResponderEvent) => void) | null;
+  /** Callback fired when a touch gesture ends or cancels. */
+  onPressOut?: ((e: GestureResponderEvent) => void) | null;
+  /** Callback fired when a mouse pointer enters the element. */
+  onHoverIn?: ((e: MouseEvent) => void) | null;
+  /** Callback fired when a mouse pointer leaves the element. */
+  onHoverOut?: ((e: MouseEvent) => void) | null;
+  /** Callback fired when the element gains focus. */
+  onFocus?: ((e: NativeSyntheticEvent<TargetedEvent>) => void) | null;
+  /** Callback fired when the element loses focus. */
+  onBlur?: ((e: NativeSyntheticEvent<TargetedEvent>) => void) | null;
+}
+
+/** Event handlers to spread onto any interactive Pressable element. */
+export interface RippleTriggerHandlers {
+  /** Callback fired when touch press begins. */
+  onPressIn: (e: GestureResponderEvent) => void;
+  /** Callback fired when touch press ends. */
+  onPressOut: (e: GestureResponderEvent) => void;
+  /** Callback fired when hover begins. */
+  onHoverIn: (e: MouseEvent) => void;
+  /** Callback fired when hover ends. */
+  onHoverOut: (e: MouseEvent) => void;
+  /** Callback fired when element gains focus. */
+  onFocus: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+  /** Callback fired when element loses focus. */
+  onBlur: (e: NativeSyntheticEvent<TargetedEvent>) => void;
+  /** Native Android ripple configuration if supported and enabled. */
+  android_ripple: PressableAndroidRippleConfig | null;
+  /** Delay before press feedback triggers on mobile. */
+  unstable_pressDelay: number | undefined;
+}
+
+/** Controller state and handlers returned by useRipple for driving a RippleHost. */
+export interface RippleController {
+  /** Event handlers to spread onto the triggering Pressable element. */
+  handlers: RippleTriggerHandlers;
+  /** Layout callback to attach to the host container to measure its dimensions. */
+  onHostLayout: (e: LayoutChangeEvent) => void;
+  /** Active ripple wave items currently animating. */
+  ripples: RippleItem[];
+  /** Reanimated shared value driving the state layer opacity. */
+  stateLayerOpacity: SharedValue<number>;
+  /** Solid color used for the state layer and JS ripple waves. */
+  solidColor: string;
+  /** Pressed state opacity value from design tokens. */
+  pressedOpacity: number;
+  /** Whether ripples should clip to the host surface. */
+  borderless: boolean;
+  /** Whether native Android ripple is actively handling the touch feedback. */
+  hasNativeRipple: boolean;
+  /** Callback invoked when a ripple wave completes its animation. */
+  removeRipple: (key: string) => void;
+}
+
+/** Props for the RippleHost sub-component. */
+export interface RippleHostProps {
+  /** Controller state and handlers returned by useRipple. */
+  ripple: RippleController;
+  /** Custom style for the host container. */
+  style?: StyleProp<ViewStyle>;
+  /** Border radius styles to constrain ripple clipping. */
+  borderStyles?: StyleProp<ViewStyle>;
+  /** Whether the ripple overflows container bounds. Defaults to `ripple.borderless`. */
+  borderless?: boolean;
+}
+

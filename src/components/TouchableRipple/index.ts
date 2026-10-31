@@ -1,2 +1,10 @@
 export { TouchableRipple } from "./TouchableRipple";
-export type { TouchableRippleProps } from "./types";
+export { RippleHost } from "./RippleHost";
+export { useRipple } from "./useRipple";
+export type {
+  TouchableRippleProps,
+  RippleHostProps,
+  UseRippleOptions,
+  RippleController,
+  RippleTriggerHandlers,
+} from "./types";
