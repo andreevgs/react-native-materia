@@ -158,10 +158,7 @@ export const Ripple = memo(
             ),
           );
         } else {
-          const delay = Math.max(
-            0,
-            RIPPLE_MIN_TAP_DURATION_MS - timeElapsed,
-          );
+          const delay = Math.max(0, RIPPLE_MIN_TAP_DURATION_MS - timeElapsed);
 
           const fadeOutAnim = withTiming(
             0,
@@ -183,7 +180,14 @@ export const Ripple = memo(
           }
         }
       }
-    }, [isActive, initialOpacity, isExiting, safeOnFinished, uniqueKey, opacity]);
+    }, [
+      isActive,
+      initialOpacity,
+      isExiting,
+      safeOnFinished,
+      uniqueKey,
+      opacity,
+    ]);
 
     return (
       <Animated.View

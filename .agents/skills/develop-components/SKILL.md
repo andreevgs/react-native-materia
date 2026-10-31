@@ -289,12 +289,15 @@ For pressable surfaces:
 ## 7. Performance & Style Architecture
 
 1. **StyleSheet Factory**:
-   Declare `createStyles` at the bottom of the file outside the component function:
+   Declare `createStyles` at the bottom of the file outside the component function.
+   **Strict Rule: Pass ONLY what is actually used.** Never pass or declare unused parameters (e.g., `_tokens: Tokens`, `_colors: MateriaScheme`) merely to adhere to a boilerplate template. If styles only need `colors` or `insets`, only accept those arguments.
    ```typescript
-   const createStyles = (tokens: Tokens) =>
+   // If only colors and insets are needed, do NOT accept tokens!
+   const createStyles = (colors: MateriaScheme, insets: EdgeInsets) =>
      StyleSheet.create({
        container: {
-         borderRadius: tokens.shape.full,
+         backgroundColor: colors.surfaceContainer,
+         height: NAVIGATION_BAR_HEIGHT + insets.bottom,
          // ...
        },
      });
@@ -365,6 +368,9 @@ Always prefer clean, idiomatic TypeScript solutions over type-widening or compil
    ```
 4. **Clean type narrowing instead of `unknown` / `any`**:
    Use TypeScript type guards (`typeof`, `in`, `instanceof`, `Array.isArray`) and optional chaining (`target?.matches`) to narrow down types cleanly without loose casting.
+5. **No dummy / unused parameters (`_param`)**:
+   Never declare or pass dummy arguments prefixed with `_` to suppress unused warnings (e.g. `_tokens: Tokens`, `_props`). If a function, callback, or factory does not need an argument, omit it from the signature completely, and do not call unnecessary hooks in the component.
+   *The ONLY exception*: Object rest destructuring when deliberately extracting and isolating properties before passing `rest` (e.g., `const { style: _style, ...restProps } = props;`).
 
 ---
 
