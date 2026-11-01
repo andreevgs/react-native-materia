@@ -1,5 +1,9 @@
 /**
  * Layout, animation, and platform constants for TouchableRipple based on MD3 specifications.
+ *
+ * Ripple geometry, soft-edge calculations, and interaction timings
+ * are ported and adapted from @material/web (Apache-2.0 License).
+ *
  * @see https://m3.material.io/foundations/interaction-states
  */
 
