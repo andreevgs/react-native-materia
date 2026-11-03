@@ -33,4 +33,18 @@ module.exports = [
       "react-native/no-inline-styles": "off",
     },
   },
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
+  },
 ];

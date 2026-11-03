@@ -77,6 +77,7 @@ const createStyles = (tokens: Tokens, insets: EdgeInsets) =>
     container: {
       flexDirection: "row",
       alignItems: "center",
+      columnGap: tokens.spacing.xs,
       width: "100%",
       minHeight: 64 + insets.top,
       paddingTop: insets.top,

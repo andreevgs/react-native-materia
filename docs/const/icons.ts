@@ -4,6 +4,8 @@ import { LayersRoundedIcon } from "../icons/LayersRoundedIcon";
 import { WiFiRoundedIcon } from "@/icons/WiFiRoundedIcon";
 import { BluetoothRoundedIcon } from "@/icons/BluetoothRoundedIcon";
 import { SearchRoundedIcon } from "@/icons/SearchRoundedIcon";
+import { BatteryAndroidFullRoundedIcon } from "@/icons/BatteryAndroidFullRoundedIcon";
+import { AndroidCellBarRoundedIcon } from "@/icons/AndroidCellBarRoundedIcon";
 
 export const icons = {
   ...defaultMateriaIconography,
@@ -12,4 +14,6 @@ export const icons = {
   "wifi-rounded": WiFiRoundedIcon,
   "bluetooth-rounded": BluetoothRoundedIcon,
   "search-rounded": SearchRoundedIcon,
+  "battery-android-full-rounded": BatteryAndroidFullRoundedIcon,
+  "android-cell-bar-rounded": AndroidCellBarRoundedIcon,
 };
