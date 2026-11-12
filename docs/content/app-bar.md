@@ -1,6 +1,6 @@
 # AppBar
 
-App bars appear at the top of the screen to display navigation actions, screen titles, and contextual tools. They implement the Material Design 3 top app bar specification with automatic safe area insets, slot-based content composition, and smooth background color morphing on scroll.
+App bars appear at the top of the screen to display navigation actions, screen titles, and contextual tools. They implement the Material Design 3 top app bar specification with automatic safe area insets, slot-based content composition, and smooth background color morphing.
 
 <!-- SLOT: DEMO_MAIN -->
 
@@ -15,12 +15,7 @@ import { AppBar, IconButton } from "react-native-materia";
 export const Example = () => (
   <AppBar
     headline="App Bar"
-    leading={
-      <IconButton
-        icon="arrow-back-rounded"
-        onPress={() => {}}
-      />
-    }
+    leading={<IconButton icon="arrow-back-rounded" onPress={() => {}} />}
   />
 );
 ```
@@ -38,12 +33,7 @@ The leading slot hosts primary navigation actions, such as a drawer menu trigger
 ```tsx
 <AppBar
   headline="App Bar"
-  leading={
-    <IconButton
-      icon="menu-rounded"
-      onPress={() => {}}
-    />
-  }
+  leading={<IconButton icon="menu-rounded" onPress={() => {}} />}
 />
 ```
 
@@ -57,12 +47,7 @@ The central content slot accepts both `headline` and `subtitle`. Passing strings
 <AppBar
   headline="App Bar"
   subtitle="With Subtitle"
-  leading={
-    <IconButton
-      icon="arrow-back-rounded"
-      onPress={() => {}}
-    />
-  }
+  leading={<IconButton icon="arrow-back-rounded" onPress={() => {}} />}
 />
 ```
 
@@ -76,22 +61,11 @@ The trailing slot positions secondary contextual actions. When multiple actions 
 <AppBar
   headline="App Bar"
   subtitle="With Subtitle"
-  leading={
-    <IconButton
-      icon="arrow-back-rounded"
-      onPress={() => {}}
-    />
-  }
+  leading={<IconButton icon="arrow-back-rounded" onPress={() => {}} />}
   trailing={
     <>
-      <IconButton
-        icon="check-rounded"
-        onPress={() => {}}
-      />
-      <IconButton
-        icon="close-rounded"
-        onPress={() => {}}
-      />
+      <IconButton icon="check-rounded" onPress={() => {}} />
+      <IconButton icon="close-rounded" onPress={() => {}} />
     </>
   }
 />
@@ -107,7 +81,12 @@ In practice, bind `isScrolled` to the scroll position of your `ScrollView` or `F
 
 ```tsx
 import React, { useState } from "react";
-import { View, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from "react-native";
+import {
+  View,
+  ScrollView,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+} from "react-native";
 import { AppBar, IconButton } from "react-native-materia";
 
 export const ScrolledAppBarExample = () => {
@@ -124,29 +103,15 @@ export const ScrolledAppBarExample = () => {
         headline="App Bar"
         subtitle="With Subtitle"
         isScrolled={isScrolled}
-        leading={
-          <IconButton
-            icon="arrow-back-rounded"
-            onPress={() => {}}
-          />
-        }
+        leading={<IconButton icon="arrow-back-rounded" onPress={() => {}} />}
         trailing={
           <>
-            <IconButton
-              icon="check-rounded"
-              onPress={() => {}}
-            />
-            <IconButton
-              icon="close-rounded"
-              onPress={() => {}}
-            />
+            <IconButton icon="check-rounded" onPress={() => {}} />
+            <IconButton icon="close-rounded" onPress={() => {}} />
           </>
         }
       />
-      <ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-      >
+      <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
         <View style={{ height: 600 }} />
       </ScrollView>
     </View>
@@ -156,7 +121,7 @@ export const ScrolledAppBarExample = () => {
 
 ## Safe Area Support
 
-The component integrates with `react-native-safe-area-context` to automatically detect device notch and status bar heights. It applies top safe area insets to `paddingTop` and `minHeight` so screen headers remain clear of device hardware cutouts without manual margin calculations.
+The component integrates with `react-native-safe-area-context` to automatically detect device notch and status bar heights. It applies top safe area insets to `paddingTop` and `minHeight` so screen headers remain clear of device hardware cutouts.
 
 ## Props
 

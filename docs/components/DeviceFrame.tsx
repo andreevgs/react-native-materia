@@ -19,7 +19,7 @@ export const DeviceFrame = ({ children }: DeviceFrameProps) => {
             variant="labelMedium"
             style={{ color: colors.onSurfaceVariant }}
           >
-            0:00
+            5:11
           </MateriaText>
           <View style={styles.statusBarIcons}>
             <Icon
@@ -49,7 +49,7 @@ const createStyles = (colors: MateriaScheme) =>
   StyleSheet.create({
     deviceFrame: {
       position: "relative",
-      borderWidth: 1,
+      borderWidth: 6,
       borderColor: colors.outlineVariant,
       borderBottomWidth: 0,
       width: "100%",
