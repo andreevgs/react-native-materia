@@ -6,6 +6,7 @@ import {
   useMateriaTokens,
 } from "../../core/MateriaProvider";
 import { IconProps } from "./types";
+import { getIconAccessibilityProps } from "./utils";
 
 export const Icon = ({
   source: Source,
@@ -23,14 +24,10 @@ export const Icon = ({
   const iconSize = size ?? tokens.iconSize["24dp"];
   const iconSizeStyle = { width: iconSize, height: iconSize };
 
-  const isAccessible = !!accessibilityLabel;
-  const a11yProps = {
-    accessible: isAccessible,
+  const a11yProps = getIconAccessibilityProps(
     accessibilityLabel,
-    accessibilityElementsHidden: !isAccessible,
-    importantForAccessibility: isAccessible ? "yes" : "no-hide-descendants",
-    ...accessibilityProps,
-  } as const;
+    accessibilityProps,
+  );
 
   if (typeof Source === "string") {
     const Component = icons[Source];
