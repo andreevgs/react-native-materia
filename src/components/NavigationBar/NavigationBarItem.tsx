@@ -1,78 +1,92 @@
-import React, { useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useMemo, useEffect, useRef, useCallback } from "react";
+import { View, StyleSheet, Pressable } from "react-native";
 import Animated, {
   useAnimatedStyle,
-  useDerivedValue,
+  useSharedValue,
   withTiming,
   Easing,
 } from "react-native-reanimated";
 import { NavigationBarItemProps } from "./types";
 import { useMateriaColors, useMateriaTokens } from "../../core/MateriaProvider";
 import { Icon } from "../Icon";
-import { TouchableRipple } from "../TouchableRipple";
+import { useRipple, RippleHost } from "../TouchableRipple";
 import { MateriaText } from "../Text";
 import { Tokens } from "../../types";
+import { INDICATOR_WIDTH, INDICATOR_HEIGHT, webTouchStyle } from "./const";
 
-export const NavigationBarItem = ({
-  route,
-  isActive,
-  onPress,
-}: NavigationBarItemProps) => {
-  const colors = useMateriaColors();
-  const tokens = useMateriaTokens();
+export const NavigationBarItem = React.memo(
+  ({ route, index, isActive, onTabPress }: NavigationBarItemProps) => {
+    const colors = useMateriaColors();
+    const tokens = useMateriaTokens();
 
-  const activeProgress = useDerivedValue(() => {
-    return withTiming(isActive ? 1 : 0, {
-      duration: tokens.duration.short4,
-      easing: Easing.bezier(
-        tokens.easing.standard[0],
-        tokens.easing.standard[1],
-        tokens.easing.standard[2],
-        tokens.easing.standard[3],
-      ),
+    const isFirstRender = useRef(true);
+    const activeProgress = useSharedValue(isActive ? 1 : 0);
+
+    useEffect(() => {
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        activeProgress.value = isActive ? 1 : 0;
+        return;
+      }
+      activeProgress.value = withTiming(isActive ? 1 : 0, {
+        duration: tokens.duration.short4,
+        easing: Easing.bezier(...tokens.easing.standard),
+      });
+    }, [isActive, tokens, activeProgress]);
+
+    const animatedIndicatorStyle = useAnimatedStyle(() => {
+      return {
+        opacity: activeProgress.value,
+        transform: [{ scaleX: activeProgress.value }],
+        backgroundColor: colors.secondaryContainer,
+      };
+    }, [colors, activeProgress]);
+
+    const iconColor = isActive
+      ? colors.onSecondaryContainer
+      : colors.onSurfaceVariant;
+    const textColor = isActive ? colors.secondary : colors.onSurfaceVariant;
+
+    const ripple = useRipple({
+      color: iconColor,
+      centered: true,
+      useNativeEffect: false,
     });
-  }, [isActive, tokens]);
 
-  const animatedIndicatorStyle = useAnimatedStyle(() => {
-    return {
-      opacity: activeProgress.value,
-      transform: [{ scaleX: activeProgress.value }],
-      backgroundColor: colors.secondaryContainer,
-    };
-  }, [colors, activeProgress]);
+    const styles = useMemo(() => createStyles(tokens), [tokens]);
 
-  const iconColor = isActive
-    ? colors.onSecondaryContainer
-    : colors.onSurfaceVariant;
-  const textColor = isActive ? colors.secondary : colors.onSurfaceVariant;
+    const handlePress = useCallback(() => {
+      onTabPress(index, route.key);
+    }, [onTabPress, index, route.key]);
 
-  const styles = useMemo(() => createStyles(tokens), [tokens]);
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <TouchableRipple
-          onPress={onPress}
-          style={styles.touchable}
-          contentContainerStyle={styles.touchableContent}
-          hitSlop={{ top: 6, bottom: 26, left: 500, right: 500 }}
-          accessibilityLabel={route.accessibilityLabel}
-          accessibilityRole="tab"
-          accessibilityState={{ selected: isActive }}
-        >
+    return (
+      <Pressable
+        onPress={handlePress}
+        style={styles.container}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: isActive }}
+        accessibilityLabel={route.accessibilityLabel ?? route.label}
+        {...ripple.handlers}
+      >
+        <View style={styles.iconContainer}>
           <Animated.View style={[styles.indicator, animatedIndicatorStyle]} />
+          <RippleHost
+            ripple={ripple}
+            style={styles.pillShape}
+            borderStyles={styles.pillShape}
+          />
           {route.icon && (
-            <Icon
-              source={
-                isActive && route.activeIcon ? route.activeIcon : route.icon
-              }
-              size={tokens.iconSize["24dp"]}
-              color={iconColor}
-            />
+            <View style={styles.iconWrapper} pointerEvents="none">
+              <Icon
+                source={
+                  isActive && route.activeIcon ? route.activeIcon : route.icon
+                }
+                size={tokens.iconSize["24dp"]}
+                color={iconColor}
+              />
+            </View>
           )}
-        </TouchableRipple>
-      </View>
-      {route.label && (
+        </View>
         <View style={styles.labelContainer} pointerEvents="none">
           <MateriaText
             variant="labelMedium"
@@ -82,49 +96,43 @@ export const NavigationBarItem = ({
             {route.label}
           </MateriaText>
         </View>
-      )}
-    </View>
-  );
-};
+      </Pressable>
+    );
+  },
+);
+
+NavigationBarItem.displayName = "NavigationBarItem";
 
 const createStyles = (tokens: Tokens) =>
   StyleSheet.create({
     container: {
       flex: 1,
       alignItems: "center",
-      justifyContent: "flex-start",
-      paddingTop: tokens.spacing.xss,
+      justifyContent: "center",
       height: "100%",
-      overflow: "hidden",
+      ...webTouchStyle,
     },
     iconContainer: {
-      width: 56,
-      height: 32,
+      width: INDICATOR_WIDTH,
+      height: INDICATOR_HEIGHT,
       justifyContent: "center",
       alignItems: "center",
-    },
-    touchable: {
-      width: 56,
-      height: 32,
-      borderRadius: tokens.shape.full,
-      alignItems: "center",
-      justifyContent: "center",
-      overflow: "hidden",
-    },
-    touchableContent: {
-      flex: 1,
-      width: "100%",
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "center",
     },
     indicator: {
       ...StyleSheet.absoluteFillObject,
       borderRadius: tokens.shape.full,
+      zIndex: 0,
+    },
+    pillShape: {
+      borderRadius: tokens.shape.full,
+    },
+    iconWrapper: {
+      zIndex: 1,
+      alignItems: "center",
+      justifyContent: "center",
     },
     labelContainer: {
       marginTop: tokens.spacing.xs,
-      alignItems: "center",
       paddingHorizontal: tokens.spacing.xs,
     },
   });

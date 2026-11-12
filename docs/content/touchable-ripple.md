@@ -165,7 +165,7 @@ The content elements rendered inside the touchable surface.
 
 Whether to use the native Android ripple effect on supported devices (Android API 21 and above). When set to `false`, the platform renders the cross-platform Reanimated soft-edge SVG ripple.
 
-Default value: `false`
+Default value: `true`
 
 ### contentPointerEvents
 
@@ -205,16 +205,5 @@ interface TouchableRippleProps extends Omit<PressableProps, "style"> {
   useNativeEffect?: boolean;
   contentPointerEvents?: ViewProps["pointerEvents"];
   pressDelay?: number;
-}
-```
-
-### RippleColorConfig
-
-Resolved colors used for state layers and native effects.
-
-```typescript
-interface RippleColorConfig {
-  solidColor: string;
-  nativeColor: string;
 }
 ```
