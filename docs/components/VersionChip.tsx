@@ -3,9 +3,9 @@ import { StyleSheet, Text } from "react-native";
 import { monospaceFont } from "@/const/typography";
 
 export const VersionChip = () => (
-  <Chip mode="outlined" style={styles.versionChip}>
+  <Chip.Assist style={styles.versionChip}>
     <Text style={styles.version}>v1.0.0</Text>
-  </Chip>
+  </Chip.Assist>
 );
 
 const styles = StyleSheet.create({
