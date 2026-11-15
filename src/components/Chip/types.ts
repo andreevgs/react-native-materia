@@ -5,8 +5,11 @@ import {
   StyleProp,
   GestureResponderEvent,
   PressableProps,
+  AccessibilityRole,
+  AccessibilityState,
 } from "react-native";
 import type { IconSource } from "../../types";
+import type { RippleTriggerHandlers } from "../TouchableRipple";
 
 /** Semantic Material Design 3 chip variants. */
 export type ChipVariant = "assist" | "filter" | "input" | "suggestion";
@@ -118,4 +121,113 @@ export interface ChipStyleConfig {
   trailingIconColor: string;
   /** Base color passed to TouchableRipple for state layer and ripple rendering. */
   stateLayerColor: string;
+}
+
+/** Props for the primary ChipContainer wrapper. */
+export interface ChipContainerProps
+  extends Omit<PressableProps, "style" | "children"> {
+  /** Whether the primary chip area is interactive and renders as a Pressable. */
+  interactive: boolean;
+  /** Whether interaction is disabled. */
+  disabled: boolean;
+  /** Style applied to the primary container. */
+  style?: StyleProp<ViewStyle>;
+  /** Ripple and state layer event handlers from useRipple. */
+  rippleHandlers: RippleTriggerHandlers;
+  /** Inner content of the primary chip area. */
+  children: ReactNode;
+}
+
+/** Props for the ChipContent sub-component. */
+export interface ChipContentProps {
+  /** Label text or element rendered inside the chip. */
+  children: ReactNode;
+  /** Optional leading icon or checkmark rendered before the label. */
+  leadingIcon?: IconSource;
+  /** Resolved tint color for the leading icon. */
+  leadingIconColor: string;
+  /** Optional static trailing icon rendered after the label. */
+  trailingIcon?: IconSource;
+  /** Resolved tint color for the static trailing icon. */
+  trailingIconColor: string;
+  /** Resolved color for the label text. */
+  labelColor: string;
+  /** Custom style overrides for the label text. */
+  labelStyle?: StyleProp<TextStyle>;
+  /** Icon size in dp. */
+  iconSize: number;
+}
+
+/** Props for the ChipTrailingButton sub-component. */
+export interface ChipTrailingButtonProps {
+  /** Icon rendered inside the trailing action button. */
+  icon: IconSource;
+  /** Resolved tint color for the trailing icon. */
+  color: string;
+  /** Icon size in dp. */
+  size: number;
+  /** Base color used for the button state layer and ripple wave. */
+  stateLayerColor: string;
+  /** Whether the trailing action button is disabled. */
+  disabled: boolean;
+  /** Right margin in dp aligning the button inside the chip surface. */
+  marginRight: number;
+  /** Accessibility label for screen readers. */
+  accessibilityLabel?: string;
+  /** Callback fired when the trailing action button is pressed. */
+  onPress: (e: GestureResponderEvent) => void;
+}
+
+/** State flags used to compute chip color and border tokens. */
+export interface GetChipColorsOptions {
+  /** Whether the chip uses an elevated surface container. */
+  elevated: boolean;
+  /** Whether the chip is currently selected. */
+  selected: boolean;
+  /** Whether the chip is disabled. */
+  disabled: boolean;
+}
+
+/** Input options for computing horizontal chip padding and trailing button offsets. */
+export interface GetChipLayoutOptions {
+  /** Whether a leading icon or checkmark is present. */
+  hasLeading: boolean;
+  /** Whether a trailing icon or action button is present. */
+  hasTrailing: boolean;
+}
+
+/** Calculated spacing and margin metrics in dp for the chip layout. */
+export interface ChipLayoutMetrics {
+  /** Vertical padding inside the primary content container in dp. */
+  paddingVertical: number;
+  /** Left horizontal padding inside the primary area in dp. */
+  paddingLeft: number;
+  /** Right horizontal padding inside the primary area when no interactive trailing button is present in dp. */
+  paddingRight: number;
+  /** Right padding between the label and the interactive trailing button in dp. */
+  trailingButtonGap: number;
+  /** Right margin applied to the interactive trailing button in dp. */
+  trailingButtonRightMargin: number;
+}
+
+/** Input options for resolving accessibility role and state on the primary chip element. */
+export interface GetChipAccessibilityOptions {
+  /** Whether interaction is disabled. */
+  disabled: boolean;
+  /** Whether the chip is currently selected. */
+  selected: boolean;
+  /** Whether the primary chip surface has an active press handler. */
+  isInteractive: boolean;
+  /** Explicit accessibility role override. */
+  accessibilityRole?: AccessibilityRole;
+  /** Explicit accessibility state override. */
+  accessibilityState?: AccessibilityState;
+}
+
+/** Resolved accessibility props applied to the primary chip surface. */
+export interface ChipAccessibilityConfig {
+  /** Resolved semantic role for screen readers. */
+  accessibilityRole?: AccessibilityRole;
+  /** Resolved accessibility state flags. */
+  accessibilityState: AccessibilityState;
 }

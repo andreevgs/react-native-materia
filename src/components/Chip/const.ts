@@ -3,6 +3,8 @@
  * @see https://m3.material.io/components/chips/specs
  */
 
+import { Platform, ViewStyle } from "react-native";
+
 // --- Container Specs ---
 
 /** Visual height of the chip container (32dp). */
@@ -25,6 +27,9 @@ export const CHIP_PADDING_WITHOUT_ICON = 16;
 
 /** Horizontal padding at an edge with a leading or trailing icon (8dp). */
 export const CHIP_PADDING_WITH_ICON = 8;
+
+/** Vertical padding inside the chip container before border compensation (6dp). */
+export const CHIP_VERTICAL_PADDING = 6;
 
 /** Spacing between internal elements such as icon and label text (8dp). */
 export const CHIP_ELEMENT_GAP = 8;
@@ -54,7 +59,7 @@ export const CHIP_VERTICAL_HIT_SLOP_INSETS = {
 export const CHIP_TRAILING_HIT_SLOP_INSETS = {
   top: CHIP_VERTICAL_HIT_SLOP,
   bottom: CHIP_VERTICAL_HIT_SLOP,
-  left: CHIP_TRAILING_HIT_SLOP / 2,
+  left: CHIP_ELEMENT_GAP - CHIP_TRAILING_BUTTON_INSET,
   right: CHIP_TRAILING_HIT_SLOP,
 } as const;
 
@@ -68,3 +73,26 @@ export const CHIP_CLOSE_ICON = "close-rounded" as const;
 
 /** Default accessibility label for the input chip close button. */
 export const CHIP_DEFAULT_CLOSE_A11Y_LABEL = "Remove";
+
+/** Default accessibility label for the filter chip trailing action button. */
+export const CHIP_DEFAULT_TRAILING_A11Y_LABEL = "More options";
+
+// --- Static Platform Styles ---
+
+/** Web styles to disable text selection, focus ring outline, and set pointer cursor. */
+export const webTouchStyle: ViewStyle = Platform.select({
+  web: {
+    userSelect: "none",
+    outlineStyle: "none",
+    cursor: "pointer",
+  },
+  default: {},
+}) as ViewStyle;
+
+/** Web styles to restore default cursor when interaction is disabled or static. */
+export const webDisabledStyle: ViewStyle = Platform.select({
+  web: {
+    cursor: "default",
+  },
+  default: {},
+}) as ViewStyle;

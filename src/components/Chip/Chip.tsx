@@ -1,4 +1,3 @@
-import React from "react";
 import { AssistChip } from "./AssistChip";
 import { FilterChip } from "./FilterChip";
 import { InputChip } from "./InputChip";

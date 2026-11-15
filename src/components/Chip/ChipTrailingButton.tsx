@@ -1,26 +1,15 @@
-import React, { useMemo } from "react";
-import { GestureResponderEvent, StyleSheet } from "react-native";
+import { useMemo } from "react";
+import { StyleSheet } from "react-native";
 
 import { useMateriaTokens } from "../../core/MateriaProvider";
 import { Tokens } from "../../core/theme/types";
-import { IconSource } from "../../types";
 import { Icon } from "../Icon";
 import { TouchableRipple } from "../TouchableRipple/TouchableRipple";
 import {
   CHIP_TRAILING_BUTTON_SIZE,
   CHIP_TRAILING_HIT_SLOP_INSETS,
 } from "./const";
-
-interface ChipTrailingButtonProps {
-  icon: IconSource;
-  color: string;
-  size: number;
-  stateLayerColor: string;
-  disabled: boolean;
-  marginRight: number;
-  accessibilityLabel?: string;
-  onPress: (e: GestureResponderEvent) => void;
-}
+import { ChipTrailingButtonProps } from "./types";
 
 export const ChipTrailingButton = ({
   icon,
@@ -39,7 +28,6 @@ export const ChipTrailingButton = ({
     <TouchableRipple
       onPress={onPress}
       disabled={disabled}
-      borderless={true}
       rippleColor={stateLayerColor}
       hitSlop={CHIP_TRAILING_HIT_SLOP_INSETS}
       accessibilityRole="button"
@@ -48,14 +36,9 @@ export const ChipTrailingButton = ({
       style={[styles.button, { marginRight }]}
       contentContainerStyle={styles.content}
       contentPointerEvents="none"
+      useNativeEffect={false}
     >
-      <Icon
-        source={icon}
-        color={color}
-        size={size}
-        accessibilityElementsHidden={true}
-        importantForAccessibility="no-hide-descendants"
-      />
+      <Icon source={icon} color={color} size={size} />
     </TouchableRipple>
   );
 };

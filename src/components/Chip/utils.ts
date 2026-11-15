@@ -1,33 +1,23 @@
-import Color from "color";
 import { AccessibilityRole, AccessibilityState } from "react-native";
+import Color from "color";
 import {
   CHIP_BORDER_WIDTH,
   CHIP_ELEMENT_GAP,
   CHIP_PADDING_WITH_ICON,
   CHIP_PADDING_WITHOUT_ICON,
   CHIP_TRAILING_BUTTON_INSET,
+  CHIP_VERTICAL_PADDING,
 } from "./const";
-import { ChipStyleConfig, ChipVariant } from "./types";
+import {
+  ChipAccessibilityConfig,
+  ChipLayoutMetrics,
+  ChipStyleConfig,
+  ChipVariant,
+  GetChipAccessibilityOptions,
+  GetChipColorsOptions,
+  GetChipLayoutOptions,
+} from "./types";
 import { MateriaScheme, Tokens } from "../../core/theme/types";
-
-interface GetChipColorsOptions {
-  elevated: boolean;
-  selected: boolean;
-  disabled: boolean;
-}
-
-interface GetChipLayoutOptions {
-  hasLeading: boolean;
-  hasTrailing: boolean;
-  borderWidth: number;
-}
-
-export interface ChipLayoutMetrics {
-  paddingLeft: number;
-  paddingRight: number;
-  trailingButtonGap: number;
-  trailingButtonRightMargin: number;
-}
 
 export const getChipColors = (
   variant: ChipVariant,
@@ -117,17 +107,15 @@ export const getChipShadowStyle = (
 export const getChipLayoutMetrics = ({
   hasLeading,
   hasTrailing,
-  borderWidth,
 }: GetChipLayoutOptions): ChipLayoutMetrics => ({
-  paddingLeft:
-    (hasLeading ? CHIP_PADDING_WITH_ICON : CHIP_PADDING_WITHOUT_ICON) -
-    borderWidth,
-  paddingRight:
-    (hasTrailing ? CHIP_PADDING_WITH_ICON : CHIP_PADDING_WITHOUT_ICON) -
-    borderWidth,
+  paddingVertical: CHIP_VERTICAL_PADDING,
+  paddingLeft: hasLeading ? CHIP_PADDING_WITH_ICON : CHIP_PADDING_WITHOUT_ICON,
+  paddingRight: hasTrailing
+    ? CHIP_PADDING_WITH_ICON
+    : CHIP_PADDING_WITHOUT_ICON,
   trailingButtonGap: CHIP_ELEMENT_GAP - CHIP_TRAILING_BUTTON_INSET,
   trailingButtonRightMargin:
-    CHIP_PADDING_WITH_ICON - borderWidth - CHIP_TRAILING_BUTTON_INSET,
+    CHIP_PADDING_WITH_ICON - CHIP_TRAILING_BUTTON_INSET,
 });
 
 export const getChipAccessibility = (
@@ -135,27 +123,31 @@ export const getChipAccessibility = (
   {
     disabled,
     selected,
+    isInteractive,
     accessibilityRole,
     accessibilityState,
-  }: {
-    disabled: boolean;
-    selected: boolean;
-    accessibilityRole?: AccessibilityRole;
-    accessibilityState?: AccessibilityState;
-  },
-): {
-  accessibilityRole: AccessibilityRole;
-  accessibilityState: AccessibilityState;
-} => ({
-  accessibilityRole:
-    accessibilityRole ?? (variant === "filter" ? "checkbox" : "button"),
-  accessibilityState: {
-    disabled,
-    ...(variant === "filter"
-      ? { checked: selected, selected }
-      : variant === "input"
-        ? { selected }
-        : {}),
-    ...accessibilityState,
-  },
-});
+  }: GetChipAccessibilityOptions,
+): ChipAccessibilityConfig => {
+  let defaultRole: AccessibilityRole | undefined;
+  if (variant === "filter") {
+    defaultRole = "checkbox";
+  } else if (isInteractive) {
+    defaultRole = "button";
+  }
+
+  const stateByVariant: Record<ChipVariant, AccessibilityState> = {
+    assist: {},
+    suggestion: {},
+    filter: { checked: selected },
+    input: { selected },
+  };
+
+  return {
+    accessibilityRole: accessibilityRole ?? defaultRole,
+    accessibilityState: {
+      disabled,
+      ...stateByVariant[variant],
+      ...accessibilityState,
+    },
+  };
+};

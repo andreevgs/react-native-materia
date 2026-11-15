@@ -1,5 +1,5 @@
-import React from "react";
 import { ChipCore } from "./ChipCore";
+import { CHIP_DEFAULT_TRAILING_A11Y_LABEL } from "./const";
 import { FilterChipProps } from "./types";
 
 export const FilterChip = ({
@@ -7,7 +7,7 @@ export const FilterChip = ({
   elevated = false,
   showCheckmark = true,
   onTrailingIconPress,
-  trailingAccessibilityLabel,
+  trailingAccessibilityLabel = CHIP_DEFAULT_TRAILING_A11Y_LABEL,
   ...props
 }: FilterChipProps) => (
   <ChipCore

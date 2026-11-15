@@ -55,7 +55,9 @@ const ChipDemo = () => {
     setInputVisible((prev) => ({ ...prev, [key]: false }));
   };
 
-  const hasClosedInputs = Object.values(inputVisible).some((visible) => !visible);
+  const hasClosedInputs = Object.values(inputVisible).some(
+    (visible) => !visible,
+  );
 
   const styles = useMemo(() => createStyles(tokens), [tokens]);
 
@@ -64,10 +66,7 @@ const ChipDemo = () => {
       <AppBar
         headline="Chip"
         leading={
-          <IconButton
-            icon="arrow-back-rounded"
-            onPress={() => router.back()}
-          />
+          <IconButton icon="arrow-back-rounded" onPress={() => router.back()} />
         }
       />
       <ScrollContent contentContainerStyle={styles.container}>
@@ -82,11 +81,7 @@ const ChipDemo = () => {
           <Chip.Assist onPress={() => {}} elevated>
             Elevated
           </Chip.Assist>
-          <Chip.Assist
-            onPress={() => {}}
-            elevated
-            leadingIcon="settings-rounded"
-          >
+          <Chip.Assist onPress={() => {}} elevated leadingIcon="add-rounded">
             Elevated Icon
           </Chip.Assist>
           <Chip.Assist disabled>Disabled</Chip.Assist>
@@ -113,7 +108,7 @@ const ChipDemo = () => {
           </Chip.Filter>
           <Chip.Filter
             selected={filterSelected.withIcon}
-            leadingIcon="home-rounded"
+            leadingIcon="add-rounded"
             onPress={() => toggleFilter("withIcon")}
           >
             With Icon
@@ -121,7 +116,7 @@ const ChipDemo = () => {
           <Chip.Filter
             selected={filterSelected.noCheckmark}
             showCheckmark={false}
-            leadingIcon="settings-rounded"
+            leadingIcon="add-rounded"
             onPress={() => toggleFilter("noCheckmark")}
           >
             No Checkmark
@@ -179,7 +174,7 @@ const ChipDemo = () => {
           </Chip.Input>
           <Chip.Input
             selected={inputSelected.withIcon}
-            leadingIcon="info-rounded"
+            leadingIcon="add-rounded"
             onPress={() => toggleInput("withIcon")}
           >
             With Icon
@@ -195,7 +190,7 @@ const ChipDemo = () => {
           )}
           {inputVisible.iconCloseOnly && (
             <Chip.Input
-              leadingIcon="home-rounded"
+              leadingIcon="info-rounded"
               onClose={() => closeInput("iconCloseOnly")}
             >
               Close Only
@@ -241,7 +236,7 @@ const ChipDemo = () => {
         </MateriaText>
         <View style={styles.row}>
           <Chip.Suggestion onPress={() => {}}>Suggestion</Chip.Suggestion>
-          <Chip.Suggestion onPress={() => {}} leadingIcon="light-mode-rounded">
+          <Chip.Suggestion onPress={() => {}} leadingIcon="add-rounded">
             With Icon
           </Chip.Suggestion>
           <Chip.Suggestion onPress={() => {}} elevated>
@@ -250,16 +245,12 @@ const ChipDemo = () => {
           <Chip.Suggestion
             onPress={() => {}}
             elevated
-            leadingIcon="dark-mode-rounded"
+            leadingIcon="add-rounded"
           >
             Elevated Icon
           </Chip.Suggestion>
           <Chip.Suggestion disabled>Disabled</Chip.Suggestion>
-          <Chip.Suggestion
-            elevated
-            disabled
-            leadingIcon="light-mode-rounded"
-          >
+          <Chip.Suggestion elevated disabled leadingIcon="add-rounded">
             Disabled Elevated
           </Chip.Suggestion>
         </View>

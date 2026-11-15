@@ -1,4 +1,3 @@
-import React from "react";
 import { ChipCore } from "./ChipCore";
 import { SuggestionChipProps } from "./types";
 

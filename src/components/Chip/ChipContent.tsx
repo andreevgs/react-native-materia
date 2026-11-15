@@ -1,26 +1,9 @@
-import React, { ReactNode } from "react";
-import { StyleProp, StyleSheet, TextStyle } from "react-native";
+import { StyleSheet } from "react-native";
 
-import { IconSource } from "../../types";
 import { Icon } from "../Icon";
 import { MateriaText } from "../Text";
 import { CHIP_ELEMENT_GAP } from "./const";
-
-interface ChipContentProps {
-  children: ReactNode;
-  leadingIcon?: IconSource;
-  leadingIconColor: string;
-  trailingIcon?: IconSource;
-  trailingIconColor: string;
-  labelColor: string;
-  labelStyle?: StyleProp<TextStyle>;
-  iconSize: number;
-}
-
-const DECORATIVE_A11Y_PROPS = {
-  accessibilityElementsHidden: true,
-  importantForAccessibility: "no-hide-descendants",
-} as const;
+import { ChipContentProps } from "./types";
 
 export const ChipContent = ({
   children,
@@ -39,7 +22,6 @@ export const ChipContent = ({
         color={leadingIconColor}
         size={iconSize}
         style={styles.leadingIcon}
-        {...DECORATIVE_A11Y_PROPS}
       />
     )}
 
@@ -57,7 +39,6 @@ export const ChipContent = ({
         color={trailingIconColor}
         size={iconSize}
         style={styles.trailingIcon}
-        {...DECORATIVE_A11Y_PROPS}
       />
     )}
   </>
