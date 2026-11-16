@@ -46,6 +46,10 @@ The markdown file handles text explanations, conceptual architecture, and static
   - Use double quotes for string literal types and default string values (e.g., `` `"system"` ``, `` `"standard" | "medium" | "high"` ``).
 - **Interactive Demos (Slots)**:
   - If a live demo or interactive figure is needed, do NOT write JSX inside markdown. Instead, use slot placeholders: `<!-- SLOT: DEMO_NAME -->`.
+- **Tone & Intro Style**:
+  - Write in a concise, neutral, engineering tone rather than promotional or marketing copy.
+  - Open `# <TopicTitle>` with 1–2 direct sentences stating what the subsystem does and what problem or capability it handles.
+  - Avoid boilerplate phrasing and hype adjectives (`"seamlessly"`, `"mathematically balanced"`, `"fluid"`, `"comprehensive suite"`, `"total control"`).
 - **Code Snippets**:
   - Use standard markdown code fences (e.g., ` ```tsx `, ` ```bash `, ` ```js `).
   - Always write complete, copy-pasteable snippets rather than truncating with `...`.
