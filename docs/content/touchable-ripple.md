@@ -1,6 +1,6 @@
 # TouchableRipple
 
-TouchableRipple is a touch-responsive surface primitive that implements Material Design 3 state layers and ink ripples. It responds to hover, keyboard focus, and press interactions with smooth Reanimated physics and soft-edged radial gradients.
+TouchableRipple is a pressable surface primitive that renders interaction state layers and touch ripples. Built on top of standard `Pressable` props, it handles hover, focus-visible, and press feedback using native Android ripples when enabled or an SVG fallback across platforms.
 
 <!-- SLOT: DEMO_MAIN -->
 

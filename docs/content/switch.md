@@ -1,6 +1,6 @@
 # Switch
 
-Switches toggle the state of a single setting on or off. They provide immediate binary control following the Material Design 3 specification, with organic thumb morphing, state layer expansion, and smooth color interpolation.
+Switches toggle the state of a single setting on or off. They provide a controlled binary input with support for disabled and externally driven pressed states.
 
 <!-- SLOT: DEMO_MAIN -->
 

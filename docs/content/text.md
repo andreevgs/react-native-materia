@@ -1,6 +1,6 @@
 # Text
 
-The `Text` component is represented in code as `MateriaText` to avoid collisions with the React Native built-in `Text` element. It seamlessly integrates with the Material Design 3 type scale, automatically resolving font metrics, line heights, letter spacing, and applying `colors.onSurface` from the active theme.
+The `Text` component is exported as `MateriaText` to avoid naming collisions with React Native's built-in `Text`. It applies typographic roles from the active theme's type scale and defaults text color to `colors.onSurface`.
 
 <!-- SLOT: DEMO_MAIN -->
 

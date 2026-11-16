@@ -1,6 +1,6 @@
 # React Native Materia
 
-React Native Materia is a component library implementing the modern [Material Design 3 specification](https://m3.material.io/). It brings mathematically harmonious color palettes, fluid gesture-driven interactions, and standard type scales to cross-platform mobile and web applications.
+React Native Materia is a React Native UI library built on the [Material Design 3 specification](https://m3.material.io/). It provides dynamic color schemes, a fifteen-variant type scale, design tokens, and cross-platform components for iOS, Android, and Web.
 
 <!-- SLOT: DEMO_SHOWCASE -->
 
@@ -34,4 +34,4 @@ To begin building with React Native Materia, visit the [Getting Started](/about/
 
 Understand the foundational architecture through dedicated guides covering the [Provider](/about/provider), the dynamic [Theming](/about/theming) engine, spatial [Tokens](/about/tokens), the fifteen-variant [Typography](/about/typography) scale, extensible [Iconography](/about/iconography), and the [Portal](/about/portal) overlay subsystem.
 
-Explore the component library through comprehensive references for [App Bar](/components/app-bar), [Button](/components/button), [Icon Button](/components/icon-button), [Icon](/components/icon), [List](/components/list), [Switch](/components/switch), [Text](/components/text), [TextField](/components/text-field), and [Touchable Ripple](/components/touchable-ripple).
+Explore the component library through comprehensive references for [App Bar](/components/app-bar), [Button](/components/button), [Icon Button](/components/icon-button), [Icon](/components/icon), [List](/components/list), [Navigation Bar](/components/navigation-bar), [Switch](/components/switch), [Text](/components/text), [TextField](/components/text-field), and [Touchable Ripple](/components/touchable-ripple).

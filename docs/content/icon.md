@@ -1,6 +1,6 @@
 # Icon
 
-Icons are visual representations of commands, navigation, and common user actions. They provide visual clarity and enhance interface recognition across applications.
+Icons render vector symbols from the iconography registry or custom icon components. By default, they scale to `24dp` and use `colors.onSurfaceVariant` from the active theme.
 
 <!-- SLOT: DEMO_MAIN -->
 

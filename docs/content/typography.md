@@ -1,6 +1,6 @@
 # Typography
 
-The typography system in React Native Materia implements the Material Design 3 type scale. It establishes visual hierarchy across your application with fifteen distinct typographic variants, automatic cross-platform vertical rhythm correction, and flexible typeface configuration for brand and plain fonts.
+The typography system defines the fifteen-variant Material Design 3 type scale. It manages font metrics across display, headline, title, body, and label roles, normalizes Android vertical font padding, and supports separate brand and plain font families.
 
 ## Overview
 
