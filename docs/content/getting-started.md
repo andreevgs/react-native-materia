@@ -1,6 +1,6 @@
 # Getting started
 
-React Native Materia is a customizable component library implementing [Material Design 3](https://m3.material.io/). It provides a comprehensive suite of pre-built UI components with custom animations, dynamic theming, and cross-platform support.
+React Native Materia is a UI component library for React Native implementing [Material Design 3](https://m3.material.io/). Install the package and its peer dependencies, then wrap your root component in `MateriaProvider` to configure theming, typography, iconography, and portals.
 
 ## Installation
 

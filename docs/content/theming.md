@@ -1,6 +1,6 @@
 # Theming
 
-React Native Materia features a dynamic, unopinionated theming engine built strictly on the Material Design 3 color system. It provides mathematically balanced color schemes, six contrast levels, complete compatibility with Material Design Theme builder, and seamless runtime theme switching.
+Theming in React Native Materia is built around the Material Design 3 color system. It supports light and dark modes, three contrast levels, runtime theme switching, and schemes generated programmatically or imported from Material Theme Builder.
 
 ## Overview
 

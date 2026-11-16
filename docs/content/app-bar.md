@@ -1,6 +1,6 @@
 # AppBar
 
-App bars appear at the top of the screen to display navigation actions, screen titles, and contextual tools. They implement the Material Design 3 top app bar specification with automatic safe area insets, slot-based content composition, and smooth background color morphing.
+App bars appear at the top of a screen to display navigation controls, screen titles, and contextual actions. They support leading and trailing slots, top safe area insets, and a scrolled background state.
 
 <!-- SLOT: DEMO_MAIN -->
 

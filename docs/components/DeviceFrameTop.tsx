@@ -3,11 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { MateriaScheme } from "react-native-materia/types";
 import { Icon, MateriaText, useMateriaColors } from "react-native-materia";
 
-interface DeviceFrameProps {
+interface DeviceFrameTopProps {
   children: React.ReactNode;
 }
 
-export const DeviceFrame = ({ children }: DeviceFrameProps) => {
+export const DeviceFrameTop = ({ children }: DeviceFrameTopProps) => {
   const colors = useMateriaColors();
   const styles = useMemo(() => createStyles(colors), [colors]);
 

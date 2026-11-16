@@ -41,6 +41,10 @@ The markdown file handles the text, structure, and static code snippets.
   - Do NOT use bold markdown syntax (`**text**` or `__text__`). The custom inline renderer does not parse bold tags.
   - Do NOT use blockquotes (`> text`). Blockquotes are not supported by the parser.
   - Separate all paragraphs and blocks with double newlines (`\n\n`).
+- **Tone & Intro Style**:
+  - Write in a concise, neutral, engineering tone rather than promotional or marketing copy.
+  - Keep the introductory paragraph under `# <ComponentName>` to 1–2 direct sentences describing what the component does, where/how it is used in the UI, and its primary capabilities.
+  - Do NOT repeat boilerplate openers like `"implements the Material Design 3 ... specification with ..."` or hype adjectives (`"seamlessly"`, `"mathematically harmonious"`, `"organic"`, `"fluid"`, `"comprehensive"`), and do not cram internal animation or implementation details into the intro when they are already covered in dedicated sections below.
 - **Code Snippets**: Use standard markdown code fences (e.g., ` ```tsx `) for static code examples. Always write out complete code snippets instead of shortening them with `...` to allow users to copy-paste easily.
 
 ## 3. React Page Guidelines (`docs/app/components/*.tsx`)
