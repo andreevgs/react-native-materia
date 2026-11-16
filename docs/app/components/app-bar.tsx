@@ -6,7 +6,7 @@ import { PageContent } from "@/components/Page/PageContent";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Figure } from "@/components/Figure";
 import appBarContent from "@/content/app-bar.md";
-import { DeviceFrame } from "@/components/DeviceFrame";
+import { DeviceFrameTop } from "@/components/DeviceFrameTop";
 import { ScrollView } from "react-native-gesture-handler";
 
 const AppBarPage = () => {
@@ -27,7 +27,7 @@ const AppBarPage = () => {
         slots={{
           DEMO_MAIN: (
             <Figure style={{ paddingBottom: 0 }}>
-              <DeviceFrame>
+              <DeviceFrameTop>
                 <AppBar
                   style={{
                     minHeight: 96,
@@ -38,12 +38,12 @@ const AppBarPage = () => {
                     <IconButton icon="arrow-back-rounded" onPress={() => {}} />
                   }
                 />
-              </DeviceFrame>
+              </DeviceFrameTop>
             </Figure>
           ),
           DEMO_LEADING: (
             <Figure style={{ paddingBottom: 0 }}>
-              <DeviceFrame>
+              <DeviceFrameTop>
                 <AppBar
                   style={{
                     minHeight: 96,
@@ -54,12 +54,12 @@ const AppBarPage = () => {
                     <IconButton icon="menu-rounded" onPress={() => {}} />
                   }
                 />
-              </DeviceFrame>
+              </DeviceFrameTop>
             </Figure>
           ),
           DEMO_SUBTITLE: (
             <Figure style={{ paddingBottom: 0 }}>
-              <DeviceFrame>
+              <DeviceFrameTop>
                 <AppBar
                   style={{
                     minHeight: 96,
@@ -71,12 +71,12 @@ const AppBarPage = () => {
                     <IconButton icon="arrow-back-rounded" onPress={() => {}} />
                   }
                 />
-              </DeviceFrame>
+              </DeviceFrameTop>
             </Figure>
           ),
           DEMO_TRAILING: (
             <Figure style={{ paddingBottom: 0 }}>
-              <DeviceFrame>
+              <DeviceFrameTop>
                 <AppBar
                   style={{
                     minHeight: 96,
@@ -94,12 +94,12 @@ const AppBarPage = () => {
                     </>
                   }
                 />
-              </DeviceFrame>
+              </DeviceFrameTop>
             </Figure>
           ),
           DEMO_SCROLLED: (
             <Figure style={{ paddingBottom: 0 }}>
-              <DeviceFrame>
+              <DeviceFrameTop>
                 <AppBar
                   style={{
                     minHeight: 96,
@@ -125,7 +125,7 @@ const AppBarPage = () => {
                 >
                   <View style={{ height: 320 }} />
                 </ScrollView>
-              </DeviceFrame>
+              </DeviceFrameTop>
             </Figure>
           ),
         }}
