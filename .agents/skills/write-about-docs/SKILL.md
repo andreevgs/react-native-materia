@@ -27,8 +27,10 @@ The markdown file handles text explanations, conceptual architecture, and static
   - Do NOT use bold markdown syntax (`**text**` or `__text__`). The custom inline renderer does not parse bold tags.
   - Do NOT use blockquotes (`> text`). Blockquotes are not supported by the parser.
   - Separate all paragraphs and blocks with double newlines (`\n\n`).
-- **Inline Formatting**:
-  - Always enclose component names, filenames (e.g., `App.tsx`), package names (e.g., `react-native-gesture-handler`), symbols, types, prop names, values, numbers (e.g., `57`, `64`), and code references in backticks (e.g., `` `MateriaProvider` ``, `` `useMateriaTheme` ``, `` `"system"` ``).
+- **Inline Formatting & Readability**:
+  - Enclose component names, filenames (e.g., `App.tsx`), package names (e.g., `react-native-gesture-handler`), symbols, types, prop names, and short literal values in backticks (e.g., `` `MateriaProvider` ``, `` `useMateriaTheme` ``, `` `"system"` ``).
+  - Keep inline code density readable: `InlineCode` renders as highlighted pills, so avoid crowding a paragraph with excessive backticked tokens or multi-word property assignments (e.g., `` `flexDirection: "row"` ``) that wrap awkwardly across lines; show exact style objects in `tsx` code blocks instead.
+  - Unless the guide specifically documents theming or tokens, describe visual states in plain language rather than citing internal color role names or token paths.
   - Always use double quotes (`"..."`) for string values and string literal types (e.g., `` `"light" | "dark" | "system"` ``, `` `"standard"` ``), matching codebase style.
   - Use standard markdown links for references (e.g., `[Material Theme Builder](https://material-foundation.github.io/material-theme-builder/)` or internal routes like `[Theming](/about/theming)`). The custom renderer automatically converts these to interactive `InlineLink` components.
 - **Props Formatting Standard**:
@@ -53,6 +55,7 @@ The markdown file handles text explanations, conceptual architecture, and static
 - **Code Snippets**:
   - Use standard markdown code fences (e.g., ` ```tsx `, ` ```bash `, ` ```js `).
   - Always write complete, copy-pasteable snippets rather than truncating with `...`.
+  - When examples define layout spacing or `StyleSheet` rules, prefer `useMateriaTokens()` with a memoized `createStyles(tokens)` factory over hardcoded magic numbers, and reuse `styles.<name>` in follow-up snippets on the same page instead of repeating style blocks.
 
 ## 3. React Page Guidelines (`docs/app/about/*.tsx`)
 The React page imports the markdown content and renders it via `MarkdownRenderer`, optionally providing live components for defined slots.
