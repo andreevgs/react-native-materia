@@ -223,7 +223,6 @@ const createStyles = (tokens: Tokens) =>
       maxWidth: "100%",
       flexDirection: "row",
       alignItems: "center",
-      alignSelf: "flex-start",
       borderRadius: tokens.shape.small,
     },
     borderOverlay: {

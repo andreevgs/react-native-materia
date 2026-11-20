@@ -6,6 +6,9 @@ import { BluetoothRoundedIcon } from "@/icons/BluetoothRoundedIcon";
 import { SearchRoundedIcon } from "@/icons/SearchRoundedIcon";
 import { BatteryAndroidFullRoundedIcon } from "@/icons/BatteryAndroidFullRoundedIcon";
 import { AndroidCellBarRoundedIcon } from "@/icons/AndroidCellBarRoundedIcon";
+import { KeyboardArrowDownRoundedIcon } from "@/icons/KeyboardArrowDownRoundedIcon";
+import { ScheduleRoundedIcon } from "@/icons/ScheduleRoundedIcon";
+import { AlarmRoundedIcon } from "@/icons/AlarmRoundedIcon";
 
 export const icons = {
   ...defaultMateriaIconography,
@@ -16,4 +19,7 @@ export const icons = {
   "search-rounded": SearchRoundedIcon,
   "battery-android-full-rounded": BatteryAndroidFullRoundedIcon,
   "android-cell-bar-rounded": AndroidCellBarRoundedIcon,
+  "keyboard-arrow-down-rounded": KeyboardArrowDownRoundedIcon,
+  "schedule-rounded": ScheduleRoundedIcon,
+  "alarm-rounded": AlarmRoundedIcon,
 };

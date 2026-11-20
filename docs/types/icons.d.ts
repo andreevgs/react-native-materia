@@ -10,5 +10,8 @@ declare module "react-native-materia/types" {
     "search-rounded": MateriaIcon;
     "battery-android-full-rounded": MateriaIcon;
     "android-cell-bar-rounded": MateriaIcon;
+    "keyboard-arrow-down-rounded": MateriaIcon;
+    "schedule-rounded": MateriaIcon;
+    "alarm-rounded": MateriaIcon;
   }
 }
