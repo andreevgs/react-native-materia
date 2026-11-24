@@ -1,3 +1,9 @@
 export { BottomSheet } from "./BottomSheet";
 export { ModalBottomSheet } from "./ModalBottomSheet";
-export type { BottomSheetProps, ModalBottomSheetProps } from "./types";
+export { BottomSheetScrollView } from "./BottomSheetScrollView";
+export type {
+  BottomSheetProps,
+  ModalBottomSheetProps,
+  BottomSheetCoreRef,
+  BottomSheetScrollViewProps,
+} from "./types";

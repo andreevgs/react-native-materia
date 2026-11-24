@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { StyleSheet, Pressable, BackHandler } from "react-native";
 import Animated, {
   useSharedValue,
@@ -8,140 +15,167 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { Portal, useMateriaColors, useMateriaTokens } from "../../core";
-import { BottomSheetCore, BottomSheetCoreRef } from "./BottomSheetCore";
-import { ModalBottomSheetProps } from "./types";
+import { BottomSheetCore } from "./BottomSheetCore";
+import { BottomSheetCoreRef, ModalBottomSheetProps } from "./types";
 import { getScrimContainerStyle } from "./utils";
 import {
   BOTTOM_SHEET_DEFAULT_PORTAL_NAME,
   BOTTOM_SHEET_SCRIM_DEFAULT_ACCESSIBILITY_LABEL,
 } from "./const";
 
-export const ModalBottomSheet = ({
-  visible,
-  hostName = BOTTOM_SHEET_DEFAULT_PORTAL_NAME,
-  onDismiss,
-  scrimAccessibilityLabel = BOTTOM_SHEET_SCRIM_DEFAULT_ACCESSIBILITY_LABEL,
-  ...props
-}: ModalBottomSheetProps) => {
-  const [mounted, setMounted] = useState(false);
-  const bottomSheetRef = useRef<BottomSheetCoreRef>(null);
-  const isMountedRef = useRef(false);
-  const colors = useMateriaColors();
-  const tokens = useMateriaTokens();
+export const ModalBottomSheet = forwardRef<
+  BottomSheetCoreRef,
+  ModalBottomSheetProps
+>(
+  (
+    {
+      visible,
+      hostName = BOTTOM_SHEET_DEFAULT_PORTAL_NAME,
+      onDismiss,
+      scrimAccessibilityLabel = BOTTOM_SHEET_SCRIM_DEFAULT_ACCESSIBILITY_LABEL,
+      ...props
+    },
+    ref,
+  ) => {
+    const [mounted, setMounted] = useState(false);
+    const bottomSheetRef = useRef<BottomSheetCoreRef>(null);
+    const isMountedRef = useRef(false);
+    const colors = useMateriaColors();
+    const tokens = useMateriaTokens();
 
-  const scrimOpacity = useSharedValue(0);
+    const scrimOpacity = useSharedValue(0);
 
-  const isDismissingFromGestureRef = useRef(false);
+    const isDismissingFromGestureRef = useRef(false);
 
-  const scrimContainerStyle = useMemo(
-    () => getScrimContainerStyle(colors),
-    [colors],
-  );
+    const scrimContainerStyle = useMemo(
+      () => getScrimContainerStyle(colors),
+      [colors],
+    );
 
-  const scrimAnimatedContainerStyle = useAnimatedStyle(() => ({
-    opacity: scrimOpacity.value,
-    zIndex: 1,
-  }));
+    const scrimAnimatedContainerStyle = useAnimatedStyle(() => ({
+      opacity: scrimOpacity.value,
+      zIndex: 1,
+    }));
 
-  useEffect(() => {
-    isMountedRef.current = mounted;
-  }, [mounted]);
-
-  useEffect(() => {
-    if (visible) {
-      setMounted(true);
-      isDismissingFromGestureRef.current = false;
-      scrimOpacity.value = withTiming(1, { duration: tokens.duration.medium1 });
-      if (mounted) {
-        bottomSheetRef.current?.open();
-      }
-    } else if (mounted) {
-      scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
-      if (!isDismissingFromGestureRef.current) {
-        bottomSheetRef.current?.dismiss();
-      }
-    }
-  }, [visible, mounted, scrimOpacity, tokens]);
-
-  useEffect(() => {
-    if (!mounted) return;
-
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        if (onDismiss) {
-          onDismiss();
-        } else {
+    useImperativeHandle(
+      ref,
+      () => ({
+        dismiss: () => {
           scrimOpacity.value = withTiming(0, {
             duration: tokens.duration.medium1,
           });
           bottomSheetRef.current?.dismiss();
-        }
-        return true;
-      },
+        },
+        open: (index?: number) => {
+          bottomSheetRef.current?.open(index);
+        },
+        snapToIndex: (index: number) => {
+          bottomSheetRef.current?.snapToIndex(index);
+        },
+      }),
+      [scrimOpacity, tokens.duration.medium1],
     );
 
-    return () => backHandler.remove();
-  }, [mounted, scrimOpacity, onDismiss, tokens]);
+    useEffect(() => {
+      isMountedRef.current = mounted;
+    }, [mounted]);
 
-  const finishDismiss = () => {
-    if (isMountedRef.current) {
-      setMounted(false);
-    }
-    if (onDismiss && !isDismissingFromGestureRef.current) {
-      onDismiss();
-    }
-  };
+    useEffect(() => {
+      if (visible) {
+        setMounted(true);
+        isDismissingFromGestureRef.current = false;
+        scrimOpacity.value = withTiming(1, { duration: tokens.duration.medium1 });
+        if (mounted) {
+          bottomSheetRef.current?.open();
+        }
+      } else if (mounted) {
+        scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
+        if (!isDismissingFromGestureRef.current) {
+          bottomSheetRef.current?.dismiss();
+        }
+      }
+    }, [visible, mounted, scrimOpacity, tokens]);
 
-  const handleDismissStart = () => {
-    isDismissingFromGestureRef.current = true;
-    scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
-    if (onDismiss) onDismiss();
-  };
+    useEffect(() => {
+      if (!mounted) return;
 
-  const handleDismiss = () => {
-    runOnJS(finishDismiss)();
-  };
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          if (onDismiss) {
+            onDismiss();
+          } else {
+            scrimOpacity.value = withTiming(0, {
+              duration: tokens.duration.medium1,
+            });
+            bottomSheetRef.current?.dismiss();
+          }
+          return true;
+        },
+      );
 
-  const handleScrimPress = () => {
-    if (onDismiss) {
-      onDismiss();
-    } else {
+      return () => backHandler.remove();
+    }, [mounted, scrimOpacity, onDismiss, tokens]);
+
+    const finishDismiss = () => {
+      if (isMountedRef.current) {
+        setMounted(false);
+      }
+      if (onDismiss && !isDismissingFromGestureRef.current) {
+        onDismiss();
+      }
+    };
+
+    const handleDismissStart = () => {
+      isDismissingFromGestureRef.current = true;
       scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
-      bottomSheetRef.current?.dismiss();
-    }
-  };
+      if (onDismiss) onDismiss();
+    };
 
-  if (!mounted) return null;
+    const handleDismiss = () => {
+      runOnJS(finishDismiss)();
+    };
 
-  return (
-    <Portal hostName={hostName}>
-      <Animated.View
-        style={[
-          styles.container,
-          scrimContainerStyle,
-          scrimAnimatedContainerStyle,
-        ]}
-        pointerEvents={visible ? "auto" : "none"}
-      >
-        <Pressable
-          style={styles.scrim}
-          onPress={handleScrimPress}
-          role="button"
-          accessibilityLabel={scrimAccessibilityLabel}
+    const handleScrimPress = () => {
+      if (onDismiss) {
+        onDismiss();
+      } else {
+        scrimOpacity.value = withTiming(0, { duration: tokens.duration.medium1 });
+        bottomSheetRef.current?.dismiss();
+      }
+    };
+
+    if (!mounted) return null;
+
+    return (
+      <Portal hostName={hostName}>
+        <Animated.View
+          style={[
+            styles.container,
+            scrimContainerStyle,
+            scrimAnimatedContainerStyle,
+          ]}
+          pointerEvents={visible ? "auto" : "none"}
+        >
+          <Pressable
+            style={styles.scrim}
+            onPress={handleScrimPress}
+            role="button"
+            accessibilityLabel={scrimAccessibilityLabel}
+          />
+        </Animated.View>
+
+        <BottomSheetCore
+          ref={bottomSheetRef}
+          onDismissStart={handleDismissStart}
+          onDismiss={handleDismiss}
+          zIndex={2}
+          {...props}
         />
-      </Animated.View>
-
-      <BottomSheetCore
-        ref={bottomSheetRef}
-        onDismissStart={handleDismissStart}
-        onDismiss={handleDismiss}
-        zIndex={2}
-        {...props}
-      />
-    </Portal>
-  );
-};
+      </Portal>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   container: {
