@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   AppBar,
@@ -6,6 +6,8 @@ import {
   Button,
   ModalBottomSheet,
   BottomSheet,
+  BottomSheetScrollView,
+  BottomSheetCoreRef,
   useMateriaColors,
   MateriaText,
   useMateriaTokens,
@@ -14,8 +16,14 @@ import { useRouter } from "expo-router";
 import { ScreenWrapper } from "../components/ScreenWrapper";
 import { Tokens } from "react-native-materia/types";
 
+const SAMPLE_ITEMS = Array.from({ length: 24 }, (_, i) => i + 1);
+
 const BottomSheetDemo = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [snapSheetVisible, setSnapSheetVisible] = useState(false);
+  const [snapIndex, setSnapIndex] = useState(0);
+
+  const snapSheetRef = useRef<BottomSheetCoreRef>(null);
 
   const colors = useMateriaColors();
   const tokens = useMateriaTokens();
@@ -26,7 +34,9 @@ const BottomSheetDemo = () => {
   return (
     <ScreenWrapper>
       <AppBar
-        leading={<IconButton icon="arrow-back-rounded" onPress={() => router.back()} />}
+        leading={
+          <IconButton icon="arrow-back-rounded" onPress={() => router.back()} />
+        }
         headline="Bottom Sheet"
       />
 
@@ -65,6 +75,14 @@ const BottomSheetDemo = () => {
         >
           Open Modal Sheet
         </Button>
+
+        <Button
+          mode="tonal"
+          onPress={() => setSnapSheetVisible(true)}
+          style={styles.button}
+        >
+          Open Multi-Snap Scrollable Sheet
+        </Button>
       </View>
 
       <ModalBottomSheet
@@ -97,6 +115,63 @@ const BottomSheetDemo = () => {
             Close
           </Button>
         </View>
+      </ModalBottomSheet>
+
+      <ModalBottomSheet
+        ref={snapSheetRef}
+        visible={snapSheetVisible}
+        snapPoints={["25%", "50%", "100%"]}
+        initialSnapIndex={1}
+        onSnapPointChange={setSnapIndex}
+        onDismiss={() => setSnapSheetVisible(false)}
+      >
+        <View style={styles.snapHeader}>
+          <MateriaText
+            variant="titleMedium"
+            style={{ color: colors.onSurface }}
+          >
+            Snap Point: {snapIndex >= 0 ? `${snapIndex}` : "Closed"}
+          </MateriaText>
+          <View style={styles.snapActions}>
+            <Button
+              mode="text"
+              onPress={() => snapSheetRef.current?.snapToIndex(0)}
+            >
+              25%
+            </Button>
+            <Button
+              mode="text"
+              onPress={() => snapSheetRef.current?.snapToIndex(1)}
+            >
+              50%
+            </Button>
+            <Button
+              mode="text"
+              onPress={() => snapSheetRef.current?.snapToIndex(2)}
+            >
+              100%
+            </Button>
+          </View>
+        </View>
+
+        <BottomSheetScrollView contentContainerStyle={styles.scrollContent}>
+          {SAMPLE_ITEMS.map((item) => (
+            <View
+              key={item}
+              style={[
+                styles.scrollItem,
+                { backgroundColor: colors.surfaceContainerHigh },
+              ]}
+            >
+              <MateriaText
+                variant="bodyLarge"
+                style={{ color: colors.onSurface }}
+              >
+                Scrollable Item {item}
+              </MateriaText>
+            </View>
+          ))}
+        </BottomSheetScrollView>
       </ModalBottomSheet>
 
       <BottomSheet>
@@ -142,6 +217,26 @@ const createStyles = (tokens: Tokens) =>
     },
     closeButton: {
       marginTop: tokens.spacing.xl,
+    },
+    snapHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingHorizontal: tokens.spacing.xl,
+      paddingBottom: tokens.spacing.s,
+    },
+    snapActions: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    scrollContent: {
+      paddingHorizontal: tokens.spacing.xl,
+      paddingBottom: tokens.spacing.xl,
+      gap: tokens.spacing.s,
+    },
+    scrollItem: {
+      padding: tokens.spacing.m,
+      borderRadius: tokens.shape.medium,
     },
   });
 
